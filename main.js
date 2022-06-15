@@ -1,3 +1,5 @@
+// I have never coded an addon before ( and am not trying to make it look nice ), so please forgive the bad code :)
+
 // Timeframe and color positions
 let timeframeConfig = new Map();
 
@@ -33,6 +35,7 @@ const init = () => {
 
   // Only inject if doesn't exist
   if (!document.getElementsByClassName('autoTimeframe')[0]) {
+
     // Clone magnet tool
     let cloneElement = document.getElementsByClassName('dropdown-m5d9X7vB')[8].cloneNode(true);
 
@@ -45,6 +48,10 @@ const init = () => {
     
 
     document.getElementsByClassName('group-3e32hIe9')[2].children[0].insertAdjacentElement('beforebegin', cloneElement);
+
+    // Open and close menu to initialize hidden div ( yes this is hacky )
+    document.getElementsByClassName('arrow-m5d9X7vB')[1].click()
+    document.getElementsByClassName('arrow-m5d9X7vB')[1].click()
 
     let autoTimeframeElementButton = document.getElementsByClassName('autoTimeframeButton')[0];
     let autoTimeframeElement = document.getElementsByClassName('autoTimeframeElement')[0];
