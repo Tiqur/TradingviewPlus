@@ -6,18 +6,11 @@
 
   "description": "Changes line color according to current timeframe",
 
-  "options_ui": {
-    "page": "options.html"
-  },
-
-  "permissions": ["storage"],
-
   "browser_specific_settings": {
     "gecko": {
       "id": "autotimeframecolors@example.com"
     }
   },
-
 
   "content_scripts": [
     {

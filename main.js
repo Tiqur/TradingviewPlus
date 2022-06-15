@@ -3,7 +3,6 @@
 // Timeframe and color positions
 let timeframeConfig = new Map();
 
-const enabledOnStartup = true;
 const injectToggleButton = true;
 
 // Waits for element to load 
