@@ -46,12 +46,10 @@ const init = () => {
   if (!document.getElementsByClassName('autoTimeframe')[0]) {
     // Clone magnet tool
     let cloneElement = document.getElementsByClassName('dropdown-m5d9X7vB')[8].cloneNode(true);
-    const oldPath = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><path fill="currentColor" fill-rule="nonzero" d="M14 5a7 7 0 0 0-7 7v3h4v-3a3 3 0 1 1 6 0v3h4v-3a7 7 0 0 0-7-7zm7 11h-4v3h4v-3zm-10 0H7v3h4v-3zm-5-4a8 8 0 1 1 16 0v8h-6v-8a2 2 0 1 0-4 0v8H6v-8zm3.293 11.294l-1.222-2.037.858-.514 1.777 2.963-2 1 1.223 2.037-.858.514-1.778-2.963 2-1zm9.778-2.551l.858.514-1.223 2.037 2 1-1.777 2.963-.858-.514 1.223-2.037-2-1 1.777-2.963z"></path></svg>';
-    const newPath = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="evenodd"><path transform="translate(2, 2)" fill-rule="nonzero" d="m19 9 1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"></path></g></svg>';
 
     // Add custom className and replace svg
     cloneElement.className += ' autoTimeframe'
-    cloneElement.innerHTML = cloneElement.innerHTML.replace(oldPath, newPath)
+    cloneElement.children[0].children[0].children[0].children[0].innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="evenodd"><path transform="translate(2, 2)" fill-rule="nonzero" d="m19 9 1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"></path></g></svg>'
     cloneElement.innerHTML = cloneElement.innerHTML.replace('arrow-m5d9X7vB', 'arrow-m5d9X7vB autoTimeframeArrow')
     cloneElement.innerHTML = cloneElement.innerHTML.replace('bg-G7o5fBfa', 'bg-G7o5fBfa autoTimeframeElement')
     cloneElement.innerHTML = cloneElement.innerHTML.replace('button-G7o5fBfa', 'button-G7o5fBfa autoTimeframeButton')
@@ -64,7 +62,7 @@ const init = () => {
     let autoTimeframeElementArrow = document.getElementsByClassName('autoTimeframeArrow')[0];
     const button = document.getElementsByClassName('autoTimeframe')[0];
     
-          let wrapper = document.createElement('div');
+      let wrapper = document.createElement('div');
       wrapper.style = 'position: fixed; z-index: 12; inset: 0px; pointer-events: none;';
 
       let span = document.createElement('span');
@@ -107,13 +105,30 @@ const init = () => {
         itemLabel.innerText = label;
         item.appendChild(itemLabelText)
 
-        // Toggle item
-        item.addEventListener('click', () => {
-          item.className = `item-4TFSfyGO withIcon-4TFSfyGO ${item.className.includes('isActive') ? '' : 'isActive-4TFSfyGO'}`
-        })
-
         return item;
       }
+
+    const openColorPickerMenu = () => {
+      // Click options in top right
+      document.getElementsByClassName('iconButton-Kbdz4qEM button-SS83RYhy button-9pA37sIi apply-common-tooltip isInteractive-9pA37sIi newStyles-9pA37sIi')[0].click()
+
+      waitForElm('.container-tuOy5zvD').then(() => {
+        // Click apperance
+        document.getElementsByClassName('tab-Zcmov9JL')[3].click()
+
+        // Click crosshair color picker
+        document.getElementsByClassName('colorPicker-pz6IRAmC')[6].click()
+
+        // Delete settings menu ( while keeping color picker )
+        document.getElementsByClassName('dialog-hxnnZcZ6 dialog-HExheUfY withSidebar-26RvWdey dialog-Nh5Cqdeo rounded-Nh5Cqdeo shadowed-Nh5Cqdeo')[0].innerHTML = "";
+        document.getElementsByClassName('dialog-hxnnZcZ6 dialog-HExheUfY withSidebar-26RvWdey dialog-Nh5Cqdeo rounded-Nh5Cqdeo shadowed-Nh5Cqdeo')[0].style = 'hidden: true';
+
+        // Set color picker menu position
+        //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.left = `${window.innerWidth / 2}px`;
+        //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.top = `${window.innerHeight / 2}px`;
+      })
+
+    }
 
 
     autoTimeframeElement.addEventListener('click', () => {
@@ -129,8 +144,30 @@ const init = () => {
       if (button.className.includes('isOpened')) {
         const timeframes = [].slice.call(document.getElementById("header-toolbar-intervals").children).filter(e => e.getAttribute('data-value')).map(e => e.innerText)
 
+        // Reset timeframes incase they've been changed
+        menuBox.innerHTML = ''
+
+        // Add each timeframe
         timeframes.forEach(e => {
-          menuBox.appendChild(createItem(e, 'red'));
+          // Create item
+          const newItem = createItem(e, 'red');
+          menuBox.appendChild(newItem);
+
+          // Toggle item
+          newItem.addEventListener('click', () => {
+
+            // Untoggle all items
+            Object.values(menuBox.children).forEach(item => {
+              item.className = 'item-4TFSfyGO withIcon-4TFSfyGO';
+            })
+
+            // Toggle clicked item
+            newItem.className = `item-4TFSfyGO withIcon-4TFSfyGO ${newItem.className.includes('isActive') ? '' : 'isActive-4TFSfyGO'}`
+
+            // Open color picker
+            openColorPickerMenu();
+          })
+
         });
 
         document.getElementById('overlap-manager-root').appendChild(wrapper);
