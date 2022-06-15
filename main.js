@@ -1,5 +1,5 @@
 // Timeframe and color positions
-const timeframeColors = {
+let timeframeColors = {
   "1m":  "9",
   "3m":  "8",
   "5m":  "7",
@@ -93,7 +93,10 @@ const init = () => {
 
         let itemIcon = document.createElement('div');
         itemIcon.className = 'icon-4TFSfyGO';
-        itemIcon.setAttribute('innerHTML', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="evenodd"><path transform="translate(2, 2)" fill-rule="nonzero" d="m19 9 1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"></path></g></svg>');
+        itemIcon.style.width = '18px';
+        itemIcon.style.height = '18px';
+        itemIcon.style.borderRadius = '2px';
+        itemIcon.style.background = color;
         item.appendChild(itemIcon);
 
         let itemLabel = document.createElement('div');
@@ -108,7 +111,7 @@ const init = () => {
         return item;
       }
 
-    const openColorPickerMenu = () => {
+    const openColorPickerMenu = (timeframe) => {
       // Click options in top right
       document.getElementsByClassName('iconButton-Kbdz4qEM button-SS83RYhy button-9pA37sIi apply-common-tooltip isInteractive-9pA37sIi newStyles-9pA37sIi')[0].click()
 
@@ -126,6 +129,41 @@ const init = () => {
         // Set color picker menu position
         //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.left = `${window.innerWidth / 2}px`;
         //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.top = `${window.innerHeight / 2}px`;
+
+        const menuContainerElement = document.getElementsByClassName('menuBox-8MKeZifP')[1];
+
+        let doneButton = document.createElement('div');
+        doneButton.style.background = 'blue';
+        doneButton.style.marginTop = '18px';
+        doneButton.style.marginBottom = '15px';
+        doneButton.style.width = '40%';
+        doneButton.style.height = '30px';
+
+        menuContainerElement.appendChild(doneButton);
+
+        // Submit
+        doneButton.addEventListener('click', () => {
+          const colorStyle = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))].filter(e => e.className.includes('selected'))[0].style.color;
+          const opacity = document.getElementsByClassName('opacityInput-YL5Gjk00')[0].value;
+          const thickness = [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children).filter(e => e.className.includes('checked'))[0].children[0].value;
+          
+          timeframeColors[timeframe] = {color: colorStyle, opacity: opacity, thickness: thickness};
+          console.log(timeframeColors)
+          menuContainerElement.innerHTML = '';
+        })
+
+
+        //const colorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))]
+
+        //colorElements.forEach(e => {
+        //  e.addEventListener('click', () => {
+        //    console.log(e.style)
+        //  })
+        //})
+        
+       /// const customColorElements = 
+       /// const opacityElement = 
+       /// const thicknessElements = 
       })
 
     }
@@ -150,7 +188,7 @@ const init = () => {
         // Add each timeframe
         timeframes.forEach(e => {
           // Create item
-          const newItem = createItem(e, 'red');
+          const newItem = createItem(e, 'white');
           menuBox.appendChild(newItem);
 
           // Toggle item
@@ -165,7 +203,7 @@ const init = () => {
             newItem.className = `item-4TFSfyGO withIcon-4TFSfyGO ${newItem.className.includes('isActive') ? '' : 'isActive-4TFSfyGO'}`
 
             // Open color picker
-            openColorPickerMenu();
+            openColorPickerMenu(e);
           })
 
         });
