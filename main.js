@@ -111,7 +111,7 @@ const init = () => {
 
         // Set default values if doesn't exist
         if (!timeframeConfig.has(e)) {
-          timeframeConfig.set(e, {color: 'rgb(255, 255, 255)', opacity: '100', thickness: '1'});
+          timeframeConfig.set(e, {color: 'rgb(255, 255, 255)', thickness: '1'});
         }
 
         // Create item
@@ -155,8 +155,13 @@ const init = () => {
         //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.left = `${window.innerWidth / 2}px`;
         //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.top = `${window.innerHeight / 2}px`;
 
+
         const menuContainerElement = document.getElementsByClassName('menuBox-8MKeZifP')[1];
-        const allColorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
+        const allColorElements = [...[].slice.call(menuContainerElement.children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
+
+        // Delete opacity
+        menuContainerElement.children[0].children[4].innerHTML = "";
+        menuContainerElement.children[0].children[5].innerHTML = "";
 
         let doneButton = document.createElement('div');
         doneButton.style.background = 'blue';
@@ -166,21 +171,35 @@ const init = () => {
         doneButton.style.height = '30px';
 
         menuContainerElement.appendChild(doneButton);
+        
+        const getCurrentValues = () => {
+          const color = allColorElements.filter(e => e.className.includes('selected'))[0].style.color;
+          const thickness = [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children).filter(e => e.className.includes('checked'))[0].children[0].value;
+          return {color, thickness};
+        }
+
+        const setValues = (color, thickness) => {
+          allColorElements.filter(e => e.style.color == color)[0].click();
+          //[].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[thickness-1].children[0].click()
+        }
+
+        // Get crosshair config values to restore later
+        const og = getCurrentValues();
 
         // Change to current timeframe settings in config
         const c = timeframeConfig.get(timeframe);
-        console.log(c)
-        allColorElements.filter(e => e.style.color == c.color)[0].click();
-        document.getElementsByClassName('opacityInput-YL5Gjk00')[0].value = c.opacity;
-        [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[c.thickness-1].children[0].click()
+        setValues(c.color, c.thickness)
 
         // Submit
         doneButton.addEventListener('click', () => {
-          const colorStyle = allColorElements.filter(e => e.className.includes('selected'))[0].style.color;
-          const opacity = document.getElementsByClassName('opacityInput-YL5Gjk00')[0].value;
-          const thickness = [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children).filter(e => e.className.includes('checked'))[0].children[0].value;
+          const timeframeConfigValues = getCurrentValues();
           
-          timeframeConfig.set(timeframe, {color: colorStyle, opacity: opacity, thickness: thickness});
+          timeframeConfig.set(timeframe, {color: timeframeConfigValues.color, thickness: timeframeConfigValues.thickness});
+
+          // Reset color picker to defaults before exit
+          setValues(og.color, og.thickness)
+
+          // Delete color picker and re-render
           menuContainerElement.innerHTML = '';
           renderConfigMenu();
         })
