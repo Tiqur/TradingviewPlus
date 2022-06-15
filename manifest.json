@@ -1,0 +1,23 @@
+{
+
+  "manifest_version": 2,
+  "name": "AutoTimeframeColors",
+  "version": "1.0",
+
+  "description": "Changes line color according to current timeframe",
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "autotimeframecolors@example.com"
+    }
+  },
+
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.tradingview.com/*"],
+      "js": ["main.js"]
+    }
+  ]
+
+}
