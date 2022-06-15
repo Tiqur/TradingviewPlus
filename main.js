@@ -28,7 +28,11 @@ function waitForElm(selector) {
 
 
 // Addon
-const init = () => {
+const init = async () => {
+  // Set config if saved locally
+  const localConfig = await browser.storage.local.get('localConfig');
+  if (Object.keys(localConfig).length > 0) timeframeConfig = new Map(Object.entries(JSON.parse(localConfig['localConfig'])));
+
   // Wrapper for toggleable tools ( magnet, etc )
   const toolWrapper = document.getElementsByClassName("group-3e32hIe9")[2].children[0];
 
@@ -197,10 +201,14 @@ const init = () => {
         setValues(c.color, c.thickness)
 
         // Submit
-        doneButton.addEventListener('click', () => {
+        doneButton.addEventListener('click', async () => {
           const timeframeConfigValues = getCurrentValues();
           
+          // Update config
           timeframeConfig.set(timeframe, {color: timeframeConfigValues.color, thickness: timeframeConfigValues.thickness});
+
+          // Set local storage
+          await browser.storage.local.set({"localConfig": JSON.stringify(Object.fromEntries(timeframeConfig))})
 
           // Reset color picker to defaults before exit
           setValues(og.color, og.thickness)
@@ -208,6 +216,7 @@ const init = () => {
           // Delete color picker and re-render
           menuContainerElement.innerHTML = '';
           renderConfigMenu();
+
         })
       })
 
