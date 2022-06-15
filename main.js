@@ -1,16 +1,5 @@
 // Timeframe and color positions
-let timeframeColors = {
-  "1m":  "9",
-  "3m":  "8",
-  "5m":  "7",
-  "15m": "6",
-  "1h":  "5",
-  "4h":  "4",
-  "D":   "3",
-  "W":   "2",
-  "M":   "1",
-  "Y":   "0"
-}
+let timeframeConfig = new Map();
 
 const enabledOnStartup = true;
 const injectToggleButton = true;
@@ -111,6 +100,42 @@ const init = () => {
         return item;
       }
 
+    const renderConfigMenu = () => {
+      const timeframes = [].slice.call(document.getElementById("header-toolbar-intervals").children).filter(e => e.getAttribute('data-value')).map(e => e.innerText)
+
+      // Reset timeframes incase they've been changed
+      menuBox.innerHTML = ''
+
+      // Add each timeframe
+      timeframes.forEach(e => {
+
+        // Set default values if doesn't exist
+        if (!timeframeConfig.has(e)) {
+          timeframeConfig.set(e, {color: 'rgb(255, 255, 255, 1)', opacity: '100', thickness: '1'});
+        }
+
+        // Create item
+        const newItem = createItem(e, timeframeConfig.get(e).color);
+        menuBox.appendChild(newItem);
+
+        // Toggle item
+        newItem.addEventListener('click', () => {
+
+          // Untoggle all items
+          Object.values(menuBox.children).forEach(item => {
+            item.className = 'item-4TFSfyGO withIcon-4TFSfyGO';
+          })
+
+          // Toggle clicked item
+          newItem.className = `item-4TFSfyGO withIcon-4TFSfyGO ${newItem.className.includes('isActive') ? '' : 'isActive-4TFSfyGO'}`
+
+          // Open color picker
+          openColorPickerMenu(e);
+        })
+
+      });
+    }
+
     const openColorPickerMenu = (timeframe) => {
       // Click options in top right
       document.getElementsByClassName('iconButton-Kbdz4qEM button-SS83RYhy button-9pA37sIi apply-common-tooltip isInteractive-9pA37sIi newStyles-9pA37sIi')[0].click()
@@ -147,9 +172,9 @@ const init = () => {
           const opacity = document.getElementsByClassName('opacityInput-YL5Gjk00')[0].value;
           const thickness = [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children).filter(e => e.className.includes('checked'))[0].children[0].value;
           
-          timeframeColors[timeframe] = {color: colorStyle, opacity: opacity, thickness: thickness};
-          console.log(timeframeColors)
+          timeframeConfig.set(timeframe, {color: colorStyle, opacity: opacity, thickness: thickness});
           menuContainerElement.innerHTML = '';
+          renderConfigMenu();
         })
 
 
@@ -178,36 +203,8 @@ const init = () => {
     })
 
     autoTimeframeElementArrow.addEventListener('click', () => {
-
       if (button.className.includes('isOpened')) {
-        const timeframes = [].slice.call(document.getElementById("header-toolbar-intervals").children).filter(e => e.getAttribute('data-value')).map(e => e.innerText)
-
-        // Reset timeframes incase they've been changed
-        menuBox.innerHTML = ''
-
-        // Add each timeframe
-        timeframes.forEach(e => {
-          // Create item
-          const newItem = createItem(e, 'white');
-          menuBox.appendChild(newItem);
-
-          // Toggle item
-          newItem.addEventListener('click', () => {
-
-            // Untoggle all items
-            Object.values(menuBox.children).forEach(item => {
-              item.className = 'item-4TFSfyGO withIcon-4TFSfyGO';
-            })
-
-            // Toggle clicked item
-            newItem.className = `item-4TFSfyGO withIcon-4TFSfyGO ${newItem.className.includes('isActive') ? '' : 'isActive-4TFSfyGO'}`
-
-            // Open color picker
-            openColorPickerMenu(e);
-          })
-
-        });
-
+        renderConfigMenu();
         document.getElementById('overlap-manager-root').appendChild(wrapper);
       } else {
         document.getElementById('overlap-manager-root').innerHTML = '';
@@ -237,7 +234,7 @@ const init = () => {
 
       //waitForElm("customButton-WiTVOllB apply-common-tooltip").then(document.getElementsByClassName("customButton-WiTVOllB apply-common-tooltip")[0].focus());
       // Click color according to timeframe 
-      //document.getElementsByClassName("swatches-qgksmXjR")[2].children[timeframeColors[currentTimeframe]].click()
+      //document.getElementsByClassName("swatches-qgksmXjR")[2].children[timeframeConfig[currentTimeframe]].click()
     }
 
   });
