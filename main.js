@@ -187,7 +187,7 @@ const init = () => {
 
         const setValues = (color, thickness) => {
           allColorElements.filter(e => e.style.color == color)[0].click();
-          //[].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[thickness-1].children[0].click()
+          [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[thickness-1].children[0].click()
         }
 
         // Get crosshair config values to restore later
@@ -210,19 +210,6 @@ const init = () => {
           menuContainerElement.innerHTML = '';
           renderConfigMenu();
         })
-
-
-        //const colorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))]
-
-        //colorElements.forEach(e => {
-        //  e.addEventListener('click', () => {
-        //    console.log(e.style)
-        //  })
-        //})
-        
-       /// const customColorElements = 
-       /// const opacityElement = 
-       /// const thicknessElements = 
       })
 
     }
