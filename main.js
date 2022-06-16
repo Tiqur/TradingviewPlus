@@ -161,36 +161,40 @@ const init = async () => {
         document.getElementsByClassName('dialog-hxnnZcZ6 dialog-HExheUfY withSidebar-26RvWdey dialog-Nh5Cqdeo rounded-Nh5Cqdeo shadowed-Nh5Cqdeo')[0].innerHTML = "";
         document.getElementsByClassName('dialog-hxnnZcZ6 dialog-HExheUfY withSidebar-26RvWdey dialog-Nh5Cqdeo rounded-Nh5Cqdeo shadowed-Nh5Cqdeo')[0].style = 'hidden: true';
 
-        // Set color picker menu position
-        //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.left = `${window.innerWidth / 2}px`;
-        //document.getElementsByClassName('menuWrap-8MKeZifP')[0].style.top = `${window.innerHeight / 2}px`;
-
+        // Reposition
+        document.getElementsByClassName('menuWrap-8MKeZifP')[1].style = 'position: fixed; left: 130px; top: 140px;'
 
         const menuContainerElement = document.getElementsByClassName('menuBox-8MKeZifP')[1];
-        const allColorElements = [...[].slice.call(menuContainerElement.children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
+        const allColorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
 
         // Delete opacity
         menuContainerElement.children[0].children[4].innerHTML = "";
         menuContainerElement.children[0].children[5].innerHTML = "";
 
         let doneButton = document.createElement('div');
-        doneButton.style.background = 'blue';
-        doneButton.style.marginTop = '18px';
-        doneButton.style.marginBottom = '15px';
+        doneButton.style.background = '#2962ff';
+        doneButton.style.borderRadius = '2px';
+        doneButton.style.margin = '0px auto 12px auto';
         doneButton.style.width = '40%';
         doneButton.style.height = '30px';
+        doneButton.style.textAlign = 'center';
+        doneButton.style.verticalAlign = 'middle';
+        doneButton.style.lineHeight = '30px';
+        doneButton.innerText = 'Done';
+        doneButton.addEventListener('mouseover', () => doneButton.style.cursor = 'pointer')
+        doneButton.addEventListener('mouseout', () => doneButton.style.cursor = 'default')
 
         menuContainerElement.appendChild(doneButton);
         
         const getCurrentValues = () => {
           const color = allColorElements.filter(e => e.className.includes('selected'))[0].style.color;
-          const thickness = [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children).filter(e => e.className.includes('checked'))[0].children[0].value;
+          const thickness = 1;//[].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children).filter(e => e.className.includes('checked'))[0].children[0].value;
           return {color, thickness};
         }
 
         const setValues = (color, thickness) => {
           allColorElements.filter(e => e.style.color == color)[0].click();
-          [].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[thickness-1].children[0].click()
+          //[].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[thickness-1].children[0].click()
         }
 
         // Get crosshair config values to restore later
