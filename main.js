@@ -167,14 +167,25 @@ const init = async () => {
         const menuContainerElement = document.getElementsByClassName('menuBox-8MKeZifP')[1];
         const allColorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[1].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
 
+        // On add custom color
+        document.getElementsByClassName('customButton-WiTVOllB apply-common-tooltip')[0].addEventListener('click', () => {
+          waitForElm('.content-YKkCvwjV').then(() => {
+            document.getElementsByClassName('button-YKkCvwjV size-xsmall-YKkCvwjV color-brand-YKkCvwjV variant-primary-YKkCvwjV')[0].addEventListener('click', () => {
+              waitForElm('.opacitySliderGradient-YL5Gjk00').then(() => {
+                openColorPickerMenu(timeframe);
+              })
+            })
+          })
+        })
+
         // Delete opacity
-        menuContainerElement.children[0].children[4].innerHTML = "";
-        menuContainerElement.children[0].children[5].innerHTML = "";
+        menuContainerElement.children[0].children[4].remove();
+        menuContainerElement.children[0].children[4].remove();
 
         let doneButton = document.createElement('div');
         doneButton.style.background = '#2962ff';
         doneButton.style.borderRadius = '2px';
-        doneButton.style.margin = '0px auto 12px auto';
+        doneButton.style.margin = '14px auto 8px auto';
         doneButton.style.width = '40%';
         doneButton.style.height = '30px';
         doneButton.style.textAlign = 'center';
@@ -184,7 +195,8 @@ const init = async () => {
         doneButton.addEventListener('mouseover', () => doneButton.style.cursor = 'pointer')
         doneButton.addEventListener('mouseout', () => doneButton.style.cursor = 'default')
 
-        menuContainerElement.appendChild(doneButton);
+        // Insert button element
+        document.getElementsByClassName('container-WiTVOllB')[0].appendChild(doneButton);
         
         const getCurrentValues = () => {
           const color = allColorElements.filter(e => e.className.includes('selected'))[0].style.color;
@@ -258,15 +270,16 @@ const init = async () => {
     
     // If drawing tools is open ( opens after line click ) and autoTimeframe is enabled
     if (drawingToolsActive && document.getElementsByClassName('autoTimeframeButton')[0].className.includes('isActive')) {
-      // Click line tool color picker
-      document.getElementsByClassName("floating-toolbar-react-widgets__button button-khcLBZEz apply-common-tooltip newStyles-khcLBZEz")[1].click()
+      waitForElm('.floating-toolbar-react-widgets__button').then(() => {
+        // Click line tool color picker
+        document.getElementsByClassName("floating-toolbar-react-widgets__button button-khcLBZEz apply-common-tooltip newStyles-khcLBZEz")[1].click()
 
-      // Set values
-      const allColorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[0].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[0].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[0].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
-      allColorElements.filter(e => e.style.color == currentConfig.color)[0].click();
-      //[].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[currentConfig.thickness-1].children[0].click()
+        // Set values
+        const allColorElements = [...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[0].children[0].children[0].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[0].children[0].children[1].children), ...[].slice.call(document.getElementsByClassName('menuBox-8MKeZifP')[0].children[0].children[3].children).filter(e => !e.getAttribute('title'))];
+        allColorElements.filter(e => e.style.color == currentConfig.color)[0].click();
+        //[].slice.call(document.getElementsByClassName('wrap-sYKPueSl')[0].children)[currentConfig.thickness-1].children[0].click()
+      })
     }
-
   });
 }
 

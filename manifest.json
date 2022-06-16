@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "AutoTimeframeColors",
-  "version": "1.0",
+  "version": "1.1",
 
   "description": "Changes line color according to current timeframe",
 
