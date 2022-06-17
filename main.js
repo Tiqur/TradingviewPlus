@@ -1,5 +1,10 @@
 // I have never coded an addon before ( and am not trying to make it look nice ), so please forgive the bad code :)
 
+// For chrome extension
+if (typeof browser === "undefined") {
+    var browser = chrome;
+}
+
 // Timeframe and color positions
 let timeframeConfig = new Map();
 
@@ -256,8 +261,35 @@ const init = async () => {
   }
 
 
+
+  let leftShiftDown = false;
+
+  const handleLeftShiftKeyEvent = (e, a) => {
+    if (e.code === "ShiftLeft") leftShiftDown = a;
+    console.log("shift")
+  }
+
+
+  const timeframeButtons = [].slice.call(document.getElementsByClassName('wrap-H6XRnLaC')[0].children);
+
+  // Allow scrolling of timeframes with leftshift and scroll wheel
+  document.addEventListener('keydown', e => handleLeftShiftKeyEvent(e, true))
+  document.addEventListener('keyup', e => handleLeftShiftKeyEvent(e, false))
+  document.addEventListener('wheel', e => {
+    if (!leftShiftDown) return;
+    let currentTimeframe = [].slice.call(timeframeButtons).filter(e => e.className.includes("isActive"))[0].innerText;
+    const direction = e.deltaY < 0 ? 'up' : 'down';
+    const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
+    console.log(currentTimeframeIndex)
+    const newTimeframeIndex = currentTimeframeIndex + (e.deltaY < 0 ? -1 : 1);
+    if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length-1) {
+      timeframeButtons[newTimeframeIndex].click();
+    } 
+  })
+
+
   document.getElementsByClassName("chart-gui-wrapper")[0].children[1].addEventListener('mousedown', () => {
-    let currentTimeframe = [].slice.call(document.getElementById("header-toolbar-intervals").children).filter(e => e.className.includes("isActive"))[0].innerText;
+    let currentTimeframe = timeframeButtons.filter(e => e.className.includes("isActive"))[0].innerText;
     const currentConfig = timeframeConfig.get(currentTimeframe);
 
     // Close menu
