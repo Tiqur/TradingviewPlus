@@ -6,6 +6,8 @@
 
   "description": "Changes line color according to current timeframe",
 
+  "permissions": ["storage"],
+
   "browser_specific_settings": {
     "gecko": {
       "id": "autotimeframecolors@example.com"
