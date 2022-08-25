@@ -2,11 +2,9 @@
 
   "manifest_version": 2,
   "name": "AutoTimeframeColors",
-  "version": "1.1",
+  "version": "1.4",
 
   "description": "Changes line color according to current timeframe",
-
-  "permissions": ["storage"],
 
   "browser_specific_settings": {
     "gecko": {
@@ -20,5 +18,4 @@
       "js": ["main.js"]
     }
   ]
-
 }
