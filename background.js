@@ -4,7 +4,10 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
 // Shift key down ( for timeframe scrolling )
 let leftShiftDown = false;
 
-let rainbow = false;
+// Store mouse pos
+let mousePos = [];
+
+document.addEventListener('mousemove', e => {mousePos = [e.clientX, e.clientY]});
 
 
 function snackBar(text) {
@@ -55,16 +58,27 @@ const handleKeyDown = (e, a) => {
       document.querySelector('[data-name="auto"]').click();
     break;
     case "c":
-      // Wait for toolbar
-      waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
-        // Click Line tool colors on toolbar
-        document.getElementsByClassName('floating-toolbar-react-widgets__button')[4].click()
-          waitForElm('[name="y-input"]').then((e) => {
-            const value = document.querySelector('[name="y-input"]').value;
-            document.querySelector('[data-name="submit-button"]').click();
-            navigator.clipboard.writeText(value);
-            snackBar(`Copied ${value} to clipboard`);
-        })
+      // Emit context menu event
+      document.getElementsByClassName('chart-gui-wrapper')[0].children[1].dispatchEvent(new MouseEvent('contextmenu', {"clientX": mousePos[0], "clientY": mousePos[1]}))
+
+      waitForElm('[data-label="true"]').then(e => {
+        const elements = document.querySelectorAll('[data-label="true"]');
+        const searchText = "Copy price";
+
+        // Loop through context menu to find "Copy price"
+        for (var i = 0; i < elements.length; i++) {
+          if (elements[i].innerText.includes(searchText)) {
+            // Get price without read clipboard perms
+            const text = elements[i].innerText;
+            const price = text.substring(text.indexOf("(")+1, text.lastIndexOf(")"));
+
+            // Click copy price
+            elements[i].click();
+
+            snackBar(`Copied ${price} to clipboard`);
+            break;
+          }
+        }
       })
     break;
   }
