@@ -4,6 +4,23 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
 // Shift key down ( for timeframe scrolling )
 let leftShiftDown = false;
 
+
+function snackBar(text) {
+  const snackContainer = document.createElement('div');
+  snackContainer.setAttribute('id', 'snackbar')
+  snackContainer.setAttribute('class', 'show')
+  setTimeout(() => snackContainer.setAttribute('class', ''), 3000)
+
+  const snack = document.createElement('div');
+  snack.setAttribute('style', 'background: #2962ff; padding: 1em 2em 1em 2em; margin-top: 2em; border-radius: 4px; display: flex; justify-content: center; align-items: center;');
+  snack.innerHTML = `<p>Copied ${text} to clipboard</p>`;
+  snackContainer.appendChild(snack);
+
+  document.getElementById('overlap-manager-root').appendChild(snackContainer);
+}
+
+
+
 // Handle shift down event
 const handleKeyDown = (e, a) => {
   // Toggle shift modifier key
@@ -35,7 +52,7 @@ const handleKeyDown = (e, a) => {
             const value = document.querySelector('[name="y-input"]').value;
             document.querySelector('[data-name="submit-button"]').click();
             navigator.clipboard.writeText(value);
-            console.log(value);
+            snackBar(value);
         })
       })
     break;

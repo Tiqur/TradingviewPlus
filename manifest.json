@@ -12,7 +12,8 @@
   "content_scripts": [
     {
       "matches": ["*://*.tradingview.com/*"],
-      "js": ["main.js", "background.js"]
+      "js": ["main.js", "background.js"],
+      "css": ["styles.css"]
     }
   ]
 }
