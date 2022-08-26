@@ -7,7 +7,7 @@
 
   "description": "Changes line color according to current timeframe",
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "clipboardWrite"],
 
   "content_scripts": [
     {

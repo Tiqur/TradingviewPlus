@@ -26,6 +26,19 @@ const handleKeyDown = (e, a) => {
     case "a":
       document.querySelector('[data-name="auto"]').click();
     break;
+    case "c":
+      // Wait for toolbar
+      waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
+        // Click Line tool colors on toolbar
+        document.getElementsByClassName('floating-toolbar-react-widgets__button')[4].click()
+          waitForElm('[name="y-input"]').then((e) => {
+            const value = document.querySelector('[name="y-input"]').value;
+            document.querySelector('[data-name="submit-button"]').click();
+            navigator.clipboard.writeText(value);
+            console.log(value);
+        })
+      })
+    break;
   }
 }
 
