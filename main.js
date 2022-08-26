@@ -195,7 +195,7 @@ waitForElm('.chart-gui-wrapper').then(async (e) => {
     // Wait for toolbar
     waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
       // Click Line tool colors on toolbar
-      document.getElementsByClassName('floating-toolbar-react-widgets__button')[1].click()
+      document.querySelector('[data-name="line-tool-color"]').click()
       const colorBox = document.querySelector('[data-name="menu-inner"]').children[0];
       const allColors = [...[].slice.call(colorBox.children[0].children), ...[].slice.call(colorBox.children[1].children)];
       console.log(currentTimeframe)
