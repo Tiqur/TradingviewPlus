@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "AutoTimeframeColors",
-  "version": "1.4",
+  "version": "1.5",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe",
@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.tradingview.com/*"],
-      "js": ["main.js"]
+      "js": ["main.js", "background.js"]
     }
   ]
 }

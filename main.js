@@ -15,24 +15,6 @@ let selectedTimeframe = '1m';
 // Arrow button active
 let arrowActive = true;
 
-// Shift key down ( for timeframe scrolling )
-let leftShiftDown = false;
-
-// Handle shift down event
-const handleLeftShiftKeyEvent = (e, a) => {
-  if (e.code === "ShiftLeft") leftShiftDown = a;
-  
-  // Scroll line styles
-  if (e.code === "Tab" && a) {
-    // Click line stile button
-    document.querySelector('[data-name="style"]').click()
-
-    const styleButtons = [].slice.call(document.querySelector('[data-name="menu-inner"]').children[0].children[0].children).filter(e => e.children.length > 1);
-    const activeIndex = styleButtons.findIndex(e => e.className.includes(' active-'))
-    styleButtons[activeIndex != 2 ? activeIndex+1 : 0].click();
-  }
-}
-
 
 // Waits for element to load 
 function waitForElm(selector) {
@@ -188,26 +170,6 @@ function renderColorPicker() {
     colorPicker.appendChild(colorContainer);
   }
 }
-
-
-
-
-
-// Allow scrolling of timeframes with leftshift and scroll wheel
-document.addEventListener('keydown', e => handleLeftShiftKeyEvent(e, true))
-document.addEventListener('keyup', e => handleLeftShiftKeyEvent(e, false))
-document.addEventListener('wheel', e => {
-  if (!leftShiftDown) return;
-  const timeframeButtons = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children)
-  const currentTimeframe = timeframeButtons.filter(e => e.className.includes('isActive'))[0].innerText;
-  const direction = e.deltaY < 0 ? 'up' : 'down';
-  const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
-  const newTimeframeIndex = currentTimeframeIndex + (e.deltaY < 0 ? -1 : 1);
-  if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length-1) {
-    timeframeButtons[newTimeframeIndex].click();
-  } 
-})
-
 
 
 
