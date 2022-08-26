@@ -6,26 +6,25 @@ let leftShiftDown = false;
 
 // Handle shift down event
 const handleKeyDown = (e, a) => {
+  // Toggle shift modifier key
+  if (e.key === "Shift") leftShiftDown = a;
+
+  // Handle rest of keys
+  if (!a) return;
   switch (e.key) {
-    case "Shift": // Toggle shift var
-      leftShiftDown = a;
-    break;
     case "Tab":   // Scroll line styles
       // Click line stile button
-      if (a) {
-        document.querySelector('[data-name="style"]').click()
-        // Line style scrolling
-        const styleButtons = [].slice.call(document.querySelector('[data-name="menu-inner"]').children[0].children[0].children).filter(e => e.children.length > 1);
-        const activeIndex = styleButtons.findIndex(e => e.className.includes(' active-'))
-        styleButtons[activeIndex != 2 ? activeIndex+1 : 0].click();
-      }
+      document.querySelector('[data-name="style"]').click()
+      // Line style scrolling
+      const styleButtons = [].slice.call(document.querySelector('[data-name="menu-inner"]').children[0].children[0].children).filter(e => e.children.length > 1);
+      const activeIndex = styleButtons.findIndex(e => e.className.includes(' active-'))
+      styleButtons[activeIndex != 2 ? activeIndex+1 : 0].click();
     break;
     case "r": // Replay mode toggle
-      if (a) {
-        document.getElementById('header-toolbar-replay').click();
-      }
+      document.getElementById('header-toolbar-replay').click();
     break;
     case "a":
+      document.querySelector('[data-name="auto"]').click();
     break;
   }
 }
