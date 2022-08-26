@@ -15,6 +15,15 @@ let selectedTimeframe = '';
 // Arrow button active
 let arrowActive = true;
 
+// Shift key down ( for timeframe scrolling )
+let leftShiftDown = false;
+
+// Handle shift down event
+const handleLeftShiftKeyEvent = (e, a) => {
+  if (e.code === "ShiftLeft") leftShiftDown = a;
+}
+
+
 // Waits for element to load 
 function waitForElm(selector) {
     return new Promise(resolve => {
@@ -171,6 +180,23 @@ function renderColorPicker() {
 }
 
 
+
+
+
+// Allow scrolling of timeframes with leftshift and scroll wheel
+document.addEventListener('keydown', e => handleLeftShiftKeyEvent(e, true))
+document.addEventListener('keyup', e => handleLeftShiftKeyEvent(e, false))
+document.addEventListener('wheel', e => {
+  if (!leftShiftDown) return;
+  const timeframeButtons = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children)
+  const currentTimeframe = timeframeButtons.filter(e => e.className.includes('isActive'))[0].innerText;
+  const direction = e.deltaY < 0 ? 'up' : 'down';
+  const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
+  const newTimeframeIndex = currentTimeframeIndex + (e.deltaY < 0 ? -1 : 1);
+  if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length-1) {
+    timeframeButtons[newTimeframeIndex].click();
+  } 
+})
 
 
 

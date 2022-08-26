@@ -3,16 +3,11 @@
   "manifest_version": 2,
   "name": "AutoTimeframeColors",
   "version": "1.4",
+  "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe",
 
   "permissions": ["storage"],
-
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "autotimeframecolors@example.com"
-    }
-  },
 
   "content_scripts": [
     {
