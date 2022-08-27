@@ -53,9 +53,6 @@ function injectAddon() {
     // Render each timeframe
     [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
       const timeframe = e.innerText;
-      if (!timeframeConfig.has(timeframe)) {
-        timeframeConfig.set(timeframe, 0);
-      }
 
       // Outer config element div
       const colorConfigElement = document.createElement('div');
@@ -119,6 +116,13 @@ function injectAddon() {
   
   // Inject custom button to toolbar
   waitForElm('#drawing-toolbar').then(() => {
+    // Init config if doesn't exit
+    [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
+      const timeframe = e.innerText;
+      if (!timeframeConfig.has(timeframe)) timeframeConfig.set(timeframe, 0);
+    })
+
+
     document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].insertAdjacentElement('beforebegin', customButton)
     
     // Initialize 'overlap-manager-root' ( side arrow menu )

@@ -1,11 +1,11 @@
 {
 
   "manifest_version": 2,
-  "name": "AutoTimeframeColors",
-  "version": "2.0",
+  "name": "TradingviewPlus",
+  "version": "2.1",
   "author": "Tiqur",
 
-  "description": "Changes line color according to current timeframe",
+  "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
 
   "permissions": ["storage", "clipboardWrite"],
 
