@@ -48,4 +48,5 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enablePriceScroll("Shift");
   enableTimeframeScroll("Tab");
   enableAutoTimeframeColors();
+  enableFavoritesToolbarHotkeys();
 })();
