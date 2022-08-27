@@ -42,6 +42,7 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enableLineWidthHotkey('w');
   enableLineStyleHotkey('q');
   enableAutoScaleHotkey('a');
+  enableInverScaleHotkey('e');
   enableReplayHotkey('r');
   enableCopyPriceHotkey('c');
   enablePriceScroll("Shift");

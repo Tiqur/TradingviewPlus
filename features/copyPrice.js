@@ -13,11 +13,10 @@ function enableCopyPriceHotkey(key) {
 
       waitForElm('[data-label="true"]').then(e => {
         const elements = document.querySelectorAll('[data-label="true"]');
-        const searchText = "Copy price";
 
         // Loop through context menu to find "Copy price"
         for (var i = 0; i < elements.length; i++) {
-          if (elements[i].innerText.includes(searchText)) {
+          if (elements[i].innerText.includes("Copy price")) {
             // Get price without read clipboard perms
             const text = elements[i].innerText;
             const price = text.substring(text.indexOf("(")+1, text.lastIndexOf(")"));
