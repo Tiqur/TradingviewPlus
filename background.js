@@ -1,13 +1,28 @@
-// Disable default TV hotkeys
-document.addEventListener("keypress", event => event.stopPropagation(), true);
 
-// Shift key down ( for timeframe scrolling )
+// Shift key down ( for price scale scrolling )
 let leftShiftDown = false;
+
+// Tab key down ( for timeframe scrolling )
+let tabDown = false;
 
 // Store mouse pos
 let mousePos = [];
 
+// Disable default TV hotkeys
+document.addEventListener("keypress", event => event.stopPropagation(), true);
+
+// Keep track of mouse pos
 document.addEventListener('mousemove', e => {mousePos = [e.clientX, e.clientY]});
+
+// Disable time scrolling if left shift modifier key is pressed
+waitForElm('.chart-widget').then(() => {
+  document.getElementsByClassName('chart-widget')[0].addEventListener('wheel', e => {
+    if (leftShiftDown && e.clientX !== 0){
+       e.stopPropagation();
+       document.getElementsByClassName('price-axis')[0].dispatchEvent(new WheelEvent('wheel', {"deltaY": e.deltaY*10})) ;
+    }
+  }, true);
+})
 
 
 function snackBar(text) {
@@ -28,8 +43,9 @@ function snackBar(text) {
 
 // Handle shift down event
 const handleKeyDown = (e, a) => {
-  // Toggle shift modifier key
+  // Toggle modifier keys
   if (e.key === "Shift") leftShiftDown = a;
+  if (e.key === "Tab") tabDown = a;
 
   // Handle rest of keys
   if (!a) return;
@@ -89,14 +105,17 @@ const handleKeyDown = (e, a) => {
 document.addEventListener('keydown', e => handleKeyDown(e, true))
 document.addEventListener('keyup', e => handleKeyDown(e, false))
 document.addEventListener('wheel', e => {
-  if (!leftShiftDown) return;
-  const timeframeButtons = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children)
-  const currentTimeframe = timeframeButtons.filter(e => e.className.includes('isActive'))[0].innerText;
-  const direction = e.deltaY < 0 ? 'up' : 'down';
-  const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
-  const newTimeframeIndex = currentTimeframeIndex + (e.deltaY < 0 ? -1 : 1);
-  if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length-1) {
-    timeframeButtons[newTimeframeIndex].click();
+
+  // Timeframe scrolling
+  if (tabDown) {
+    const timeframeButtons = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children)
+    const currentTimeframe = timeframeButtons.filter(e => e.className.includes('isActive'))[0].innerText;
+    const direction = e.deltaY < 0 ? 'up' : 'down';
+    const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
+    const newTimeframeIndex = currentTimeframeIndex + (e.deltaY < 0 ? -1 : 1);
+    if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length-1) {
+      timeframeButtons[newTimeframeIndex].click();
+    } 
   } 
 })
 
