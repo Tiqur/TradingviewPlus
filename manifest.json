@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "AutoTimeframeColors",
-  "version": "1.5",
+  "version": "2.0",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe",
