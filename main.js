@@ -48,6 +48,7 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enableDeleteDrawingHotkey('d');
   enablePriceScroll("Shift");
   enableTimeframeScroll("Tab");
+  enableScrollToMostRecentBar("f");
   enableAutoTimeframeColors();
   enableFavoritesToolbarHotkeys();
 })();
