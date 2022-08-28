@@ -25,6 +25,7 @@
         "features/invertScale.js",
         "features/autoTimeframeColors.js",
         "features/snackbar.js",
+        "features/deleteDrawing.js",
         "features/favoritesToolbar.js"]
     }
   ]

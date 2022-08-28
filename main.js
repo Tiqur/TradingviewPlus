@@ -45,6 +45,7 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enableInverScaleHotkey('e');
   enableReplayHotkey('r');
   enableCopyPriceHotkey('c');
+  enableDeleteDrawingHotkey('d');
   enablePriceScroll("Shift");
   enableTimeframeScroll("Tab");
   enableAutoTimeframeColors();
