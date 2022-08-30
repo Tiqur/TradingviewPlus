@@ -24,6 +24,7 @@
         "features/priceScroll.js",
         "features/invertScale.js",
         "features/autoTimeframeColors.js",
+        "features/toggleAutotimeframeColors.js",
         "features/snackbar.js",
         "features/deleteDrawing.js",
         "features/favoritesToolbar.js",

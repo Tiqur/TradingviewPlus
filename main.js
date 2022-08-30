@@ -70,6 +70,7 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enableAutoScaleHotkey('a');
   enableInverScaleHotkey('e');
   enableReplayHotkey('r');
+  enableToggleAutotimeframeColorsHotkey('s');
   enableCopyPriceHotkey('c');
   enableDeleteDrawingHotkey('d');
   enablePriceScroll("Shift");
