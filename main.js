@@ -38,6 +38,32 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   // Inject button
   injectAddon();
 
+
+  document.addEventListener("keydown", e => {
+    const activeElem = document.activeElement.tagName;
+
+    // Return if focused area is text input
+    if (activeElem === 'INPUT' || activeElem === 'TEXTAREA') return;
+
+    // Return if alt or ctrl are held
+    if (e.ctrlKey || e.altKey) return;
+
+  });
+
+    
+  function stopPropagation(e) {
+    const activeElem = document.activeElement.tagName;
+    // Return if focused area is text input
+    if (activeElem === 'INPUT' || activeElem === 'TEXTAREA') return true;
+
+    // Return if alt or ctrl are held ( and not bubbles can also send default TV keybinds )
+    if ((e.ctrlKey || e.altKey) && !e.bubbles) return true;
+    return false;
+  }
+
+  // Don't trigger hotkeys if ctrl, alt, or focused on text input
+  document.addEventListener("keydown", e => !stopPropagation(e) || e.stopPropagation(), true);
+
   // Enable features
   enableLineWidthHotkey('w');
   enableLineStyleHotkey('q');
@@ -52,4 +78,5 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enableTimeMovementHotkeys("z", "x");
   enableAutoTimeframeColors();
   enableFavoritesToolbarHotkeys();
+
 })();
