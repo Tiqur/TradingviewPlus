@@ -39,25 +39,22 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   injectAddon();
 
 
-  document.addEventListener("keydown", e => {
-    const activeElem = document.activeElement.tagName;
-
-    // Return if focused area is text input
-    if (activeElem === 'INPUT' || activeElem === 'TEXTAREA') return;
-
-    // Return if alt or ctrl are held
-    if (e.ctrlKey || e.altKey) return;
-
-  });
-
-    
   function stopPropagation(e) {
     const activeElem = document.activeElement.tagName;
+    console.log(e)
+    // Return false if custom keybind
+    if (e.code === 'custom') return false;
+
+    // Keep escape as global key
+    if (e.key === 'Escape') return false;
+
     // Return if focused area is text input
     if (activeElem === 'INPUT' || activeElem === 'TEXTAREA') return true;
 
     // Return if alt or ctrl are held ( and not bubbles can also send default TV keybinds )
-    if ((e.ctrlKey || e.altKey) && !e.bubbles) return true;
+    if ((e.ctrlKey || e.altKey)) return true;
+    console.log(e.bubbles)
+
     return false;
   }
 
