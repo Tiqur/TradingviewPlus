@@ -7,7 +7,7 @@ function enableAutoTimeframeColors() {
       // Close menus
       arrowActive = true;
       colorPicker.remove();
-      configMenu.remove();
+      configContainer.remove();
 
       if (!active) return;
 

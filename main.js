@@ -41,7 +41,6 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
 
   function stopPropagation(e) {
     const activeElem = document.activeElement.tagName;
-    console.log(e)
     // Return false if custom keybind
     if (e.code === 'custom') return false;
 
@@ -52,8 +51,7 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
     if (activeElem === 'INPUT' || activeElem === 'TEXTAREA') return true;
 
     // Return if alt or ctrl are held ( and not bubbles can also send default TV keybinds )
-    if ((e.ctrlKey || e.altKey)) return true;
-    console.log(e.bubbles)
+    //if ((e.ctrlKey || e.altKey)) return true;
 
     return false;
   }

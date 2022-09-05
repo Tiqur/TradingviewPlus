@@ -1,6 +1,6 @@
 // Initalize divs
 const colorPicker = document.createElement('div');
-const configMenu = document.createElement('div');
+const configContainer = document.createElement('div');
 
 // Addon is active
 let active = true;
@@ -47,12 +47,17 @@ function injectAddon() {
 
   // Create Config Menu
   function renderConfigMenu() {
-    configMenu.innerHTML = '';
-    configMenu.setAttribute('style', `position: fixed; border-radius: 3px; background: #1e222d; width: auto; height: auto; z-index: 500; top: ${document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].getBoundingClientRect().top}px; left: 53px;`);
-    document.getElementById('overlap-manager-root').appendChild(configMenu);
+    const timeframes = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1);
+    configContainer.innerHTML = '';
+
+    const configMenu = document.createElement('div');
+    configMenu.setAttribute('style', `border-radius: 3px; background: #1e222d; width: 100%; height: 100%; overflow-y: auto;`);
+    configContainer.appendChild(configMenu)
+
+    document.getElementById('overlap-manager-root').appendChild(configContainer);
 
     // Render each timeframe
-    [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
+    timeframes.forEach(e => {
       const timeframe = e.innerText;
 
       // Outer config element div
@@ -76,6 +81,8 @@ function injectAddon() {
       // Inject into configMenu
       configMenu.appendChild(colorConfigElement);
     })
+
+    configContainer.setAttribute('style', `position: fixed; width: auto; max-height: ${configMenu.children[0].offsetHeight * timeframes.length}px; height: ${window.innerHeight - document.getElementById('tvp-custom-button').getBoundingClientRect().top}px; z-index: 500; top: ${document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].getBoundingClientRect().top}px; left: 53px;`);
   }
 
 
@@ -138,7 +145,7 @@ function injectAddon() {
     buttonArrow.innerHTML = '<svg style="width: 7px; height: 7px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 16" width="10" height="16"><path d="M.6 1.4l1.4-1.4 8 8-8 8-1.4-1.4 6.389-6.532-6.389-6.668z"></path></svg>'
     buttonArrow.addEventListener('mouseenter', () => buttonArrow.setAttribute('style', style + 'background: #2a2e39; fill: #787b86; cursor: pointer;'));
     buttonArrow.addEventListener('mouseleave', () => buttonArrow.setAttribute('style', style + 'fill: none;'));
-    buttonArrow.addEventListener('click', () => {arrowActive ? renderConfigMenu() : configMenu.remove(); colorPicker.remove(); arrowActive = !arrowActive;});
+    buttonArrow.addEventListener('click', () => {arrowActive ? renderConfigMenu() : configContainer.remove(); colorPicker.remove(); arrowActive = !arrowActive;});
     customButton.appendChild(buttonArrow);
   })
 }
