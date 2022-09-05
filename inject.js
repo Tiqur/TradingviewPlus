@@ -89,7 +89,7 @@ function injectAddon() {
   // Render color picker
   function renderColorPicker() {
     colorPicker.innerHTML = '';
-    colorPicker.setAttribute('style', `position: fixed; border-radius: 3px; background: #1e222d; padding: 8px; width: auto; height: auto; z-index: 501; display: flex; flex-direction: column; top: ${document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].getBoundingClientRect().top}px; left: ${53 + 2 +  configMenu.getBoundingClientRect().width}px;`);
+    colorPicker.setAttribute('style', `position: fixed; border-radius: 3px; background: #1e222d; padding: 8px; width: auto; height: auto; z-index: 501; display: flex; flex-direction: column; top: ${document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].getBoundingClientRect().top}px; left: ${53 + 2 +  configContainer.getBoundingClientRect().width}px;`);
     document.getElementById('overlap-manager-root').appendChild(colorPicker);
 
 
@@ -110,7 +110,7 @@ function injectAddon() {
 
           // Set color
           timeframeConfig.set(selectedTimeframe, index);
-          configMenu.remove();
+          configContainer.remove();
           renderConfigMenu();
 
           // Set local storage
