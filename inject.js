@@ -124,7 +124,7 @@ function injectAddon() {
   }
   
   // Inject custom button to toolbar
-  waitForElm('[id="header-toolbar-intervals"]').then(() => {
+  waitForElm('#drawing-toolbar').then(() => {
     // Init config if doesn't exit
     [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
       const timeframe = e.innerText;

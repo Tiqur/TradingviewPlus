@@ -6,6 +6,8 @@ function enableToggleAutotimeframeColorsHotkey(key) {
 
       // Remove hover effect
       document.getElementById('tvp-custom-button').parentElement.dispatchEvent(new MouseEvent('mouseleave'));
+
+      //snackBar('Toggled Auto-Timeframe Colors');
     }
   });
 }

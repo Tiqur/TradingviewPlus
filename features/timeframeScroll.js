@@ -1,7 +1,7 @@
 function enableTimeframeScroll(modiferKey) {
   let modifierPressed = false;
-  document.addEventListener('keydown', e => {if (e.key.toLowerCase() === modiferKey) modifierPressed = true})
-  document.addEventListener('keyup', e => {if (e.key.toLowerCase() === modiferKey) modifierPressed = false})
+  document.addEventListener('keydown', e => {if (e.key === modiferKey) modifierPressed = true})
+  document.addEventListener('keyup', e => {if (e.key === modiferKey) modifierPressed = false})
 
   document.addEventListener('wheel', e => {
     // Timeframe scrolling

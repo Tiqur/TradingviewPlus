@@ -22,6 +22,7 @@ function enableInverScaleHotkey(key) {
         }
       });
 
+      //snackBar('Inverted Scale');
     }
   });
 }
