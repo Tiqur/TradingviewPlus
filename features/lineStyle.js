@@ -1,6 +1,6 @@
 function enableLineStyleHotkey(key) {
   document.addEventListener('keydown', e => {
-    if (e.key === key) {
+    if (e.key.toLowerCase() === key) {
       // Click line style button
       document.querySelector('[data-name="style"]').click()
 

@@ -7,7 +7,7 @@ function enableCopyPriceHotkey(key) {
 
 
   document.addEventListener('keydown', e => {
-    if (e.key === key) {
+    if (e.key.toLowerCase() === key) {
       // Emit context menu event
       document.getElementsByClassName('chart-gui-wrapper')[0].children[1].dispatchEvent(new MouseEvent('contextmenu', {"clientX": mousePos[0], "clientY": mousePos[1]}))
 

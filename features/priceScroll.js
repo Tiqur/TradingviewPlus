@@ -1,7 +1,7 @@
 function enablePriceScroll(modiferKey) {
   let modifierPressed = false;
-  document.addEventListener('keydown', e => {if (e.key === modiferKey) modifierPressed = true})
-  document.addEventListener('keyup', e => {if (e.key === modiferKey) modifierPressed = false})
+  document.addEventListener('keydown', e => {if (e.key.toLowerCase() === modiferKey) modifierPressed = true})
+  document.addEventListener('keyup', e => {if (e.key.toLowerCase() === modiferKey) modifierPressed = false})
 
   // Disable time scrolling if left shift modifier key is pressed
   waitForElm('.chart-widget').then(() => {

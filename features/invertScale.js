@@ -1,6 +1,6 @@
 function enableInverScaleHotkey(key) {
   document.addEventListener('keydown', e => {
-    if (e.key === key) {
+    if (e.key.toLowerCase() === key) {
       const element = document.getElementsByClassName('price-axis')[0];
       const boundingRect = element.getBoundingClientRect();
 

@@ -1,6 +1,6 @@
 function enableLineWidthHotkey(key) {
   document.addEventListener('keydown', e => {
-    if (e.key === key) {
+    if (e.key.toLowerCase() === key) {
       // Click line thickness button
       document.querySelector('[data-name="line-tool-width"]').click()
       // Line thickness scrolling
