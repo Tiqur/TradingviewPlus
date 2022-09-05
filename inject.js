@@ -124,7 +124,7 @@ function injectAddon() {
   }
   
   // Inject custom button to toolbar
-  waitForElm('#drawing-toolbar').then(() => {
+  waitForElm('[id="header-toolbar-intervals"]').then(() => {
     // Init config if doesn't exit
     [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
       const timeframe = e.innerText;
@@ -132,20 +132,22 @@ function injectAddon() {
     })
 
 
-    document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].insertAdjacentElement('beforebegin', customButton)
-    
-    // Initialize 'overlap-manager-root' ( side arrow menu )
-    document.querySelector('[data-role="menu-handle"]').click();
-    document.querySelector('[data-role="menu-handle"]').click();
+    waitForElm('#drawing-toolbar').then(() => {
+      document.getElementById('drawing-toolbar').children[0].children[0].children[0].children[0].children[2].children[0].insertAdjacentElement('beforebegin', customButton)
+      
+      // Initialize 'overlap-manager-root' ( side arrow menu )
+      document.querySelector('[data-role="menu-handle"]').click();
+      document.querySelector('[data-role="menu-handle"]').click();
 
-    // Button Arrow
-    const buttonArrow = document.createElement('div');
-    const style = `position: absolute; right: 0; border-radius: 3px 0 0 3px; display: flex; justify-content: center; align-items: center; width: 11px; height: 33px;`;
-    buttonArrow.setAttribute('style', style);
-    buttonArrow.innerHTML = '<svg style="width: 7px; height: 7px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 16" width="10" height="16"><path d="M.6 1.4l1.4-1.4 8 8-8 8-1.4-1.4 6.389-6.532-6.389-6.668z"></path></svg>'
-    buttonArrow.addEventListener('mouseenter', () => buttonArrow.setAttribute('style', style + 'background: #2a2e39; fill: #787b86; cursor: pointer;'));
-    buttonArrow.addEventListener('mouseleave', () => buttonArrow.setAttribute('style', style + 'fill: none;'));
-    buttonArrow.addEventListener('click', () => {arrowActive ? renderConfigMenu() : configContainer.remove(); colorPicker.remove(); arrowActive = !arrowActive;});
-    customButton.appendChild(buttonArrow);
+      // Button Arrow
+      const buttonArrow = document.createElement('div');
+      const style = `position: absolute; right: 0; border-radius: 3px 0 0 3px; display: flex; justify-content: center; align-items: center; width: 11px; height: 33px;`;
+      buttonArrow.setAttribute('style', style);
+      buttonArrow.innerHTML = '<svg style="width: 7px; height: 7px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 16" width="10" height="16"><path d="M.6 1.4l1.4-1.4 8 8-8 8-1.4-1.4 6.389-6.532-6.389-6.668z"></path></svg>'
+      buttonArrow.addEventListener('mouseenter', () => buttonArrow.setAttribute('style', style + 'background: #2a2e39; fill: #787b86; cursor: pointer;'));
+      buttonArrow.addEventListener('mouseleave', () => buttonArrow.setAttribute('style', style + 'fill: none;'));
+      buttonArrow.addEventListener('click', () => {arrowActive ? renderConfigMenu() : configContainer.remove(); colorPicker.remove(); arrowActive = !arrowActive;});
+      customButton.appendChild(buttonArrow);
+    })
   })
 }
