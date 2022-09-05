@@ -6,8 +6,7 @@ function enableScrollWheelDelete() {
   document.addEventListener('mousemove', e => {
     const mousePos = [e.clientX, e.clientY];
     if (enabled) {
-      console.log('del')
-      document.dispatchEvent(new MouseEvent('mouseup', {'button': 1, "clientX": mousePos[0], "clientY": mousePos[1], 'bubbles'}));
+      document.dispatchEvent(new MouseEvent('mouseup', {'button': 1, "clientX": mousePos[0], "clientY": mousePos[1], 'bubbles': true}));
     }
   });
 
