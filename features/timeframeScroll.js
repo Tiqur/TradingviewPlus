@@ -5,9 +5,11 @@ function enableTimeframeScroll(modiferKey) {
 
   
   // Unselect ( press Esc ) when manually chaning timeframes 
-  document.getElementById('header-toolbar-intervals').addEventListener('click', e => {
-    document.getElementsByClassName('chart-page')[0].dispatchEvent(new KeyboardEvent('keydown', {'bubbles': true, 'keyCode': 27}));
-  })
+  waitForElm('#header-toolbar-intervals').then(() => {
+    document.getElementById('header-toolbar-intervals').addEventListener('click', e => {
+      document.getElementsByClassName('chart-page')[0].dispatchEvent(new KeyboardEvent('keydown', {'bubbles': true, 'keyCode': 27}));
+    })
+  });
 
 
   document.addEventListener('wheel', e => {

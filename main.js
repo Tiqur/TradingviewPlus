@@ -68,7 +68,7 @@ document.addEventListener("keypress", event => event.stopPropagation(), true);
   enableToggleAutotimeframeColorsHotkey('s');
   enableCopyPriceHotkey('c');
   enableDeleteDrawingHotkey('d');
-  enablePriceScroll("Shift");
+  enableScrollFeatures("Shift");
   enableTimeframeScroll("Tab");
   enableScrollToMostRecentBar("f");
   enableTimeMovementHotkeys("z", "x");
