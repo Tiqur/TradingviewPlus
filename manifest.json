@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "TradingviewPlus",
-  "version": "2.15",
+  "version": "2.18",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
@@ -15,9 +15,9 @@
       "js": [
         "main.js", 
         "inject.js",
-        "inject_timeframe_dashboard_button.js",
         "features/replay.js",
         "features/auto.js",
+        "features/enableSelectTicker.js",
         "features/lineWidth.js",
         "features/lineStyle.js",
         "features/copyPrice.js",
