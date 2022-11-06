@@ -67,6 +67,7 @@ function injectAddon() {
 
       // Colored div representing current value
       const colorConfigPreview = document.createElement('div');
+      console.log(timeframeConfig.get(timeframe))
       colorConfigPreview.setAttribute('style', `width: 22px; margin-right: 8px; height: 22px; background: ${defaultColors[timeframeConfig.get(timeframe)]};`);
 
       // Config element div mouse events
@@ -122,13 +123,18 @@ function injectAddon() {
       console.log(colorPicker.getBoundingClientRect())
     }
   }
-  
+
   // Inject custom button to toolbar
   waitForElm('[id="header-toolbar-intervals"]').then(() => {
     // Init config if doesn't exit
     [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
       const timeframe = e.innerText;
-      if (!timeframeConfig.has(timeframe)) timeframeConfig.set(timeframe, 0);
+      if (!timeframeConfig.has(timeframe)) {
+        if (Object.keys(defaultExtensionColors).includes(timeframe))
+          timeframeConfig.set(timeframe, defaultExtensionColors[timeframe]);
+        else
+          timeframeConfig.set(timeframe, 0);
+      }
     })
 
 
