@@ -1,3 +1,6 @@
+
+// This code is shit, but no one will see it right?? :eyes:
+
 let listenForHotkey = false;
 let hotkey = null;
 let hotkeyCache = null;
@@ -281,6 +284,8 @@ Object.keys(menu).forEach((e, i) => {
 
         const priceCheckboxContainer = document.createElement('div');
         priceCheckboxContainer.style.display = 'flex';
+        priceCheckboxContainer.style.alignItems = 'center';
+
         priceCheckboxContainer.style.flexDirection = 'row-reverse';
 
         featureCheckBoxDiv.appendChild(hotkeyDiv);
