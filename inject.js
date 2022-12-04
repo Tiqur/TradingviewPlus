@@ -1,6 +1,7 @@
 // Initalize divs
 const colorPicker = document.createElement('div');
 const configContainer = document.createElement('div');
+let customButton;
 
 // Addon is active
 let active = true;
@@ -23,7 +24,7 @@ function injectAddon() {
   }
 
   // Create Button
-  const customButton = document.createElement('div');
+  customButton = document.createElement('div');
   customButton.setAttribute(
     'style',
     'color: #b2b5be; width: auto; height: 36px; display: flex; justify-content: center; align-items: center;'
