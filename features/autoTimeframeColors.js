@@ -19,8 +19,8 @@ function enableAutoTimeframeColors() {
       waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
         // Click Line tool colors on toolbar
         document.querySelector('[data-name="line-tool-color"]').click()
-        const colorBox = document.querySelectorAll('[data-name="menu-inner"]')[1].children[0];
-        const allColors = [...[].slice.call(colorBox.children[0].children), ...[].slice.call(colorBox.children[1].children)];
+        const colorBox = document.querySelectorAll('[data-name="menu-inner"]')[0].children[0].children;
+        const allColors = [...[].slice.call(colorBox[0].children), ...[].slice.call(colorBox[1].children)];
         allColors[timeframeConfig.get(currentTimeframe)].click();
       })
     });
