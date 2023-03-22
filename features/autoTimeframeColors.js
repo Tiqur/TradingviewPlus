@@ -12,7 +12,7 @@ function enableAutoTimeframeColors() {
       if (!active) return;
 
       // Get current timeframe
-      const currentTimeframe = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).filter(e => e.className.includes('isActive'))[0].innerText;
+      const currentTimeframe = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children[0].children).filter(e => e.className.includes('isActive'))[0].innerText;
 
 
       // Wait for toolbar

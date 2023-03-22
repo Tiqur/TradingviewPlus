@@ -48,7 +48,7 @@ function injectAddon() {
 
   // Create Config Menu
   function renderConfigMenu() {
-    const timeframes = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1);
+    const timeframes = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children[0].children).slice(0, -1);
     configContainer.innerHTML = '';
 
     const configMenu = document.createElement('div');
@@ -128,7 +128,7 @@ function injectAddon() {
   // Inject custom button to toolbar
   waitForElm('[id="header-toolbar-intervals"]').then(() => {
     // Init config if doesn't exit
-    [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children).slice(0, -1).forEach(e => {
+    [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children[0].children).slice(0, -1).forEach(e => {
       const timeframe = e.innerText;
       if (!timeframeConfig.has(timeframe)) {
         if (Object.keys(defaultExtensionColors).includes(timeframe))

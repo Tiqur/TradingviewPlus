@@ -16,7 +16,7 @@ function enableTimeframeScroll(modiferKey) {
     // Timeframe scrolling
     if (modifierPressed) {
       document.getElementsByClassName('chart-page')[0].dispatchEvent(new KeyboardEvent('keydown', {'bubbles': true, 'keyCode': 27}));
-      const timeframeButtons = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children)
+      const timeframeButtons = [].slice.call(document.querySelector('[id="header-toolbar-intervals"]').children[0].children)
       const currentTimeframe = timeframeButtons.filter(e => e.className.includes('isActive'))[0].innerText;
       const direction = e.deltaY < 0 ? 'up' : 'down';
       const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
