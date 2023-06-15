@@ -1,16 +1,19 @@
+// hmmmm
+declare const chrome: any;
+
 // For chrome extension
 if (typeof browser === "undefined") {
     var browser = chrome;
 }
 
 // Waits for element to load 
-function waitForElm(selector) {
-    return new Promise(resolve => {
+function waitForElm(selector: string): Promise<Element | null> {
+    return new Promise((resolve) => {
         if (document.querySelector(selector)) {
             return resolve(document.querySelector(selector));
         }
 
-        const observer = new MutationObserver(mutations => {
+        const observer = new MutationObserver((mutations) => {
             if (document.querySelector(selector)) {
                 resolve(document.querySelector(selector));
                 observer.disconnect();
@@ -19,14 +22,14 @@ function waitForElm(selector) {
 
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
         });
     });
 }
 
 // Disable default TV hotkeys
-document.addEventListener("keypress", event => event.stopPropagation(), true);
+document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
 (async () => {
-
+    // Add your code here
 })();
