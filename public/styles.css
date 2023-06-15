@@ -9,10 +9,34 @@
 }
 
 #tvp-menu {
-  width: 30vw;
+  width: 30vw !important;
   height: 100vh;
   background: #151924;
   display: flex;
   border-left: 0.5px solid #2a2e39;
   margin-left: auto;
 }
+
+#tvp-menu div {
+  height: 100%;
+}
+
+#tvp-resize-bar-container {
+  width: 10px;
+}
+
+#tvp-resize-bar-container:hover {
+  cursor: col-resize;
+}
+
+#tvp-menu-content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#tvp-resize-bar {
+  background: red;
+  width: 10px;
+}
+
