@@ -13,7 +13,14 @@
     {
       "matches": ["*://*.tradingview.com/*"],
       "js": [
-        "main.js", 
+        "dist/main.js"
+      ],
+      "css": [
+        "public/styles.css"
+      ],
+      "web_accessible_resources": [
+        "public/menu.html"
+      ]
     }
   ]
 }

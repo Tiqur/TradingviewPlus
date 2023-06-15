@@ -31,5 +31,7 @@ function waitForElm(selector: string): Promise<Element | null> {
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
 (async () => {
-    // Add your code here
+  fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(html => {
+    document.body.insertAdjacentHTML('beforeend', html);
+  });
 })();
