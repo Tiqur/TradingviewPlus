@@ -15,6 +15,7 @@
   display: flex;
   border-left: 0.5px solid #2a2e39;
   margin-left: auto;
+  z-index: 50;
 }
 
 #tvp-menu div {
