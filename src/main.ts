@@ -32,7 +32,7 @@ document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
 function initMenuResizeLogic() {
   const resize_bar = document.getElementById('tvp-resize-bar');
-  const controlDiv = document.getElementById('tvp-menu-container');
+  const controlDiv = document.getElementById('tvp-resize-bar-container');
   const container = document.getElementById('tvp-menu');
   let menuContainerWidth = 400;
   let mouseDown = false;
