@@ -9,7 +9,7 @@
 }
 
 #tvp-menu {
-  width: 30vw !important;
+  width: 400px;
   height: 100vh;
   background: #151924;
   display: flex;
@@ -22,7 +22,10 @@
 }
 
 #tvp-resize-bar-container {
-  width: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
 }
 
 #tvp-resize-bar-container:hover {
@@ -36,7 +39,9 @@
 }
 
 #tvp-resize-bar {
-  background: red;
-  width: 10px;
+  background: #9598a1;
+  width: 4px;
+  height: 8em !important;
+  border-radius: 8em;
 }
 
