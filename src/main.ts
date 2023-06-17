@@ -85,31 +85,77 @@ function initMenuResizeLogic() {
   });
 }
 
+
+function createHotkeyInput(default_hotkey: string[] | null) {
+  const hotkey_input_container = document.createElement('hotkey-input');
+  hotkey_input_container.className = 'tvp-hotkey-input-container'
+  hotkey_input_container.innerText = default_hotkey ? default_hotkey.join(' ') : 'null';
+
+  return hotkey_input_container;
+}
+
+function createMenuItem(value: Feature) {
+  const content_container = document.createElement('div');
+
+  const left_container = document.createElement('div');
+
+  const input = document.createElement('input');
+  input.type = 'checkbox';
+  left_container.appendChild(input);
+
+  const node = document.createElement('p');
+  node.innerHTML = value.name + questionMarkSvgString;
+  left_container.appendChild(node);
+  content_container.appendChild(left_container);
+
+  const hotkey_input = createHotkeyInput(value.hotkey);
+  content_container.appendChild(hotkey_input);
+
+  return content_container;
+}
+
+
 (async () => {
   fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
     document.body.insertAdjacentHTML('beforeend', html);
     await waitForElm('[id="tvp-resize-bar"]');
     initMenuResizeLogic();
 
+    //const tmc = document.querySelector('#tvp-menu-content');
+    //const categories = tmc?.querySelectorAll('div');
+    //categories?.forEach(category => {
+    //  category.addEventListener('click', () => {
 
+    //    //for (const child of category.children)
+    //    //  if (child.tagName === 'DIV')
+    //    //    child.setAttribute('style', `display: ${collapsed ? 'none' : 'initial'};`);
+    //  });
+    //});
 
     // Dynamically insert content under cooresponding categories 
     for (const key in menu_contents) {
       const value = menu_contents[key];
-      const parent = document.querySelector(`[id="tvp-${value.category}"]`)
+      const category = value.category;
 
-      const content_container = document.createElement('div');
+      let parent;
+      parent = document.querySelector(`[id="tvp-${value.category}"]`);
 
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      content_container.appendChild(input);
+      if (parent == null) {
+        parent = document.createElement('div');
+        parent.id = `tvp-${category}`;
+        parent.setAttribute('collapsed', 'true');
+        parent.className = `tvp-menu-category`;
+        const h = document.createElement('h2');
+        h.innerText = category;
+        parent.appendChild(h);
+        parent.appendChild(document.createElement('hr'))
+        document.getElementById('tvp-menu-content')?.insertAdjacentElement('beforeend', parent);
+      }
 
-      const node = document.createElement('p');
-      node.innerHTML = value.name + questionMarkSvgString;
-      content_container.appendChild(node);
-
-      parent?.appendChild(content_container);
+      const menu_item = createMenuItem(value);
+      parent?.appendChild(menu_item);
     }
+
   });
 })();
 
