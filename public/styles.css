@@ -63,6 +63,13 @@
   flex-direction: column;
 }
 
+#tvp-menu-content > div > div {
+  height: auto;
+}
+#tvp-menu-content > div > div > p {
+  display: inline;
+}
+
 .tvp-menu-category {
   width: 85%;
   height: auto !important;
