@@ -101,6 +101,7 @@ function createMenuItem(value: Feature) {
 
   const input = document.createElement('input');
   input.type = 'checkbox';
+  input.checked = value.enabled;
   left_container.appendChild(input);
 
   const node = document.createElement('p');
