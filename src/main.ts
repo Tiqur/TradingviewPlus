@@ -121,18 +121,7 @@ function createMenuItem(value: Feature) {
     await waitForElm('[id="tvp-resize-bar"]');
     initMenuResizeLogic();
 
-    //const tmc = document.querySelector('#tvp-menu-content');
-    //const categories = tmc?.querySelectorAll('div');
-    //categories?.forEach(category => {
-    //  category.addEventListener('click', () => {
-
-    //    //for (const child of category.children)
-    //    //  if (child.tagName === 'DIV')
-    //    //    child.setAttribute('style', `display: ${collapsed ? 'none' : 'initial'};`);
-    //  });
-    //});
-
-    // Dynamically insert content under cooresponding categories 
+    // Dynamically insert content and categoriesc
     for (const key in menu_contents) {
       const value = menu_contents[key];
       const category = value.category;
@@ -152,9 +141,32 @@ function createMenuItem(value: Feature) {
         document.getElementById('tvp-menu-content')?.insertAdjacentElement('beforeend', parent);
       }
 
+      let category_content;
+      category_content = document.querySelector(`[id="tvp-${value.category}-content"]`);
+
+      if (category_content == null) {
+        const category_content_container = document.createElement('div');
+        category_content_container.id = `tvp-${value.category}-content`;
+        category_content_container.className = `tvp-category-content`;
+        parent?.appendChild(category_content_container);
+        category_content_container.style.display = 'none';
+      }
+
       const menu_item = createMenuItem(value);
-      parent?.appendChild(menu_item);
+      category_content?.appendChild(menu_item);
     }
+
+    // Dropdown collapse logic
+    const categories = document.querySelectorAll('.tvp-menu-category');
+    categories?.forEach(category => {
+      category.children[0].addEventListener('click', () => {
+        const collapsed = category.getAttribute('collapsed') === 'true';
+        category.setAttribute('collapsed', `${!collapsed}`);
+
+        // Toggle collapse
+        (category.children[2] as HTMLElement).style.display = !collapsed ? 'none' : 'initial';
+      });
+    });
 
   });
 })();

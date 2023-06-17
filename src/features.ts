@@ -4,7 +4,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Automatically changes tool color on click',
     enabled: true,
     hotkey: ['s'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Change Line Style': {
@@ -12,7 +12,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Scrolls line styles ( solid, dashed, dotted )',
     enabled: true,
     hotkey: ['q'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Change Line Width': {
@@ -20,7 +20,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Scrolls line width ( 1px, 2px, 3px, 4px )',
     enabled: true,
     hotkey: ['w'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Toggle Auto Scale': {
@@ -28,7 +28,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Toggles the chart\'s "Auto" scale',
     enabled: true,
     hotkey: ['a'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Toggle Invert Scale': {
@@ -36,7 +36,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Toggles the inversion of the price axis',
     enabled: true,
     hotkey: ['e'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Toggle Replay Mode': {
@@ -44,7 +44,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Toggles replay mode ( must have pro plan or higher )',
     enabled: true,
     hotkey: ['t'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Copy Price At Ticker': {
@@ -52,7 +52,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Copies price at cursor position',
     enabled: true,
     hotkey: ['c'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Delete Drawing': {
@@ -60,7 +60,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Deletes currently selected drawing',
     enabled: true,
     hotkey: ['d'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Scroll To Most Recent Bar': {
@@ -68,7 +68,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Scrolls to to most recent candle',
     enabled: true,
     hotkey: ['f'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Scroll time left': {
@@ -76,7 +76,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Scrolls backward in time',
     enabled: true,
     hotkey: ['x'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Scroll time right': {
@@ -84,7 +84,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Scrolls forward in time',
     enabled: true,
     hotkey: ['x'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Scroll Timeframes': {
@@ -92,7 +92,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Allows you to scroll through timeframes using a hotkey + the scroll wheel',
     enabled: true,
     hotkey: ['Tab'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Scroll Price Scale': {
@@ -100,7 +100,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Allows you to scroll the price scale using a hotkey + the scroll wheel',
     enabled: true,
     hotkey: ['Shift'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Zoom Both Axes': {
@@ -108,7 +108,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Zooms both time and pice axes at the same time',
     enabled: true,
     hotkey: ['Shift', 'Ctrl'],
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
   'Ad-Blocker ( under development )': {
@@ -116,7 +116,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Blocks Ads + Pop-Ups',
     enabled: false,
     'hotkey': null,
-    category: 'features',
+    category: 'Features',
     action: () => {}
   },
 };

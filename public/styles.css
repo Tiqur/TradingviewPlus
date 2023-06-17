@@ -74,18 +74,16 @@
   flex-direction: column;
 }
 
-#tvp-menu-content > div > div {
-  height: auto;
-}
-#tvp-menu-content > div > div > p {
-  display: inline;
-}
-
 .tvp-menu-category {
   width: 85%;
   height: auto !important;
   text-align: left;
   padding: 0.4em;
+}
+
+.tvp-menu-category > h2:hover {
+  background: red;
+  cursor: pointer;
 }
 
 hr {
@@ -104,3 +102,19 @@ hr {
   box-shadow: 0 2px 0 #434651;
 }
 
+.tvp-category-content {
+  display: flex;
+  background: blue;
+}
+
+.tvp-category-content > div {
+  height: auto !important;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tvp-category-content > div > div > p {
+  display: inline;
+}
