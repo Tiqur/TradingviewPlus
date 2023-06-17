@@ -72,6 +72,18 @@ function initMenuResizeLogic() {
     document.body.insertAdjacentHTML('beforeend', html);
     await waitForElm('[id="tvp-resize-bar"]');
     initMenuResizeLogic();
+
+
+
+    // Dynamically insert content under cooresponding categories 
+    for (const key in menu_contents) {
+      const value = menu_contents[key];
+      const parent = document.querySelector(`[id="tvp-${value.category}"]`)
+      const node = document.createElement('p');
+      node.innerText = value.name;
+      console.log(parent);
+      parent?.appendChild(node);
+    }
   });
 })();
 

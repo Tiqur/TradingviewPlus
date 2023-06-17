@@ -4,6 +4,7 @@ interface Feature {
   enabled: boolean;
   hotkey: string[] | null;
   action: Function;
+  category: 'features' | 'display' | 'settings';
 }
 
 
