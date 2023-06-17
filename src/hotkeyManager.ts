@@ -1,8 +1,11 @@
-type Feature = {
+interface Feature {
   name: string;
-  hotkey: string[];
-  callback: Function;
+  tooltip: string;
+  enabled: boolean;
+  hotkey: string[] | null;
+  action: Function;
 }
+
 
 
 class HotkeyManager {
@@ -12,8 +15,8 @@ class HotkeyManager {
     features?.map(e => this.hotkeyMap.set(e.name, e));
   }
 
-  addHotkey(name: string, hotkey: string[], cb: Function) {
-    this.hotkeyMap.set(name, {hotkey: hotkey, callback: cb} as Feature);
+  addHotkey(name: string, tooltip: string, hotkey: string[], cb: Function) {
+    this.hotkeyMap.set(name, {tooltip: tooltip, hotkey: hotkey, action: cb} as Feature);
   }
 
   updateHotkey(key: string, newKey: string[]) {
