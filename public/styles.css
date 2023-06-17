@@ -41,6 +41,10 @@
   width: 100%;
 }
 
+#tvp-menu-content > * {
+  max-width: 50vw;
+}
+
 #tvp-resize-bar {
   background: #9598a1;
   width: 4px;
