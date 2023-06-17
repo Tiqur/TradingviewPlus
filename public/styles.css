@@ -48,3 +48,25 @@
   border-radius: 8em;
 }
 
+#tvp-menu-content > h1 {
+  padding: 1em;
+}
+
+#tvp-menu-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.tvp-menu-category {
+  width: 90%;
+  height: auto !important;
+  text-align: left;
+  padding: 0.4em;
+}
+
+hr {
+  width: 95%;
+  color: #2a2e39;
+}
