@@ -6,6 +6,7 @@
   position: absolute;
   left: 0;
   top: 0;
+  pointer-events: none;
 }
 
 #tvp-menu {
@@ -16,6 +17,7 @@
   border-left: 0.5px solid #2a2e39;
   margin-left: auto;
   z-index: 50;
+  pointer-events: auto;
 }
 
 #tvp-menu div {

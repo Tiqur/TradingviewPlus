@@ -73,9 +73,4 @@ function initMenuResizeLogic() {
     await waitForElm('[id="tvp-resize-bar"]');
     initMenuResizeLogic();
   });
-
-
-
-  
-
 })();
