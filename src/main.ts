@@ -6,6 +6,25 @@ if (typeof browser === "undefined") {
     var browser = chrome;
 }
 
+interface Feature {
+  name: string;
+  tooltip: string;
+  enabled: boolean;
+  hotkey: Hotkey | null;
+  action: Function;
+  category: 'Features' | 'Display' | 'Settings';
+}
+
+
+interface Hotkey {
+  key: string;
+  ctrl: boolean;
+  shift: boolean;
+  alt: boolean;
+  meta: boolean;
+}
+
+
 // Waits for element to load 
 function waitForElm(selector: string): Promise<Element | null> {
     return new Promise((resolve) => {
