@@ -12,8 +12,8 @@ waitForElm('.chart-gui-wrapper').then(async (e) => {
       // Click Line tool colors on toolbar
       (document.querySelector('[data-name="line-tool-color"]') as HTMLElement).click()
       const colorBox = document.querySelectorAll('[data-name="menu-inner"]')[0].children[0].children;
-      const allColors = [...[].slice.call(colorBox[0].children), ...[].slice.call(colorBox[1].children)];
-      //(allColors[local_config['settings']['auto_colors'].get(currentTimeframe)] as HTMLElement).click();
+      const allColors: HTMLElement[] = [...[].slice.call(colorBox[0].children), ...[].slice.call(colorBox[1].children)];
+      (allColors[local_config['settings']['auto_colors'][currentTimeframe]] as HTMLElement).click();
     })
   });
 })

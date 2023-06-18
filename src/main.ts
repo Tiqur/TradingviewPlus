@@ -145,7 +145,7 @@ function createMenuItem(value: Feature) {
 interface LocalConfig {
   hotkeys: Record<string, Feature>
   settings: {
-    auto_colors: Map<string, number>;
+    auto_colors: Record<string, number>;
     color_theme: string;
   };
 }
@@ -153,16 +153,16 @@ interface LocalConfig {
 const local_config: LocalConfig = {
   hotkeys: menu_contents,
   settings: {
-    auto_colors: new Map([
-      ["1m", 0],
-      ["3m", 49],
-      ["5m", 11],
-      ["15m", 13],
-      ["1h", 15],
-      ["4h", 12],
-      ["D", 10],
-      ["W", 18],
-    ]),
+    auto_colors: {
+      "1m": 0,
+      "3m": 49,
+      "5m": 11,
+      "15m": 13,
+      "1h": 15,
+      "4h": 12,
+      "D": 10,
+      "W": 18,
+    },
     color_theme: 'dark',
   },
 };
