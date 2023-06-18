@@ -1,5 +1,5 @@
 document.addEventListener('keydown', e => {
-  if (e.key.toLowerCase() === 'a') {
+  if (e.key.toLowerCase() === 'w') {
     // Click line thickness button
     (document.querySelector('[data-name="line-tool-width"]') as HTMLElement).click()
     // Line thickness scrolling

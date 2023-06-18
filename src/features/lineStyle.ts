@@ -1,5 +1,5 @@
 document.addEventListener('keydown', e => {
-  if (e.key.toLowerCase() === 'a') {
+  if (e.key.toLowerCase() === 'q') {
     // Click line style button
     (document.querySelector('[data-name="style"]') as HTMLElement).click()
 
