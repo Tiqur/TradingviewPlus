@@ -17,7 +17,7 @@ interface Feature {
 
 
 interface Hotkey {
-  key: string;
+  key: string | null;
   ctrl: boolean;
   shift: boolean;
   alt: boolean;
@@ -105,10 +105,17 @@ function initMenuResizeLogic() {
 }
 
 
-function createHotkeyInput(default_hotkey: string[] | null) {
+function createHotkeyInput(default_hotkey: Hotkey | null) {
   const hotkey_input_container = document.createElement('hotkey-input');
+  const hotkey_string = 
+      default_hotkey?.key || ""
+    + default_hotkey?.alt || ""
+    + default_hotkey?.ctrl || ""
+    + default_hotkey?.shift || ""
+    + default_hotkey?.meta || "";
+
   hotkey_input_container.className = 'tvp-hotkey-input-container'
-  hotkey_input_container.innerText = default_hotkey ? default_hotkey.join(' ') : 'null';
+  hotkey_input_container.innerText = default_hotkey ? hotkey_string : 'null';
 
   return hotkey_input_container;
 }
@@ -135,7 +142,63 @@ function createMenuItem(value: Feature) {
 }
 
 
+interface LocalConfig {
+  hotkeys: Record<string, Feature>
+  settings: {
+    auto_colors: Map<string, number>;
+    color_theme: string;
+  };
+}
+
+const local_config: LocalConfig = {
+  hotkeys: menu_contents,
+  settings: {
+    auto_colors: new Map([
+      ["1m", 0],
+      ["3m", 49],
+      ["5m", 11],
+      ["15m", 13],
+      ["1h", 15],
+      ["4h", 12],
+      ["D", 10],
+      ["W", 18],
+    ]),
+    color_theme: 'dark',
+  },
+};
+
+let config = new Map();
+
+
 (async () => {
+  // Set config if saved locally
+  const localConfig = await browser.storage.local.get('tvp-local-config');
+  if (Object.keys(localConfig).length > 0)  {
+    config = new Map(Object.entries(JSON.parse(localConfig['tvp-local-config'])));
+  }
+
+  
+  function stopPropagation(e: KeyboardEvent) {
+    const activeElem = document.activeElement?.tagName;
+    // Return false if custom keybind
+    if (e.code === 'custom') return false;
+
+    // Keep escape as global key
+    if (e.key === 'Escape') return false;
+
+    // Return if focused area is text input
+    if (activeElem === 'INPUT' || activeElem === 'TEXTAREA') return true;
+
+    // Return if alt or ctrl are held ( and not bubbles can also send default TV keybinds )
+    //if ((e.ctrlKey || e.altKey)) return true;
+
+    return false;
+  }
+
+  // Don't trigger hotkeys if ctrl, alt, or focused on text input
+  document.addEventListener("keydown", e => !stopPropagation(e) || e.stopPropagation(), true);
+
+  // Inject side menu
   fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
     document.body.insertAdjacentHTML('beforeend', html);
     await waitForElm('[id="tvp-resize-bar"]');

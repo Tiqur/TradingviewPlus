@@ -14,7 +14,23 @@
       "matches": ["*://*.tradingview.com/*"],
       "js": [
         "dist/features.js",
-        "dist/main.js"
+        "dist/main.js",
+        "dist/features/replay.js",
+        "dist/features/auto.js",
+        "dist/features/enableSelectTicker.js",
+        "dist/features/lineWidth.js",
+        "dist/features/lineStyle.js",
+        "dist/features/copyPrice.js",
+        "dist/features/timeframeScroll.js",
+        "dist/features/scrollFeatures.js",
+        "dist/features/invertScale.js",
+        "dist/features/autoTimeframeColors.js",
+        "dist/features/toggleAutotimeframeColors.js",
+        "dist/features/snackbar.js",
+        "dist/features/deleteDrawing.js",
+        "dist/features/favoritesToolbar.js",
+        "dist/features/timeMovement.js",
+        "dist/features/scrollToMostRecentBar.js"
       ],
       "css": [
         "public/styles.css"

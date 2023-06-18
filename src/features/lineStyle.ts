@@ -1,13 +1,11 @@
-function enableLineStyleHotkey(key) {
-  document.addEventListener('keydown', e => {
-    if (e.key.toLowerCase() === key) {
-      // Click line style button
-      document.querySelector('[data-name="style"]').click()
+document.addEventListener('keydown', e => {
+  if (e.key.toLowerCase() === 'a') {
+    // Click line style button
+    (document.querySelector('[data-name="style"]') as HTMLElement).click()
 
-      // Line style scrolling
-      const styleButtons = [].slice.call(document.querySelector('[data-name="menu-inner"]').children[0].children[0].children).filter(e => e.children.length > 1);
-      var activeIndex = styleButtons.findIndex(e => e.className.includes(' active-'))
-      styleButtons[activeIndex != 2 ? activeIndex+1 : 0].click();
-    }
-  });
-}
+    // Line style scrolling
+    const styleButtons = [].slice.call((document.querySelector('[data-name="menu-inner"]') as HTMLElement).children[0].children[0].children).filter(e => (e as HTMLElement).children.length > 1);
+    var activeIndex = styleButtons.findIndex(e => (e as HTMLElement).className.includes(' active-')) as number;
+    (styleButtons[activeIndex != 2 ? activeIndex+1 : 0] as HTMLElement).click();
+  }
+});

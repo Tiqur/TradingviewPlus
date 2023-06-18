@@ -1,8 +1,6 @@
-function enableAutoScaleHotkey(key) {
-  document.addEventListener('keydown', e => {
-    if (e.key.toLowerCase() === key) {
-      document.querySelector('[data-name="auto"]').click();
-      //snackBar('Toggled Auto Scale');
-    }
-  });
-}
+document.addEventListener('keydown', e => {
+  if (e.key.toLowerCase() === 'a') {
+    (document.querySelector('[data-name="auto"]') as HTMLElement).click();
+    //snackBar('Toggled Auto Scale');
+  }
+});

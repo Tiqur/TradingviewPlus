@@ -1,4 +1,4 @@
-function snackBar(text) {
+function snackBar(text: string) {
   const css = `
   #snackbar {
     left: 50%;
@@ -47,6 +47,6 @@ function snackBar(text) {
   snack.innerHTML = `<p>${text}</p>`;
   snackContainer.appendChild(snack);
 
-  document.getElementById('overlap-manager-root').appendChild(snackContainer);
+  (document.getElementById('overlap-manager-root') as HTMLElement).appendChild(snackContainer);
 }
 

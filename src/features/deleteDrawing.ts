@@ -1,6 +1,4 @@
-function enableDeleteDrawingHotkey(key) {
-  document.addEventListener('keydown', e => {
-    if (e.key.toLowerCase() != key) return;
-        document.querySelector('[data-name="remove"]').click()
-  });
-}
+document.addEventListener('keydown', e => {
+  if (e.key.toLowerCase() != 'd') return;
+      (document.querySelector('[data-name="remove"]') as HTMLElement).click()
+});

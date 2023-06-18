@@ -1,7 +1,5 @@
-function enableReplayHotkey(key) {
-  document.addEventListener('keydown', e => {
-    if (e.key.toLowerCase() === key) {
-      document.getElementById('header-toolbar-replay').click();
-    }
-  });
-}
+document.addEventListener('keydown', e => {
+  if (e.key.toLowerCase() === 'r') {
+    (document.getElementById('header-toolbar-replay') as HTMLElement).click();
+  }
+});

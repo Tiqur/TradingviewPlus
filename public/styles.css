@@ -82,7 +82,6 @@
 }
 
 .tvp-menu-category > h2:hover {
-  background: red;
   cursor: pointer;
 }
 
@@ -104,7 +103,6 @@ hr {
 
 .tvp-category-content {
   display: flex;
-  background: blue;
 }
 
 .tvp-category-content > div {
