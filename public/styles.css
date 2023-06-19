@@ -114,6 +114,17 @@ hr {
   padding: 0.4em;
 }
 
+.tvp-category-content > div > div {
+  display: flex;
+  align-items: center;
+}
+
+.tvp-category-content > div > div > input {
+  accent-color: #2962ff;
+  width: 20px;
+  height: 20px;
+}
+
 .tvp-category-content > div > div > p {
   padding-left: 0.4em;
   display: inline;
