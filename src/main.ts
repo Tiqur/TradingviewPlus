@@ -169,6 +169,10 @@ const local_config: LocalConfig = {
 
 let config = new Map();
 
+function getTheme(): 'light' | 'dark' {
+  return document.querySelector('[class*="theme-light"]') ? 'light' : 'dark';
+}
+
 
 (async () => {
   // Set config if saved locally
@@ -203,6 +207,11 @@ let config = new Map();
     document.body.insertAdjacentHTML('beforeend', html);
     await waitForElm('[id="tvp-resize-bar"]');
     initMenuResizeLogic();
+
+    // Set to light theme if necessary
+    if (getTheme() == 'light')
+      (document.getElementById('tvp-menu') as HTMLElement).style.background = '#ffffff';
+
 
     // Dynamically insert content and categoriesc
     for (const key in menu_contents) {
