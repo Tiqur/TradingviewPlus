@@ -24,6 +24,7 @@ interface Hotkey {
   meta: boolean;
 }
 
+const features: Record<string, FeatureClass> = {};
 
 // Waits for element to load 
 function waitForElm(selector: string): Promise<Element | null> {
@@ -120,22 +121,26 @@ function createHotkeyInput(default_hotkey: Hotkey | null) {
   return hotkey_input_container;
 }
 
-function createMenuItem(value: Feature) {
+function createMenuItem(value: FeatureClass) {
   const content_container = document.createElement('div');
 
   const left_container = document.createElement('div');
 
   const input = document.createElement('input');
   input.type = 'checkbox';
-  input.checked = value.enabled;
+  input.checked = value.isEnabled();
   left_container.appendChild(input);
 
+  input.addEventListener('click', e => {
+    input.checked ? value.enable() : value.disable();
+  });
+
   const node = document.createElement('p');
-  node.innerHTML = value.name + questionMarkSvgString;
+  node.innerHTML = value.getName() + questionMarkSvgString;
   left_container.appendChild(node);
   content_container.appendChild(left_container);
 
-  const hotkey_input = createHotkeyInput(value.hotkey);
+  const hotkey_input = createHotkeyInput(value.getHotkey());
   content_container.appendChild(hotkey_input);
 
   return content_container;
@@ -150,27 +155,27 @@ interface LocalConfig {
   };
 }
 
-const local_config: LocalConfig = {
-  hotkeys: menu_contents,
-  settings: {
-    auto_colors: {
-      "1m": 0,
-      "3m": 49,
-      "5m": 11,
-      "15m": 13,
-      "1h": 15,
-      "4h": 12,
-      "D": 10,
-      "W": 18,
-    },
-    color_theme: 'dark',
-  },
-};
+//const local_config: LocalConfig = {
+//  hotkeys: menu_contents,
+//  settings: {
+//    auto_colors: {
+//      "1m": 0,
+//      "3m": 49,
+//      "5m": 11,
+//      "15m": 13,
+//      "1h": 15,
+//      "4h": 12,
+//      "D": 10,
+//      "W": 18,
+//    },
+//    color_theme: 'dark',
+//  },
+//};
 
 let config = new Map();
 
-function getTheme(): 'light' | 'dark' {
-  return document.querySelector('[class*="theme-light"]') ? 'light' : 'dark';
+function isLightMode(): boolean {
+  return document.querySelector('[class*="theme-light"]') != null;
 }
 
 
@@ -209,17 +214,17 @@ function getTheme(): 'light' | 'dark' {
     initMenuResizeLogic();
 
     // Set to light theme if necessary
-    if (getTheme() == 'light')
+    if (isLightMode())
       (document.getElementById('tvp-menu') as HTMLElement).style.background = '#ffffff';
 
 
     // Dynamically insert content and categoriesc
-    for (const key in menu_contents) {
-      const value = menu_contents[key];
-      const category = value.category;
+    for (const key in features) {
+      const value = features[key];
+      const category = value.getCategory();
 
       let parent;
-      parent = document.querySelector(`[id="tvp-${value.category}"]`);
+      parent = document.querySelector(`[id="tvp-${category}"]`);
 
       if (parent == null) {
         parent = document.createElement('div');
@@ -234,11 +239,11 @@ function getTheme(): 'light' | 'dark' {
       }
 
       let category_content;
-      category_content = document.querySelector(`[id="tvp-${value.category}-content"]`);
+      category_content = document.querySelector(`[id="tvp-${category}-content"]`);
 
       if (category_content == null) {
         const category_content_container = document.createElement('div');
-        category_content_container.id = `tvp-${value.category}-content`;
+        category_content_container.id = `tvp-${category}-content`;
         category_content_container.className = `tvp-category-content`;
         parent?.appendChild(category_content_container);
         category_content_container.style.display = 'none';

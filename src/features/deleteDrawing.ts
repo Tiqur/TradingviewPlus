@@ -8,5 +8,19 @@ class DeleteDrawing extends FeatureClass {
   }
 }
 
-new DeleteDrawing(menu_contents['Delete Drawing']);
+features['Delete Drawing'] = new DeleteDrawing({
+  name: 'Delete Drawing',
+  tooltip: 'Deletes currently selected drawing',
+  enabled: true,
+  hotkey: {
+    key: 'd',
+    alt: false,
+    shift: false,
+    ctrl: false,
+    meta: false
+  },
+  category: 'Features',
+  action: () => {}
+});
+console.log(features);
 

@@ -13,5 +13,18 @@ class LineWidth extends FeatureClass {
   }
 }
 
-new LineWidth(menu_contents['Change Line Width']);
+features['Change Line Width'] = new FeatureClass({
+  name: 'Change Line Width',
+  tooltip: 'Scrolls line width ( 1px, 2px, 3px, 4px )',
+  enabled: true,
+  hotkey: {
+    key: 'w',
+    alt: false,
+    shift: false,
+    ctrl: false,
+    meta: false
+  },
+  category: 'Features',
+  action: () => {}
+});
 

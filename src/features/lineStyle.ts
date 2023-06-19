@@ -14,4 +14,17 @@ class LineStyle extends FeatureClass {
   }
 }
 
-new LineStyle(menu_contents['Change Line Style']);
+features['Change Line Style'] = new LineStyle({
+  name: 'Change Line Style',
+  tooltip: 'Scrolls line styles ( solid, dashed, dotted )',
+  enabled: true,
+  hotkey: {
+    key: 'q',
+    alt: false,
+    shift: false,
+    ctrl: false,
+    meta: false
+  },
+  category: 'Features',
+  action: () => {}
+});

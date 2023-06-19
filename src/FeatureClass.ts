@@ -14,6 +14,18 @@ class FeatureClass {
     this.init();
   }
 
+  getCategory() {
+    return this.category;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getHotkey() {
+    return this.hotkey;
+  }
+
   checkTrigger(e: KeyboardEvent) {
     return this.hotkey?.key?.toLowerCase() == e.key.toLowerCase()
         && this.hotkey?.alt == e.altKey
