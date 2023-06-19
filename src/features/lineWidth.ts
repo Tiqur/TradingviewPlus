@@ -13,7 +13,7 @@ class LineWidth extends FeatureClass {
   }
 }
 
-features['Change Line Width'] = new FeatureClass({
+features['Change Line Width'] = new LineWidth({
   name: 'Change Line Width',
   tooltip: 'Scrolls line width ( 1px, 2px, 3px, 4px )',
   enabled: true,

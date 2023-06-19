@@ -31,7 +31,8 @@
         "dist/features/deleteDrawing.js",
         "dist/features/favoritesToolbar.js",
         "dist/features/timeMovement.js",
-        "dist/features/scrollToMostRecentBar.js"
+        "dist/features/scrollToMostRecentBar.js",
+        "dist/menu.js"
       ],
       "css": [
         "public/styles.css"
