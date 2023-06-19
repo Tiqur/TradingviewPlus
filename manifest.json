@@ -13,6 +13,7 @@
     {
       "matches": ["*://*.tradingview.com/*"],
       "js": [
+        "dist/FeatureClass.js",
         "dist/features.js",
         "dist/main.js",
         "dist/features/replay.js",

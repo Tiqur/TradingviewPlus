@@ -74,7 +74,7 @@ const menu_contents: Record<string, Feature> = {
     tooltip: 'Toggles replay mode ( must have pro plan or higher )',
     enabled: true,
     hotkey: {
-      key: 't',
+      key: 'r',
       alt: false,
       shift: false,
       ctrl: false,
@@ -125,12 +125,12 @@ const menu_contents: Record<string, Feature> = {
     category: 'Features',
     action: () => {}
   },
-  'Scroll time left': {
+  'Scroll Time Left': {
     name: 'Scroll time left',
     tooltip: 'Scrolls backward in time',
     enabled: true,
     hotkey: {
-      key: 'x',
+      key: 'z',
       alt: false,
       shift: false,
       ctrl: false,
@@ -139,7 +139,7 @@ const menu_contents: Record<string, Feature> = {
     category: 'Features',
     action: () => {}
   },
-  'Scroll time right': {
+  'Scroll Time Right': {
     name: 'Scroll time right',
     tooltip: 'Scrolls forward in time',
     enabled: true,
