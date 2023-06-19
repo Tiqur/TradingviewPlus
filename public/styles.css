@@ -111,8 +111,10 @@ hr {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.4em;
 }
 
 .tvp-category-content > div > div > p {
+  padding-left: 0.4em;
   display: inline;
 }
