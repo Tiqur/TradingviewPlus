@@ -1,3 +1,4 @@
+console.log(Object.keys(features));
 function isLightMode(): boolean {
   return document.querySelector('[class*="theme-light"]') != null;
 }
@@ -82,6 +83,7 @@ function createMenuItem(value: FeatureClass) {
 // Inject side menu
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
   document.body.insertAdjacentHTML('beforeend', html);
+
   await waitForElm('[id="tvp-resize-bar"]');
   initMenuResizeLogic();
 

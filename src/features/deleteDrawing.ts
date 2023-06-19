@@ -22,5 +22,3 @@ features['Delete Drawing'] = new DeleteDrawing({
   category: 'Features',
   action: () => {}
 });
-console.log(features);
-
