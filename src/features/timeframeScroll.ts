@@ -38,7 +38,5 @@ features['Scroll Timeframes'] = new TimeframeScroll({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
-

@@ -24,7 +24,5 @@ features['Change Line Width'] = new LineWidth({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
-

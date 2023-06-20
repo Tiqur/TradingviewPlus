@@ -40,7 +40,5 @@ features['Toggle Invert Scale'] = new ToggleInvertScale({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
-

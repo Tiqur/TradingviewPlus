@@ -26,6 +26,5 @@ features['Scroll To Most Recent Bar'] = new ScrollToMostRecentBar({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });

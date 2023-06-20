@@ -19,7 +19,5 @@ features['Toggle Replay Mode'] = new ToggleReplayMode({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
-

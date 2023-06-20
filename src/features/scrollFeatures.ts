@@ -41,8 +41,7 @@ features['Scroll Price Scale'] = new ScrollPriceScale({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
 
 // Placeholder for now just to show it under features menu
@@ -58,6 +57,5 @@ features['Zoom Both Axes'] = new ZoomChart({
     ctrl: true,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });

@@ -16,6 +16,5 @@ features['Ad-Blocker'] = new AdBlocker({
     ctrl: true,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });

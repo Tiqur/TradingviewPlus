@@ -20,7 +20,6 @@ features['Toggle Auto Scale'] = new ToggleAutoScale({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
 

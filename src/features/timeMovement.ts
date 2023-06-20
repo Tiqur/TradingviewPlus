@@ -41,8 +41,7 @@ features['Scroll Time Left'] = new TimeMovementLeft({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
 features['Scroll Time Right'] = new TimeMovementRight({
   name: 'Scroll time right',
@@ -55,7 +54,6 @@ features['Scroll Time Right'] = new TimeMovementRight({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
 

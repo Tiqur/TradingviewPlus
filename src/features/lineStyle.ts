@@ -25,6 +25,5 @@ features['Change Line Style'] = new LineStyle({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });

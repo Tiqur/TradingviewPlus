@@ -19,6 +19,5 @@ features['Delete Drawing'] = new DeleteDrawing({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });

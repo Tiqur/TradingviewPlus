@@ -11,7 +11,6 @@ interface Feature {
   tooltip: string;
   enabled: boolean;
   hotkey: Hotkey | null;
-  action: Function;
   category: 'Features' | 'Display' | 'Settings';
 }
 

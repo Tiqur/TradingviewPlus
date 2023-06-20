@@ -18,6 +18,5 @@ features['Toggle TVP Menu'] = new ToggleMenu({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });

@@ -44,6 +44,5 @@ features['Copy Price At Ticker'] = new CopyPrice({
     ctrl: false,
     meta: false
   },
-  category: 'Features',
-  action: () => {}
+  category: 'Features'
 });
