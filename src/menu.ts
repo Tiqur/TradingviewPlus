@@ -103,7 +103,7 @@ function injectSideMenu() {
       if (parent == null) {
         parent = document.createElement('div');
         parent.id = `tvp-${category}`;
-        parent.setAttribute('collapsed', 'true');
+        parent.setAttribute('collapsed', 'false');
         parent.className = `tvp-menu-category`;
         const h = document.createElement('h2');
         h.innerText = category;
@@ -120,7 +120,7 @@ function injectSideMenu() {
         category_content.id = `tvp-${category}-content`;
         category_content.className = `tvp-category-content`;
         parent?.appendChild(category_content);
-        category_content.style.display = 'none';
+        category_content.style.display = 'initial';
       }
 
       const menu_item = createMenuItem(value);
