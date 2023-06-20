@@ -6,7 +6,7 @@ function initMenuResizeLogic() {
   const resize_bar = document.getElementById('tvp-resize-bar');
   const controlDiv = document.getElementById('tvp-resize-bar-container');
   const container = document.getElementById('tvp-menu');
-  let menuContainerWidth = 400;
+  let menuContainerWidth = 600;
   let mouseDown = false;
 
   document.getElementById('tvp-resize-bar-container')?.addEventListener('mouseover', e => {
