@@ -15,7 +15,16 @@ innerDiv.addEventListener('click', e => {
     injectSideMenu();
   else
     tvp_menu.remove();
-})
+});
+
+button.addEventListener('mouseover', e => {
+  if (!isLightMode())
+    innerDiv.style.backgroundColor = '#2a2e39';
+});
+
+button.addEventListener('mouseout', e => {
+  innerDiv.style.backgroundColor = 'initial';
+});
 
 waitForElm('#drawing-toolbar').then(() => {
   document.getElementById('drawing-toolbar')?.children[0].children[0].children[0].children[0].children[2].children[0].insertAdjacentElement('beforebegin', button);

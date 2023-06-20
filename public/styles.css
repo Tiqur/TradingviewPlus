@@ -147,8 +147,5 @@ hr {
   justify-content: center;
   align-items: center;
   border-radius: 4px;
-}
-
-#tvp-menu-button > div:hover {
-  background: #2a2e39;
+  padding: 3px;
 }
