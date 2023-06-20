@@ -12,7 +12,7 @@ features['Toggle TVP Menu'] = new ToggleMenu({
   tooltip: 'Opens and closes the TVP menu',
   enabled: true,
   hotkey: {
-    key: 'a',
+    key: 's',
     alt: false,
     shift: false,
     ctrl: false,

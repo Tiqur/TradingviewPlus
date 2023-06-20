@@ -10,10 +10,10 @@ features['Ad-Blocker'] = new AdBlocker({
   tooltip: 'Blocks Ads + Pop-Ups',
   enabled: false,
   hotkey: {
-    key: null,
+    key: 'N/A',
     alt: false,
     shift: false,
-    ctrl: true,
+    ctrl: false,
     meta: false
   },
   category: 'Features'
