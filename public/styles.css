@@ -9,6 +9,10 @@
   pointer-events: none;
 }
 
+#tvp-menu-hidden {
+  display: none;
+}
+
 #tvp-menu {
   width: 400px;
   height: 100vh;
@@ -130,11 +134,21 @@ hr {
   display: inline;
 }
 
-#tpv-menu-button {
-  color: #b2b5be;
+#tvp-menu-button {
   width: auto;
   height: 36px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#tvp-menu-button > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+#tvp-menu-button > div:hover {
+  background: #2a2e39;
 }

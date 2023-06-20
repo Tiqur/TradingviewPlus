@@ -1,4 +1,3 @@
-console.log(Object.keys(features));
 function isLightMode(): boolean {
   return document.querySelector('[class*="theme-light"]') != null;
 }
@@ -80,63 +79,65 @@ function createMenuItem(value: FeatureClass) {
   return content_container;
 }
 
-// Inject side menu
-fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
-  document.body.insertAdjacentHTML('beforeend', html);
+function injectSideMenu() {
+  // Inject side menu
+  fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
+    document.body.insertAdjacentHTML('beforeend', html);
 
-  await waitForElm('[id="tvp-resize-bar"]');
-  initMenuResizeLogic();
+    await waitForElm('[id="tvp-resize-bar"]');
+    initMenuResizeLogic();
 
-  // Set to light theme if necessary
-  if (isLightMode())
-    (document.getElementById('tvp-menu') as HTMLElement).style.background = '#ffffff';
+    // Set to light theme if necessary
+    if (isLightMode())
+      (document.getElementById('tvp-menu') as HTMLElement).style.background = '#ffffff';
 
 
-  // Dynamically insert content and categoriesc
-  for (const key in features) {
-    const value = features[key];
-    const category = value.getCategory();
+    // Dynamically insert content and categoriesc
+    for (const key in features) {
+      const value = features[key];
+      const category = value.getCategory();
 
-    let parent;
-    parent = document.querySelector(`[id="tvp-${category}"]`);
+      let parent;
+      parent = document.querySelector(`[id="tvp-${category}"]`);
 
-    if (parent == null) {
-      parent = document.createElement('div');
-      parent.id = `tvp-${category}`;
-      parent.setAttribute('collapsed', 'true');
-      parent.className = `tvp-menu-category`;
-      const h = document.createElement('h2');
-      h.innerText = category;
-      parent.appendChild(h);
-      parent.appendChild(document.createElement('hr'))
-      document.getElementById('tvp-menu-content')?.insertAdjacentElement('beforeend', parent);
+      if (parent == null) {
+        parent = document.createElement('div');
+        parent.id = `tvp-${category}`;
+        parent.setAttribute('collapsed', 'true');
+        parent.className = `tvp-menu-category`;
+        const h = document.createElement('h2');
+        h.innerText = category;
+        parent.appendChild(h);
+        parent.appendChild(document.createElement('hr'))
+        document.getElementById('tvp-menu-content')?.insertAdjacentElement('beforeend', parent);
+      }
+
+      let category_content;
+      category_content = document.querySelector(`[id="tvp-${category}-content"]`);
+
+      if (category_content == null) {
+        category_content = document.createElement('div');
+        category_content.id = `tvp-${category}-content`;
+        category_content.className = `tvp-category-content`;
+        parent?.appendChild(category_content);
+        category_content.style.display = 'none';
+      }
+
+      const menu_item = createMenuItem(value);
+      category_content?.appendChild(menu_item);
     }
 
-    let category_content;
-    category_content = document.querySelector(`[id="tvp-${category}-content"]`);
+    // Dropdown collapse logic
+    const categories = document.querySelectorAll('.tvp-menu-category');
+    categories?.forEach(category => {
+      category.children[0].addEventListener('click', () => {
+        const collapsed = category.getAttribute('collapsed') === 'true';
+        category.setAttribute('collapsed', `${!collapsed}`);
 
-    if (category_content == null) {
-      category_content = document.createElement('div');
-      category_content.id = `tvp-${category}-content`;
-      category_content.className = `tvp-category-content`;
-      parent?.appendChild(category_content);
-      category_content.style.display = 'none';
-    }
-
-    const menu_item = createMenuItem(value);
-    category_content?.appendChild(menu_item);
-  }
-
-  // Dropdown collapse logic
-  const categories = document.querySelectorAll('.tvp-menu-category');
-  categories?.forEach(category => {
-    category.children[0].addEventListener('click', () => {
-      const collapsed = category.getAttribute('collapsed') === 'true';
-      category.setAttribute('collapsed', `${!collapsed}`);
-
-      // Toggle collapse
-      (category.children[2] as HTMLElement).style.display = !collapsed ? 'none' : 'initial';
+        // Toggle collapse
+        (category.children[2] as HTMLElement).style.display = !collapsed ? 'none' : 'initial';
+      });
     });
-  });
 
-});
+  });
+}
