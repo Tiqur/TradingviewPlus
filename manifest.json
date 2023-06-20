@@ -11,7 +11,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.tradingview.com/*"],
+      "matches": ["*://*.tradingview.com/chart/*"],
       "js": [
         "dist/waitForElem.js",
         "dist/FeatureClass.js",
