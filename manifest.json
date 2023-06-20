@@ -14,8 +14,8 @@
       "matches": ["*://*.tradingview.com/*"],
       "js": [
         "dist/FeatureClass.js",
-        "dist/features.js",
         "dist/main.js",
+        "dist/injectMenuButton.js",
         "dist/features/replay.js",
         "dist/features/auto.js",
         "dist/features/enableSelectTicker.js",

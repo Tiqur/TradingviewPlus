@@ -116,16 +116,15 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
     category_content = document.querySelector(`[id="tvp-${category}-content"]`);
 
     if (category_content == null) {
-      const category_content_container = document.createElement('div');
-      category_content_container.id = `tvp-${category}-content`;
-      category_content_container.className = `tvp-category-content`;
-      parent?.appendChild(category_content_container);
-      category_content_container.style.display = 'none';
+      category_content = document.createElement('div');
+      category_content.id = `tvp-${category}-content`;
+      category_content.className = `tvp-category-content`;
+      parent?.appendChild(category_content);
+      category_content.style.display = 'none';
     }
 
     const menu_item = createMenuItem(value);
     category_content?.appendChild(menu_item);
-    console.log(menu_item);
   }
 
   // Dropdown collapse logic

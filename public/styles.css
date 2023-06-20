@@ -129,3 +129,12 @@ hr {
   padding-left: 0.4em;
   display: inline;
 }
+
+#tpv-menu-button {
+  color: #b2b5be;
+  width: auto;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
