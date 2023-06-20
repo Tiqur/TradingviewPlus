@@ -6,45 +6,7 @@ if (typeof browser === "undefined") {
     var browser = chrome;
 }
 
-interface Feature {
-  name: string;
-  tooltip: string;
-  enabled: boolean;
-  hotkey: Hotkey | null;
-  category: 'Features' | 'Display' | 'Settings';
-}
-
-
-interface Hotkey {
-  key: string | null;
-  ctrl: boolean;
-  shift: boolean;
-  alt: boolean;
-  meta: boolean;
-}
-
 const features: Record<string, FeatureClass> = {};
-
-// Waits for element to load 
-function waitForElm(selector: string): Promise<Element | null> {
-    return new Promise((resolve) => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
-        }
-
-        const observer = new MutationObserver((mutations) => {
-            if (document.querySelector(selector)) {
-                resolve(document.querySelector(selector));
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
-    });
-}
 
 const questionMarkSvgString = `
 <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

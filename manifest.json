@@ -13,7 +13,10 @@
     {
       "matches": ["*://*.tradingview.com/*"],
       "js": [
+        "dist/waitForElem.js",
         "dist/FeatureClass.js",
+        "dist/Feature.js",
+        "dist/Hotkey.js",
         "dist/main.js",
         "dist/injectMenuButton.js",
         "dist/features/toggleMenu.js",
