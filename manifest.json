@@ -16,6 +16,7 @@
         "dist/FeatureClass.js",
         "dist/main.js",
         "dist/injectMenuButton.js",
+        "dist/features/toggleMenu.js",
         "dist/features/replay.js",
         "dist/features/auto.js",
         "dist/features/enableSelectTicker.js",
