@@ -8,6 +8,7 @@
       "rootDir": "src",
       "outDir": "dist",
       "noEmitOnError": true,
-      "typeRoots": [ "node_modules/@types" ]
+      "typeRoots": [ "node_modules/@types" ],
+      "lib": ["es2017", "dom"]
    }
 }

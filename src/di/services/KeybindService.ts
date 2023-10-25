@@ -1,6 +1,3 @@
-import Hotkey from "../../utils/Hotkey";
-import StorageService from "./StorageService";
-
 export default class HotkeyService {
   storageService!: StorageService;
   hotkeys: Map<string, Hotkey> = new Map();

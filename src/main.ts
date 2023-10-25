@@ -1,5 +1,3 @@
-import StorageService from "./di/services/StorageService";
-
 // hmmmm
 declare const chrome: any;
 

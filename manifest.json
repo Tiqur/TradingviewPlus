@@ -13,10 +13,14 @@
     {
       "matches": ["*://*.tradingview.com/chart/*"],
       "js": [
+        "dist/di/services/KeybindService.js",
+        "dist/di/services/StorageService.js",
+        "dist/utils/Hotkey.js",
+        "dist/utils/waitForElem.js",
         "dist/main.js"
       ],
       "css": [
-        "public/styles.css"
+        "dist/styles.css"
       ],
       "web_accessible_resources": [
         "public/menu.html"

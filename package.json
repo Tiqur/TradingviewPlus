@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/firefox-webext-browser": "^111.0.3",
     "nodemon": "^3.0.1",
     "sass": "^1.69.4",
     "typescript": "^5.2.2"

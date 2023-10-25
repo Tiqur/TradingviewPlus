@@ -1,4 +1,4 @@
-export default class StorageService {
+class StorageService {
   key!: string;
   storage: Map<string, any> = new Map();
 

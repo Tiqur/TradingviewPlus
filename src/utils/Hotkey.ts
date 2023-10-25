@@ -1,4 +1,4 @@
-export default interface Hotkey {
+interface Hotkey {
   key: string | null;
   ctrl: boolean;
   shift: boolean;
