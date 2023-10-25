@@ -4,10 +4,10 @@ $textColor: #4e4b66;
 
 /* Boilerplate */
 :root {
-  font-size: variables.$fontSize;
+  font-size: $fontSize;
   box-sizing: border-box;
-  font-family: variables.$fontFamily;
-  color: variables.$textColor;
+  font-family: $fontFamily;
+  color: $textColor;
 }
 
 *,
