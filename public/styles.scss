@@ -1,1 +1,31 @@
+$fontSize: 16px;
+$fontFamily: Arial, sans-serif;
+$textColor: #4e4b66;
 
+/* Boilerplate */
+:root {
+  font-size: variables.$fontSize;
+  box-sizing: border-box;
+  font-family: variables.$fontFamily;
+  color: variables.$textColor;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: initial;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style-type: none;
+}
+
+button {
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
