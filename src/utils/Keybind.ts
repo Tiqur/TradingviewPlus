@@ -1,4 +1,4 @@
-export default class HotkeyService {
+export default class Keybind {
   storageService!: StorageService;
   hotkeys: Map<string, Hotkey> = new Map();
 
