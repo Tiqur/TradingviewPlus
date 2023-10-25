@@ -4,6 +4,7 @@ import StorageService from "./StorageService";
 export default class HotkeyService {
   currentHotkey!: Hotkey;
   storageService!: StorageService;
+  hotkeys: Map<string, Hotkey> = new Map();
 
   constructor(h: Hotkey, s: StorageService) {
     this.setKeybind(h);
