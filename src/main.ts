@@ -13,42 +13,18 @@ if (typeof browser === "undefined") {
   // Disable default TV hotkeys
   document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
-  const storageService = new StorageService('tvp-local-config');
-  console.log(await storageService.fetchStorage());
-
+  // Holds all features
   const features = new Map<string, Feature>;
 
+  // Init storage service
+  const storageService = new StorageService('tvp-local-config');
 
-
-  class ToggleAutoScale extends Feature {
-    
-    constructor() {
-      super(
-        'Toggle Auto Scale',
-        'Toggles the chart\'s "Auto" scale',
-        true,
-        new Keybind({
-          key: 'a',
-          ctrl: false,
-          shift: false,
-          alt: false,
-          meta: false
-        }),
-        Category.TVP,
-        storageService
-      );
-    }
-
-    init() {
-      document.addEventListener('keydown', e => {
-        if (this.checkTrigger(e) && this.isEnabled()) {
-          (document.querySelector('[aria-label="Toggle auto scale"]') as HTMLElement).click();
-        }
-      });
-    }
-  }
-
-  features.set('Toggle Auto Scale', new ToggleAutoScale())
+  // Register features
+  features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
+  //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
+  //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
+  //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
+  //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
 
   // [TEMP] Fetch and inject HTML 
   // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
