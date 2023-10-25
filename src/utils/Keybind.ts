@@ -1,17 +1,12 @@
 class Keybind {
-  storageService!: StorageService;
-  hotkeys: Map<string, Hotkey> = new Map();
+  hotkey!: Hotkey;
 
-  constructor(h: Hotkey, s: StorageService) {
-    this.setStorageService(s);
+  constructor(h: Hotkey) {
   }
 
-  setStorageService(s: StorageService) {
-    this.storageService = s;
-  }
-
-  setKeybind(key: string, h: Hotkey) {
+  setKeybind(key: string, h: Hotkey, s: StorageService): Hotkey {
     // Use storage service to update local storage
+    return this.hotkey;
   }
 
   getKeybind() {
