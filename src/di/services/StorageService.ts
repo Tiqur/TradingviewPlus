@@ -18,7 +18,7 @@ class StorageService {
   }
 
   private async updateBrowserStorage(storage: Map<string, any>) {
-    await browser.storage.local.set({"localConfig": JSON.stringify(Object.fromEntries(storage))})
+    await browser.storage.local.set({"tvp-local-config": JSON.stringify(Object.fromEntries(storage))})
   }
 
   private async fetchStorage(): Promise<object> {
@@ -36,5 +36,9 @@ class StorageService {
 
   public getValue(key: string): any {
     return this.storage.get(key);
+  }
+
+  public async printStorage() {
+    console.log(this.storage, await this.fetchStorage());
   }
 }

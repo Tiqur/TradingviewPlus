@@ -6,6 +6,7 @@ abstract class Feature {
   private enabled: boolean;
   private hotkey: Hotkey;
   private category: Category;
+  private storageService: StorageService;
 
   constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, storageService: StorageService) {
     this.name = name;
@@ -13,7 +14,7 @@ abstract class Feature {
     this.enabled = enabled;
     this.hotkey = hotkey;
     this.category = category;
-    //this.storageService = storageService;
+    this.storageService = storageService;
     this.init();
   }
 
@@ -27,17 +28,20 @@ abstract class Feature {
 
   setHotkey(newHotkey: Hotkey): boolean {
     // Check for conflicts
-    if (false) {
-      // Return false if conflicts
-      return false;
-    }
+      features.forEach(f => {
+        if (f.hotkey === newHotkey) {
+          // Return false if conflicts
+          return false;
+        }
+      })
 
     // Set new hotkey
     this.hotkey = newHotkey;
 
-    // TODO
     // Set to local storage
-    // ...
+    this.storageService.setValue(this.name, this.getJson());
+    console.log(this.getJson())
+    this.storageService.printStorage();
 
     // Return true if successfully set
     return true;
@@ -61,18 +65,13 @@ abstract class Feature {
     return this.enabled;
   }
 
-  saveToLocalStorage() {
-
-  }
-
   getJson() {
-    return {
+    return JSON.stringify({
       name: this.name,
       tooltip: this.tooltip,
       enabled: this.enabled,
       hotkey: this.hotkey,
       category: this.category,
-    };
+    });
   }
-
 }

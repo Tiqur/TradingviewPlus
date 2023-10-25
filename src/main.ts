@@ -6,6 +6,8 @@ if (typeof browser === "undefined") {
     var browser = chrome;
 }
 
+const features = new Map<string, Feature>;
+
 // Main code
 (async () => {
   console.log('Starting TradingViewPlus...');
@@ -14,13 +16,19 @@ if (typeof browser === "undefined") {
   document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
   // Holds all features
-  const features = new Map<string, Feature>;
 
   // Init storage service
   const storageService = new StorageService('tvp-local-config');
 
   // Register features
   features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
+  features.get('Toggle Auto Scale')?.setHotkey({
+        key: 'p',
+        ctrl: false,
+        shift: false,
+        alt: false,
+        meta: false
+      })
   //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
   //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
   //features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
