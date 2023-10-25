@@ -1,6 +1,4 @@
-import Keybind from "../utils/Keybind";
-
-export default class KeybindProxy {
+class KeybindProxy {
   keybind!: Keybind;
 
   // What the keybind proxy should call when fired
