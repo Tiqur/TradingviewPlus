@@ -1,3 +1,3 @@
-class StorageService {
+export default class StorageService {
 
 }
