@@ -1,20 +1,19 @@
 enum Category { 'TV', 'TVP' };
 
 abstract class Feature {
-  name: string;
-  tooltip: string;
-  enabled: boolean;
-  keybind: Keybind;
-  category: Category;
-  storageService!: StorageService;
+  private name: string;
+  private tooltip: string;
+  private enabled: boolean;
+  private hotkey: Hotkey;
+  private category: Category;
 
-  constructor(name: string, tooltip: string, enabled: boolean, keybind: Keybind, category: Category, storageService: StorageService) {
+  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, storageService: StorageService) {
     this.name = name;
     this.tooltip = tooltip;
     this.enabled = enabled;
-    this.keybind = keybind;
+    this.hotkey = hotkey;
     this.category = category;
-    this.storageService = storageService;
+    //this.storageService = storageService;
     this.init();
   }
 
@@ -26,17 +25,24 @@ abstract class Feature {
     return this.name;
   }
 
+  setHotkey(newHotkey: Hotkey) {
+    // Check for conflicts
+    // ...
+    this.hotkey = newHotkey;
+    // ...
+    // Set to local storage
+  }
+
   getHotkey() {
+    return this.hotkey;
   }
 
   checkTrigger(e: KeyboardEvent): boolean {
-    const hk = this.keybind.getHotkey();
-
-    return hk.key?.toLowerCase() == e.key.toLowerCase()
-      && hk.alt == e.altKey
-      && hk.ctrl == e.ctrlKey
-      && hk.meta == e.metaKey
-      && hk.shift == e.shiftKey;
+    return this.hotkey.key?.toLowerCase() == e.key.toLowerCase()
+      && this.hotkey.alt == e.altKey
+      && this.hotkey.ctrl == e.ctrlKey
+      && this.hotkey.meta == e.metaKey
+      && this.hotkey.shift == e.shiftKey;
   }
 
   abstract init(): void;
@@ -45,9 +51,6 @@ abstract class Feature {
     return this.enabled;
   }
 
-  setHotkey(h: Hotkey) {
-  }
-  
   saveToLocalStorage() {
 
   }
