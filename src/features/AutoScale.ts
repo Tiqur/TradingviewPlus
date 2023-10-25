@@ -5,13 +5,13 @@ class ToggleAutoScale extends Feature {
       'Toggle Auto Scale',
       'Toggles the chart\'s "Auto" scale',
       true,
-      new Keybind({
+      {
         key: 'a',
         ctrl: false,
         shift: false,
         alt: false,
         meta: false
-      }),
+      },
       Category.TVP,
       storageService
     );

@@ -11,21 +11,30 @@ class StorageService {
 
       // Use locally stored data if available
       if (!this.storageIsEmpty(storageObj)) {
-       this.setStorage(new Map(Object.entries(JSON.parse(storageObj[key]))));
+        this.storage = new Map(Object.entries(JSON.parse(storageObj[key])));
+        await this.updateBrowserStorage(this.storage);
       }
     })
   }
 
-  setStorage(newConfig: Map<string, any>) {
-
+  private async updateBrowserStorage(storage: Map<string, any>) {
+    await browser.storage.local.set({"localConfig": JSON.stringify(Object.fromEntries(storage))})
   }
 
-  async fetchStorage(): Promise<object> {
+  private async fetchStorage(): Promise<object> {
     return await browser.storage.local.get(this.key);
   }
 
-  storageIsEmpty(storageObj: object) {
+  private storageIsEmpty(storageObj: object) {
     return Object.keys(storageObj).length === 0;
   }
 
+  public async setValue(key: string, value: any) {
+    this.storage.set(key, value);
+    this.updateBrowserStorage(this.storage);
+  }
+
+  public getValue(key: string): any {
+    return this.storage.get(key);
+  }
 }

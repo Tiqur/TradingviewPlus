@@ -25,15 +25,25 @@ abstract class Feature {
     return this.name;
   }
 
-  setHotkey(newHotkey: Hotkey) {
+  setHotkey(newHotkey: Hotkey): boolean {
     // Check for conflicts
-    // ...
+    if (false) {
+      // Return false if conflicts
+      return false;
+    }
+
+    // Set new hotkey
     this.hotkey = newHotkey;
-    // ...
+
+    // TODO
     // Set to local storage
+    // ...
+
+    // Return true if successfully set
+    return true;
   }
 
-  getHotkey() {
+  getHotkey(): Hotkey {
     return this.hotkey;
   }
 
@@ -47,7 +57,7 @@ abstract class Feature {
 
   abstract init(): void;
 
-  isEnabled() {
+  isEnabled(): boolean {
     return this.enabled;
   }
 
@@ -60,7 +70,7 @@ abstract class Feature {
       name: this.name,
       tooltip: this.tooltip,
       enabled: this.enabled,
-      keybind: this.keybind,
+      hotkey: this.hotkey,
       category: this.category,
     };
   }

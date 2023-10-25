@@ -1,23 +1,23 @@
 class KeybindProxy {
-  keybind!: Keybind;
+  //keybind!: Keybind;
 
-  // What the keybind proxy should call when fired
-  proxyHotkey!: Hotkey;
+  //// What the keybind proxy should call when fired
+  //proxyHotkey!: Hotkey;
 
-  constructor(keybind: Keybind, proxyHotkey: Hotkey) {
-    this.setKeybind(keybind);
-    this.proxyHotkey = proxyHotkey;
-  }
+  //constructor(keybind: Keybind, proxyHotkey: Hotkey) {
+  //  this.setKeybind(keybind);
+  //  this.proxyHotkey = proxyHotkey;
+  //}
 
-  setKeybind(keybind: Keybind) {
-    this.keybind = keybind;
-  }
+  //setKeybind(keybind: Keybind) {
+  //  this.keybind = keybind;
+  //}
 
-  getKeybind() {
-    return this.keybind;
-  }
+  //getKeybind() {
+  //  return this.keybind;
+  //}
 
-  fire() {
-    // Call proxyHotkey ( emit necessary events )
-  }
+  //fire() {
+  //  // Call proxyHotkey ( emit necessary events )
+  //}
 }
