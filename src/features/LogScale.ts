@@ -1,12 +1,12 @@
-class ToggleAutoScale extends Feature {
+class ToggleLogScale extends Feature {
   
   constructor(storageService: StorageService) {
     super(
-      'Toggle Auto Scale',
-      'Toggles the chart\'s "Auto" scale',
+      'Toggle Log Scale',
+      'Toggles the chart\'s "Log" scale',
       true,
       {
-        key: 'a',
+        key: 'l',
         ctrl: false,
         shift: false,
         alt: false,
@@ -20,7 +20,7 @@ class ToggleAutoScale extends Feature {
   init() {
     document.addEventListener('keydown', e => {
       if (this.checkTrigger(e) && this.isEnabled()) {
-        (document.querySelector('[aria-label="Toggle auto scale"]') as HTMLElement).click();
+        (document.querySelector('[aria-label="Toggle log scale"]') as HTMLElement).click();
       }
     });
   }
