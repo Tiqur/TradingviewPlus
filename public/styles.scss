@@ -32,17 +32,44 @@ button {
 
 
 #tvp-menu {
-  z-index: 99999;
-  width: 30vw;
+  display: flex;
+  position: relative;
+  width: 40vw;
   height: 100vh;
-  position: fixed;
   right: 0;
   top: 0;
+  z-index: 99999;
+  position: fixed;
   background: blue;
-  padding-inline: clamp(50px, 10vw, 150px);
 
-  h1 {
-    text-align: center;
+  section {
+    height: 100vh;
+    width: clamp(250px, 80%, 500px);
+    margin-inline: auto;
+
+    h1 {
+      text-align: center;
+    }
+  }
+
+  #handle-container {
+    height: 100vh;
+    width: 20px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  #handle {
+    background: white;
+    height: 80px;
+    width: 4px;
   }
 }
-
