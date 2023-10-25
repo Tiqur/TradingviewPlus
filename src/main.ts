@@ -14,5 +14,12 @@ if (typeof browser === "undefined") {
   document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
   const storageService = new StorageService('tvp-local-config');
-  console.log(storageService.fetchStorage());
-})
+  console.log(await storageService.fetchStorage());
+
+
+  // [TEMP] Fetch and inject HTML 
+  // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
+  fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
+    document.body.insertAdjacentHTML('beforeend', html);
+  })
+})();
