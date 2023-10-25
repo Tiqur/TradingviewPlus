@@ -21,6 +21,7 @@ document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 // Register features
 features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
 features.set('Toggle Log Scale', new ToggleLogScale(storageService));
+features.set('Toggle Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageService));
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,
@@ -31,8 +32,8 @@ features.set('Toggle Log Scale', new ToggleLogScale(storageService));
 
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
-fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
-  if (document.getElementById('tvp-menu') == null) {
-    document.body.insertAdjacentHTML('beforeend', html);
-  }
-})
+//fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
+//  if (document.getElementById('tvp-menu') == null) {
+//    document.body.insertAdjacentHTML('beforeend', html);
+//  }
+//})

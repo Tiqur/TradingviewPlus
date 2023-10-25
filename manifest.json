@@ -20,6 +20,7 @@
         "dist/features/HotkeyProxy.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
+        "dist/features/AutoTimeframeColors.js",
         "dist/main.js"
       ],
       "css": [
