@@ -2,14 +2,14 @@ class Keybind {
   hotkey!: Hotkey;
 
   constructor(h: Hotkey) {
+    this.hotkey = h;
   }
 
-  setKeybind(key: string, h: Hotkey, s: StorageService): Hotkey {
+  setHotkey(key: string, h: Hotkey, s: StorageService) {
     // Use storage service to update local storage
-    return this.hotkey;
   }
 
-  getKeybind() {
-
+  getHotkey(): Hotkey {
+    return this.hotkey;
   }
 }

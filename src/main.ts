@@ -42,7 +42,7 @@ if (typeof browser === "undefined") {
     init() {
       document.addEventListener('keydown', e => {
         if (this.checkTrigger(e) && this.isEnabled()) {
-          (document.querySelector('[data-name="auto"]') as HTMLElement).click();
+          (document.querySelector('[aria-label="Toggle auto scale"]') as HTMLElement).click();
         }
       });
     }

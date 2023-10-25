@@ -8,11 +8,11 @@ abstract class Feature {
   category: Category;
   storageService!: StorageService;
 
-  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Keybind, category: Category, storageService: StorageService) {
+  constructor(name: string, tooltip: string, enabled: boolean, keybind: Keybind, category: Category, storageService: StorageService) {
     this.name = name;
     this.tooltip = tooltip;
     this.enabled = enabled;
-    this.keybind = hotkey;
+    this.keybind = keybind;
     this.category = category;
     this.storageService = storageService;
     this.init();
@@ -30,14 +30,13 @@ abstract class Feature {
   }
 
   checkTrigger(e: KeyboardEvent): boolean {
-    return true;
-    //const hk = this.keybind.getKeybind();
+    const hk = this.keybind.getHotkey();
 
-    //return hk.key?.toLowerCase() == e.key.toLowerCase()
-    //    && hk.alt == e.altKey
-    //    && hk.ctrl == e.ctrlKey
-    //    && hk.meta == e.metaKey
-    //    && hk.shift == e.shiftKey;
+    return hk.key?.toLowerCase() == e.key.toLowerCase()
+      && hk.alt == e.altKey
+      && hk.ctrl == e.ctrlKey
+      && hk.meta == e.metaKey
+      && hk.shift == e.shiftKey;
   }
 
   abstract init(): void;
