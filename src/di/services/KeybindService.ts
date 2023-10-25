@@ -2,12 +2,10 @@ import Hotkey from "../../utils/Hotkey";
 import StorageService from "./StorageService";
 
 export default class HotkeyService {
-  currentHotkey!: Hotkey;
   storageService!: StorageService;
   hotkeys: Map<string, Hotkey> = new Map();
 
   constructor(h: Hotkey, s: StorageService) {
-    this.setKeybind(h);
     this.setStorageService(s);
   }
 
@@ -15,8 +13,7 @@ export default class HotkeyService {
     this.storageService = s;
   }
 
-  setKeybind(h: Hotkey) {
-    this.currentHotkey = h;
+  setKeybind(key: string, h: Hotkey) {
     // Use storage service to update local storage
   }
 
