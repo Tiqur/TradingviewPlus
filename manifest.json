@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "TradingviewPlus",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
@@ -13,31 +13,7 @@
     {
       "matches": ["*://*.tradingview.com/chart/*"],
       "js": [
-        "dist/waitForElem.js",
-        "dist/FeatureClass.js",
-        "dist/Feature.js",
-        "dist/Hotkey.js",
-        "dist/main.js",
-        "dist/injectMenuButton.js",
-        "dist/features/toggleMenu.js",
-        "dist/features/replay.js",
-        "dist/features/auto.js",
-        "dist/features/enableSelectTicker.js",
-        "dist/features/lineWidth.js",
-        "dist/features/lineStyle.js",
-        "dist/features/copyPrice.js",
-        "dist/features/timeframeScroll.js",
-        "dist/features/scrollFeatures.js",
-        "dist/features/invertScale.js",
-        "dist/features/autoTimeframeColors.js",
-        "dist/features/toggleAutotimeframeColors.js",
-        "dist/features/snackbar.js",
-        "dist/features/deleteDrawing.js",
-        "dist/features/favoritesToolbar.js",
-        "dist/features/timeMovement.js",
-        "dist/features/scrollToMostRecentBar.js",
-        "dist/features/adblocker.js",
-        "dist/menu.js"
+        "dist/main.js"
       ],
       "css": [
         "public/styles.css"
