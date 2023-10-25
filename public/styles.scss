@@ -39,4 +39,10 @@ button {
   right: 0;
   top: 0;
   background: blue;
+  padding-inline: clamp(50px, 10vw, 150px);
+
+  h1 {
+    text-align: center;
+  }
 }
+
