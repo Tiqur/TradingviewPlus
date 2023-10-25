@@ -1,10 +1,13 @@
 export default class StorageService {
+  key!: string;
   storage: Map<string, any> = new Map();
 
   constructor(key: string) {
+    this.key = key;
+
     (async () => {
 
-      const storageObj: Record<string, any> = await this.fetchStorage(key);
+      const storageObj: Record<string, any> = await this.fetchStorage();
 
       // Use locally stored data if available
       if (!this.storageIsEmpty(storageObj)) {
@@ -17,8 +20,8 @@ export default class StorageService {
 
   }
 
-  async fetchStorage(key: string): Promise<object> {
-    return await browser.storage.local.get(key);
+  async fetchStorage(): Promise<object> {
+    return await browser.storage.local.get(this.key);
   }
 
   storageIsEmpty(storageObj: object) {
