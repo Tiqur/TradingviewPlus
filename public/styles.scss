@@ -1,34 +1,35 @@
 $fontSize: 16px;
 $fontFamily: Arial, sans-serif;
 $textColor: #4e4b66;
+$backgroundColor: #000000;
 
 /* Boilerplate */
-:root {
-  font-size: $fontSize;
-  box-sizing: border-box;
-  font-family: $fontFamily;
-  color: $textColor;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: initial;
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  list-style-type: none;
-}
-
-button {
-  border: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-}
+//:root {
+//  font-size: $fontSize;
+//  box-sizing: border-box;
+//  font-family: $fontFamily;
+//  color: $textColor;
+//}
+//
+//*,
+//*::before,
+//*::after {
+//  box-sizing: initial;
+//  margin: 0;
+//  padding: 0;
+//}
+//
+//li {
+//  list-style-type: none;
+//}
+//
+//button {
+//  border: none;
+//
+//  &:hover {
+//    cursor: pointer;
+//  }
+//}
 
 
 #tvp-menu {
@@ -40,16 +41,31 @@ button {
   top: 0;
   z-index: 99999;
   position: fixed;
-  background: blue;
+  background: $backgroundColor;
 
   section {
     height: 100vh;
     width: clamp(250px, 80%, 500px);
     margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     h1 {
       text-align: center;
     }
+
+    h2 {
+      background: red;
+      padding: 1.8rem 2rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+
+  .dropdown-content {
+    width: 100%;
+    background: blue;
   }
 
   #handle-container {
