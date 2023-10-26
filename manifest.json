@@ -31,6 +31,7 @@
         "dist/features/LineWidth.js",
         "dist/features/Replay.js",
         "dist/features/ScrollPriceScale.js",
+        "dist/features/ScrollToMostRecentBar.js",
         "dist/main.js"
       ],
       "css": [

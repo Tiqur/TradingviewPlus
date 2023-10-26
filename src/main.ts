@@ -39,6 +39,7 @@ features.set('Line Style', new LineStyle(storageService));
 features.set('Line Width', new LineWidth(storageService));
 features.set('Replay Mode', new ToggleReplay(storageService));
 features.set('Scroll Price Scale', new ScrollPriceScale(storageService));
+features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageService));
 
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
