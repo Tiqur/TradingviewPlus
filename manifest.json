@@ -28,6 +28,7 @@
         "dist/features/QuickToolbar.js",
         "dist/features/InvertScale.js",
         "dist/features/LineStyle.js",
+        "dist/features/LineWidth.js",
         "dist/main.js"
       ],
       "css": [
