@@ -25,6 +25,7 @@
         "dist/features/CopyPrice.js",
         "dist/features/DeleteDrawing.js",
         "dist/features/SymbolSearch.js",
+        "dist/features/QuickToolbar.js",
         "dist/main.js"
       ],
       "css": [
