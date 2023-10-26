@@ -26,6 +26,7 @@
         "dist/features/DeleteDrawing.js",
         "dist/features/SymbolSearch.js",
         "dist/features/QuickToolbar.js",
+        "dist/features/InvertScale.js",
         "dist/main.js"
       ],
       "css": [
