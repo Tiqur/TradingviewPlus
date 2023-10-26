@@ -54,19 +54,40 @@ $backgroundColor: #000000;
     h1 {
       text-align: center;
     }
+  }
 
-    h2 {
-      background: red;
-      padding: 1.8rem 2rem;
+  
+  .accordion {
+    width: 100%;
+
+    label {
       width: 100%;
-      margin-top: 1rem;
+      display: inline-block;
+      padding: 1.4rem 0rem;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .tab {
+      input {
+        opacity: 0;
+        z-index: -1;
+
+        &:checked ~ div {
+          max-height: initial;
+        }
+      }
+    
+      div {
+        max-height: 0;
+        overflow: hidden;
+      }
     }
   }
 
-  .dropdown-content {
-    width: 100%;
-    background: blue;
-  }
+
 
   #handle-container {
     height: 100vh;
