@@ -21,6 +21,8 @@ class QuickToolbar extends Feature {
   onMouseDown() {};
 
   onMouseMove() {};
+  onMouseWheel() {};
+  onKeyUp() {};
 
   onKeyDown(e: KeyboardEvent) {
     // TODO

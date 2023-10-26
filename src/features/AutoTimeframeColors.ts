@@ -31,6 +31,8 @@ class ToggleAutoTimeframeColors extends Feature {
 
   onKeyDown() {};
   onMouseMove() {};
+  onKeyUp() {};
+  onMouseWheel() {};
 
   // On canvas click
   onMouseDown(e: Event) {

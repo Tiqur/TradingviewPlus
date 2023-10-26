@@ -30,6 +30,7 @@
         "dist/features/LineStyle.js",
         "dist/features/LineWidth.js",
         "dist/features/Replay.js",
+        "dist/features/ScrollPriceScale.js",
         "dist/main.js"
       ],
       "css": [

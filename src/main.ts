@@ -20,8 +20,10 @@ document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
 // Register Events
 document.addEventListener('keydown', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyDown(event))});
+document.addEventListener('keyup', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyUp(event))});
 document.addEventListener('mousemove', (event: MouseEvent) => {[...features.values()].forEach(feature => feature.onMouseMove(event))});
 document.addEventListener('mousedown', (event: MouseEvent) => {[...features.values()].forEach(feature => feature.onMouseDown(event))});
+document.addEventListener('wheel', (event: WheelEvent) => {[...features.values()].forEach(feature => feature.onMouseWheel(event))}, true);
 
 // Register features
 features.set('Auto Scale', new ToggleAutoScale(storageService));
@@ -36,6 +38,7 @@ features.set('Invert Scale', new InvertScale(storageService));
 features.set('Line Style', new LineStyle(storageService));
 features.set('Line Width', new LineWidth(storageService));
 features.set('Replay Mode', new ToggleReplay(storageService));
+features.set('Scroll Price Scale', new ScrollPriceScale(storageService));
 
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',

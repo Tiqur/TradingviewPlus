@@ -20,6 +20,9 @@ class CopyPrice extends Feature {
 
   onMouseDown() {};
 
+  onKeyUp() {};
+  onMouseWheel() {};
+
   onMouseMove(e: MouseEvent) {
     // Keep track of mouse pos
     this.mousePos = [e.clientX, e.clientY]

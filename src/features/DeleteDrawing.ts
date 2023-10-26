@@ -22,6 +22,9 @@ class DeleteDrawing extends Feature {
 
   onMouseMove() {};
 
+  onKeyUp() {};
+  onMouseWheel() {};
+
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
       (document.querySelector('[data-name="remove"]') as HTMLElement).click()

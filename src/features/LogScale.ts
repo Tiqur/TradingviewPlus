@@ -22,6 +22,9 @@ class ToggleLogScale extends Feature {
 
   onMouseDown() {};
 
+  onMouseWheel() {};
+  onKeyUp() {};
+
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
       (document.querySelector('[aria-label="Toggle log scale"]') as HTMLElement).click();

@@ -22,6 +22,9 @@ class InvertScale extends Feature {
 
   onMouseMove() {};
 
+  onKeyUp() {};
+  onMouseWheel() {};
+
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
       // TODO

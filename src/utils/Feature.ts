@@ -20,8 +20,10 @@ abstract class Feature {
 
   public abstract init(): void;
   public abstract onKeyDown(e: KeyboardEvent): void;
+  public abstract onKeyUp(e: KeyboardEvent): void;
   public abstract onMouseMove(e: MouseEvent): void;
   public abstract onMouseDown(e: MouseEvent): void;
+  public abstract onMouseWheel(e: WheelEvent): void;
 
   public getCategory(): Category {
     return this.category;
@@ -61,7 +63,7 @@ abstract class Feature {
   }
 
   public checkTrigger(e: KeyboardEvent): boolean {
-    return this.hotkey.key?.toLowerCase() == e.key.toLowerCase()
+    return (this.hotkey.key == null || this.hotkey.key?.toLowerCase() == e.key.toLowerCase())
       && this.hotkey.alt == e.altKey
       && this.hotkey.ctrl == e.ctrlKey
       && this.hotkey.meta == e.metaKey

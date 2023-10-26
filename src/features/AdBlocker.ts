@@ -23,6 +23,10 @@ class ToggleAdBlocker extends Feature {
 
   onKeyDown() {};
 
+  onMouseWheel() {};
+
+  onKeyUp() {};
+
   init() {
 
     // Search for ad blocker close button and click once it appears

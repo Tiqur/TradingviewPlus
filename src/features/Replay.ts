@@ -21,6 +21,8 @@ class ToggleReplay extends Feature {
   onMouseDown() {};
 
   onMouseMove() {};
+  onMouseWheel() {};
+  onKeyUp() {};
 
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {

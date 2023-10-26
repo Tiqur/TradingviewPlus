@@ -20,7 +20,11 @@ class ToggleAutoScale extends Feature {
 
   onMouseDown() {};
 
+  onMouseWheel() {};
+
   onMouseMove() {};
+
+  onKeyUp() {};
 
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
