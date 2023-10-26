@@ -54,5 +54,6 @@ features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageServi
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
   if (document.getElementById('tvp-menu') == null) {
     document.body.insertAdjacentHTML('beforeend', html);
+    runAfterInjection();
   }
 })
