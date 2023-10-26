@@ -24,6 +24,7 @@
         "dist/features/AdBlocker.js",
         "dist/features/CopyPrice.js",
         "dist/features/DeleteDrawing.js",
+        "dist/features/SymbolSearch.js",
         "dist/main.js"
       ],
       "css": [

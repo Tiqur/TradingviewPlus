@@ -30,6 +30,7 @@ features.set('Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageServi
 features.set('Ad Blocker', new ToggleAdBlocker(storageService));
 features.set('Copy Price', new CopyPrice(storageService));
 features.set('Delete Drawing', new DeleteDrawing(storageService));
+features.set('Symbol Search', new SymbolSearch(storageService));
 
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
