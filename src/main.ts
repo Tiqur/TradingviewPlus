@@ -51,8 +51,8 @@ features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageServi
 
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
-//fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
-//  if (document.getElementById('tvp-menu') == null) {
-//    document.body.insertAdjacentHTML('beforeend', html);
-//  }
-//})
+fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
+  if (document.getElementById('tvp-menu') == null) {
+    document.body.insertAdjacentHTML('beforeend', html);
+  }
+})
