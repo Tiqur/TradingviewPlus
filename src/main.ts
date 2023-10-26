@@ -33,6 +33,7 @@ features.set('Delete Drawing', new DeleteDrawing(storageService));
 features.set('Symbol Search', new SymbolSearch(storageService));
 features.set('Quick Toolbar', new QuickToolbar(storageService));
 features.set('Invert Scale', new InvertScale(storageService));
+features.set('Line Style', new LineStyle(storageService));
 
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',

@@ -27,6 +27,7 @@
         "dist/features/SymbolSearch.js",
         "dist/features/QuickToolbar.js",
         "dist/features/InvertScale.js",
+        "dist/features/LineStyle.js",
         "dist/main.js"
       ],
       "css": [
