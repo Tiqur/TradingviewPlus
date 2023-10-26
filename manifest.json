@@ -17,7 +17,6 @@
         "dist/utils/waitForElem.js",
         "dist/utils/Feature.js",
         "dist/di/services/StorageService.js",
-        "dist/features/HotkeyProxy.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
