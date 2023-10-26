@@ -31,6 +31,7 @@
         "dist/features/Replay.js",
         "dist/features/ScrollPriceScale.js",
         "dist/features/ScrollToMostRecentBar.js",
+        "dist/features/ToggleMenu.js",
         "dist/main.js",
         "dist/index.js"
       ],

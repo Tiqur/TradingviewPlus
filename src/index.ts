@@ -4,6 +4,11 @@ function runAfterInjection() {
   let mouseDown = false;
   let menuContainerWidth = container?.getBoundingClientRect().width;
 
+  if (container && menuContainerWidth) {
+    container.style.right = -menuContainerWidth+'px';
+  }
+
+
   document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
 
   const handleContainer = document.getElementById("handle-container");
