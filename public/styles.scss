@@ -42,6 +42,7 @@ $backgroundColor: #000000;
   z-index: 99999;
   position: fixed;
   background: $backgroundColor;
+  transition: right 0.3s ease-out;
 
   section {
     height: 100vh;
