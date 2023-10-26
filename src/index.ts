@@ -8,11 +8,9 @@ function runAfterInjection() {
     container.style.right = -menuContainerWidth+'px';
   }
 
-
   document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
 
   const handleContainer = document.getElementById("handle-container");
-  console.log(handleContainer);
 
   handleContainer?.addEventListener('mousedown', e => {
     console.log('mousedown')

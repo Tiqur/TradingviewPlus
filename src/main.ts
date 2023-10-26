@@ -42,6 +42,11 @@ features.set('Scroll Price Scale', new ScrollPriceScale(storageService));
 features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageService));
 features.set('Toggle Menu', new ToggleMenu(storageService));
 
+
+const res = Array.from(features.keys()).filter(featureName => fuzzySearch('repl', featureName));
+console.log(res);
+
+
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,
