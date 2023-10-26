@@ -19,10 +19,11 @@ const storageService = new StorageService('tvp-local-config');
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
 // Register features
-features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
-features.set('Toggle Log Scale', new ToggleLogScale(storageService));
-features.set('Toggle Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageService));
-features.set('Toggle Ad Blocker', new ToggleAdBlocker(storageService));
+features.set('Auto Scale', new ToggleAutoScale(storageService));
+features.set('Log Scale', new ToggleLogScale(storageService));
+features.set('Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageService));
+features.set('Ad Blocker', new ToggleAdBlocker(storageService));
+features.set('Copy Price', new CopyPrice(storageService));
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,

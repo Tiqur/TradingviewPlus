@@ -18,15 +18,23 @@ abstract class Feature {
     this.init();
   }
 
-  getCategory(): Category {
+  public onKeyDown(e: KeyboardEvent) {
+
+  }
+
+  public onMouseMove(e: MouseEvent) {
+
+  }
+
+  public getCategory(): Category {
     return this.category;
   }
 
-  getName(): string {
+  public getName(): string {
     return this.name;
   }
 
-  setHotkey(newHotkey: Hotkey): boolean {
+  public setHotkey(newHotkey: Hotkey): boolean {
     // Check for conflicts
       features.forEach(f => {
         if (f.hotkey === newHotkey) {

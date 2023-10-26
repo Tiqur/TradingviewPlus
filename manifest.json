@@ -22,6 +22,7 @@
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
         "dist/features/AdBlocker.js",
+        "dist/features/CopyPrice.js",
         "dist/main.js"
       ],
       "css": [
