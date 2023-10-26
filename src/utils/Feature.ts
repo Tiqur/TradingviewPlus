@@ -18,13 +18,10 @@ abstract class Feature {
     this.init();
   }
 
-  public onKeyDown(e: KeyboardEvent) {
-
-  }
-
-  public onMouseMove(e: MouseEvent) {
-
-  }
+  public abstract init(): void;
+  public abstract onKeyDown(e: KeyboardEvent): void;
+  public abstract onMouseMove(e: MouseEvent): void;
+  public abstract onMouseDown(e: MouseEvent): void;
 
   public getCategory(): Category {
     return this.category;
@@ -55,15 +52,15 @@ abstract class Feature {
     return true;
   }
 
-  getHotkey(): Hotkey {
+  public getHotkey(): Hotkey {
     return this.hotkey;
   }
 
-  toggleEnabled() {
+  public toggleEnabled() {
     this.enabled = !this.enabled;
   }
 
-  checkTrigger(e: KeyboardEvent): boolean {
+  public checkTrigger(e: KeyboardEvent): boolean {
     return this.hotkey.key?.toLowerCase() == e.key.toLowerCase()
       && this.hotkey.alt == e.altKey
       && this.hotkey.ctrl == e.ctrlKey
@@ -71,13 +68,11 @@ abstract class Feature {
       && this.hotkey.shift == e.shiftKey;
   }
 
-  abstract init(): void;
-
-  isEnabled(): boolean {
+  public isEnabled(): boolean {
     return this.enabled;
   }
 
-  getJson() {
+  public getJson() {
     return JSON.stringify({
       name: this.name,
       tooltip: this.tooltip,

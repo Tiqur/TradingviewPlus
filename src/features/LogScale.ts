@@ -17,11 +17,16 @@ class ToggleLogScale extends Feature {
     );
   }
 
-  init() {
-    document.addEventListener('keydown', e => {
-      if (this.checkTrigger(e) && this.isEnabled()) {
-        (document.querySelector('[aria-label="Toggle log scale"]') as HTMLElement).click();
-      }
-    });
-  }
+
+  onMouseMove() {};
+
+  onMouseDown() {};
+
+  onKeyDown(e: KeyboardEvent) {
+    if (this.checkTrigger(e) && this.isEnabled()) {
+      (document.querySelector('[aria-label="Toggle log scale"]') as HTMLElement).click();
+    }
+  };
+
+  init() {}
 }

@@ -18,11 +18,14 @@ class CopyPrice extends Feature {
     );
   }
 
-  init() {
-    // Keep track of mouse pos
-    document.addEventListener('mousemove', e => {this.mousePos = [e.clientX, e.clientY]});
+  onMouseDown() {};
 
-    document.addEventListener('keydown', e => {
+  onMouseMove(e: MouseEvent) {
+    // Keep track of mouse pos
+    this.mousePos = [e.clientX, e.clientY]
+  };
+
+  onKeyDown(e: KeyboardEvent) {
       if (this.checkTrigger(e) && this.isEnabled()) {
         // Emit context menu event
         const canvas = document.querySelectorAll('.chart-gui-wrapper canvas')[1];
@@ -46,7 +49,6 @@ class CopyPrice extends Feature {
           }
         })
       }
-    });
-  }
-
+  };
+  init() {}
 }

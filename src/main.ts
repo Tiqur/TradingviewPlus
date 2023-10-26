@@ -18,12 +18,18 @@ const storageService = new StorageService('tvp-local-config');
 // Disable default TV hotkeys
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
+// Register Events
+document.addEventListener('keydown', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyDown(event))});
+document.addEventListener('mousemove', (event: MouseEvent) => {[...features.values()].forEach(feature => feature.onMouseMove(event))});
+document.addEventListener('mousedown', (event: MouseEvent) => {[...features.values()].forEach(feature => feature.onMouseDown(event))});
+
 // Register features
 features.set('Auto Scale', new ToggleAutoScale(storageService));
 features.set('Log Scale', new ToggleLogScale(storageService));
 features.set('Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageService));
 features.set('Ad Blocker', new ToggleAdBlocker(storageService));
 features.set('Copy Price', new CopyPrice(storageService));
+
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,

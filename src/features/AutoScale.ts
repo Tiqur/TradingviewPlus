@@ -17,11 +17,16 @@ class ToggleAutoScale extends Feature {
     );
   }
 
-  init() {
-    document.addEventListener('keydown', e => {
-      if (this.checkTrigger(e) && this.isEnabled()) {
-        (document.querySelector('[aria-label="Toggle auto scale"]') as HTMLElement).click();
-      }
-    });
+
+  onMouseDown() {};
+
+  onMouseMove() {};
+
+  onKeyDown(e: KeyboardEvent) {
+    if (this.checkTrigger(e) && this.isEnabled()) {
+      (document.querySelector('[aria-label="Toggle auto scale"]') as HTMLElement).click();
+    }
   }
+
+  init() {};
 }
