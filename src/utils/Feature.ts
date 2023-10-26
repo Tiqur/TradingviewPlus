@@ -51,6 +51,10 @@ abstract class Feature {
     return this.hotkey;
   }
 
+  toggleEnabled() {
+    this.enabled = !this.enabled;
+  }
+
   checkTrigger(e: KeyboardEvent): boolean {
     return this.hotkey.key?.toLowerCase() == e.key.toLowerCase()
       && this.hotkey.alt == e.altKey

@@ -22,6 +22,7 @@ document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 features.set('Toggle Auto Scale', new ToggleAutoScale(storageService));
 features.set('Toggle Log Scale', new ToggleLogScale(storageService));
 features.set('Toggle Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageService));
+features.set('Toggle Ad Blocker', new ToggleAdBlocker(storageService));
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,

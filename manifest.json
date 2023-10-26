@@ -21,6 +21,7 @@
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
+        "dist/features/AdBlocker.js",
         "dist/main.js"
       ],
       "css": [
