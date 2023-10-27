@@ -92,21 +92,26 @@ $backgroundColor: #000000;
 
   #handle-container {
     height: 100vh;
-    width: 20px;
+    width: 35px;
     position: absolute;
     left: 0;
     top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-left: 1px solid #363a45;
 
     &:hover {
       cursor: ew-resize;
     }
+
+    &:hover #handle {
+      background: #9598A1;
+    }
   }
 
   #handle {
-    background: white;
+    background: #787b86;
     height: 80px;
     width: 4px;
   }
