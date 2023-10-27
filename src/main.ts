@@ -43,10 +43,6 @@ features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageServi
 features.set('Toggle Menu', new ToggleMenu(storageService));
 
 
-const res = Array.from(features.keys()).filter(featureName => fuzzySearch('repl', featureName));
-console.log(res);
-
-
 //features.get('Toggle Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,

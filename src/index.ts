@@ -4,14 +4,14 @@ function runAfterInjection() {
   let mouseDown = false;
   let menuContainerWidth = container?.getBoundingClientRect().width;
 
+  // Hide menu by default
   if (container && menuContainerWidth) {
     container.style.right = -menuContainerWidth+'px';
   }
 
+  // Menu resize logic
   document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
-
   const handleContainer = document.getElementById("handle-container");
-
   handleContainer?.addEventListener('mousedown', e => {
     console.log('mousedown')
     mouseDown = true;
@@ -33,10 +33,33 @@ function runAfterInjection() {
     }
   });
 
+  injectFeatures(Array.from(features.values()));
+
+  // Fuzzy search
+  const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
+  textBox?.addEventListener('input', () => {
+    const result = Array.from(features.keys()).filter(featureName => fuzzySearch(textBox.value, featureName));
+    const featuresToInject: Feature[] = result.map(key => features.get(key)).filter(feature => feature !== undefined) as Feature[];
+    console.log(result);
+    injectFeatures(featuresToInject);
+  });
+
+}
+
+function injectFeatures(featuresArr: Feature[]) {
+  const TVContentContainer = document.getElementById('tradingview-dropdown-content-container');
+  const TVPContentContainer = document.getElementById('custom-dropdown-content-container');
+
+  // Clear prev items
+  if (TVPContentContainer)
+    TVPContentContainer.innerHTML = "";
+
+  // Clear prev items
+  if (TVContentContainer)
+    TVContentContainer.innerHTML = "";
+
 
   // Dynamically insert features into menu
-  const featuresArr = Array.from(features.values());
-
   featuresArr.forEach(feature => {
     const category = feature.getCategory();
     const p = document.createElement('p');
@@ -45,13 +68,12 @@ function runAfterInjection() {
     let categoryContainer;
     switch(category) {
       case Category.TV:
-        categoryContainer = document.getElementById('tradingview-dropdown-content-container');
+        categoryContainer = TVContentContainer;
         break;
       case Category.TVP:
-        categoryContainer = document.getElementById('custom-dropdown-content-container');
+        categoryContainer = TVPContentContainer;
         break;
     }
-
 
     categoryContainer?.appendChild(p);
   });
