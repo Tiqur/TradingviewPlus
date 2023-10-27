@@ -17,6 +17,7 @@
         "dist/utils/waitForElem.js",
         "dist/utils/Feature.js",
         "dist/utils/fuzzySearch.js",
+        "dist/utils/TVPMenu.js",
         "dist/di/services/StorageService.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
@@ -33,8 +34,7 @@
         "dist/features/ScrollPriceScale.js",
         "dist/features/ScrollToMostRecentBar.js",
         "dist/features/ToggleMenu.js",
-        "dist/main.js",
-        "dist/index.js"
+        "dist/main.js"
       ],
       "css": [
         "dist/styles.css"

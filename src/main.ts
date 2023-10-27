@@ -57,6 +57,6 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
   const tvpMenu = document.getElementById('tvp-menu');
   if (tvpMenu == null) {
     document.body.insertAdjacentHTML('beforeend', html);
-    runAfterInjection();
+    const menu = new TVPMenu();
   }
 })
