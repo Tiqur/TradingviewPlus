@@ -11,7 +11,6 @@ class TVPMenu {
     textBox?.addEventListener('input', () => {
       const result = Array.from(features.keys()).filter(featureName => fuzzySearch(textBox.value, featureName));
       const featuresToInject: Feature[] = result.map(key => features.get(key)).filter(feature => feature !== undefined) as Feature[];
-      console.log(result);
       this.injectFeatures(featuresToInject);
     });
   }
@@ -63,12 +62,12 @@ class TVPMenu {
     // Menu resize logic
     document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
     const handleContainer = document.getElementById("handle-container");
-    handleContainer?.addEventListener('mousedown', e => {
+    handleContainer?.addEventListener('mousedown', () => {
       console.log('mousedown')
       mouseDown = true;
     });
 
-    document.addEventListener('mouseup', e => {
+    document.addEventListener('mouseup', () => {
       mouseDown = false;
     });
 
