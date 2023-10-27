@@ -61,5 +61,6 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
   if (tvpMenu == null) {
     document.body.insertAdjacentHTML('beforeend', html);
     menu.init();
+    menu.open();
   }
 })

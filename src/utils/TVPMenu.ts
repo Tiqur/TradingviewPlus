@@ -81,6 +81,25 @@ class TVPMenu {
 
     const dropdownContent = document.createElement('div');
 
+    const hotkeyLabel = document.createElement('span');
+    hotkeyLabel.className = 'hotkeyLabel';
+    let hotkeyString = "";
+    const hotkey = feature.getHotkey();
+
+    if (hotkey.alt)
+      hotkeyString += "Alt + "
+    else if (hotkey.ctrl)
+      hotkeyString += "Ctrl + "
+    else if (hotkey.shift)
+      hotkeyString += "Shift + "
+    else if (hotkey.meta)
+      hotkeyString += "Meta + "
+
+    hotkeyString += hotkey.key as string;
+
+    hotkeyLabel.innerText = hotkeyString;
+    h2.appendChild(hotkeyLabel);
+
     // For testing
     dropdownContent.innerText = "test";
 

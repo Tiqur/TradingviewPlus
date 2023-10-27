@@ -42,6 +42,20 @@ $backgroundColor: #000000;
     }
   }
 
+  .hotkeyLabel {
+    position: absolute;
+    right: 0;
+    display: inline-block;
+    min-width: 34px;
+    line-height: 34px;
+    height: 34px;
+    border: 1px solid #434651;
+    border-radius: 6px;
+    box-shadow: 0 2px 0 #434651;
+    text-align: center;
+    z-index: 1;
+  }
+
   
   .accordion {
     width: 100%;
@@ -103,6 +117,8 @@ $backgroundColor: #000000;
     h2 {
       font-size: 1em;
       display: flex;
+      align-items: center;
+      position: relative;
     }
 
     input {
