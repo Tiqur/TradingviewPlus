@@ -12,7 +12,7 @@ class QuickToolbar extends Feature {
         alt: false,
         meta: false
       },
-      Category.TV,
+      Category.TVP,
       storageService
     );
   }

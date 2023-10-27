@@ -12,7 +12,7 @@ class DeleteDrawing extends Feature {
         alt: false,
         meta: false
       },
-      Category.TVP,
+      Category.TV,
       storageService
     );
   }

@@ -2,7 +2,7 @@ class InvertScale extends Feature {
   
   constructor(storageService: StorageService) {
     super(
-      'Inverts Scale',
+      'Invert Scale',
       'Inverts the chart\'s scale (y-axis)',
       true,
       {
