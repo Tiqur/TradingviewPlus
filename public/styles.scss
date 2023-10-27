@@ -31,7 +31,7 @@ $backgroundColor: #000000;
         margin: 2rem 0 0.4rem 0;
       }
 
-      input {
+      input[type="text"] {
         border: 1px solid #787b86;
         border-radius: 4px;
         height: 1.6rem;
@@ -68,7 +68,7 @@ $backgroundColor: #000000;
     }
 
     .tab {
-      input {
+      .hidden-input {
         opacity: 0;
         z-index: -1;
         display: none;
@@ -97,15 +97,17 @@ $backgroundColor: #000000;
 
     label {
       border-bottom: none;
-      margin: 0;
+      margin: 0 0 0 1em;
     }
 
     h2 {
       font-size: 1em;
+      display: flex;
+    }
+
+    input {
     }
   }
-
-
 
   #handle-container {
     height: 100vh;

@@ -66,8 +66,13 @@ class TVPMenu {
     tab.className = 'tab';
 
     const input = document.createElement('input');
+    input.className = 'hidden-input';
     input.type = 'checkbox';
     input.id = id;
+
+    const checkBox = document.createElement('input');
+    checkBox.type = 'checkbox';
+    checkBox.checked = feature.isEnabled();
 
     const h2 = document.createElement('h2');
     const label = document.createElement('label');
@@ -79,6 +84,7 @@ class TVPMenu {
     // For testing
     dropdownContent.innerText = "test";
 
+    h2.appendChild(checkBox);
     h2.appendChild(label);
     tab.appendChild(input);
     tab.appendChild(h2);
