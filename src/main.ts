@@ -16,6 +16,7 @@ const storageService = new StorageService('tvp-local-config');
 
 // Init menu
 const menu = new TVPMenu();
+menu.initEventSuppression();
 
 // Disable default TV hotkeys
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
