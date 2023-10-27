@@ -46,9 +46,9 @@ abstract class Feature {
     this.hotkey = newHotkey;
 
     // Set to local storage
-    this.storageService.setValue(this.name, this.getJson());
-    console.log(this.getJson())
-    this.storageService.printStorage();
+    this.saveToLocalStorage();
+    //console.log(this.getJson())
+    //this.storageService.printStorage();
 
     // Return true if successfully set
     return true;
@@ -60,6 +60,12 @@ abstract class Feature {
 
   public toggleEnabled() {
     this.enabled = !this.enabled;
+    this.saveToLocalStorage();
+  }
+
+  private saveToLocalStorage() {
+    // Set to local storage
+    this.storageService.setValue(this.name, this.getJson());
   }
 
   public checkTrigger(e: KeyboardEvent): boolean {

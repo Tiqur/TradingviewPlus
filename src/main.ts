@@ -45,7 +45,7 @@ features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageServi
 features.set('Toggle Menu', new ToggleMenu(storageService));
 
 
-//features.get('Toggle Auto Scale')?.setHotkey({
+//features.get('Auto Scale')?.setHotkey({
 //  key: 'p',
 //  ctrl: false,
 //  shift: false,
