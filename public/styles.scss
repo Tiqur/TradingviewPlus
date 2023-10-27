@@ -80,6 +80,15 @@ $backgroundColor: #000000;
       padding: 1.4rem 0rem;
       border-bottom: 1px solid #787b86;
       margin-bottom: 1rem;
+      position: relative;
+
+      svg {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.2s ease-out;
+      }
 
       &:hover {
         cursor: pointer;
@@ -93,6 +102,10 @@ $backgroundColor: #000000;
 
         &:checked ~ div {
           max-height: initial;
+        }
+
+        &:checked ~ h2 label svg {
+          transform: rotate(180deg) translateY(50%);
         }
       }
     
