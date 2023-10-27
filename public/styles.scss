@@ -3,35 +3,6 @@ $fontFamily: Arial, sans-serif;
 $textColor: #4e4b66;
 $backgroundColor: #000000;
 
-/* Boilerplate */
-//:root {
-//  font-size: $fontSize;
-//  box-sizing: border-box;
-//  font-family: $fontFamily;
-//  color: $textColor;
-//}
-//
-//*,
-//*::before,
-//*::after {
-//  box-sizing: initial;
-//  margin: 0;
-//  padding: 0;
-//}
-//
-//li {
-//  list-style-type: none;
-//}
-//
-//button {
-//  border: none;
-//
-//  &:hover {
-//    cursor: pointer;
-//  }
-//}
-
-
 #tvp-menu {
   display: flex;
   position: relative;
@@ -57,6 +28,7 @@ $backgroundColor: #000000;
 
       h1 {
         color: white;
+        margin: 2rem 0 0.4rem 0;
       }
 
       input {
