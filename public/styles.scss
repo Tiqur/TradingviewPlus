@@ -71,6 +71,7 @@ $backgroundColor: #000000;
       input {
         opacity: 0;
         z-index: -1;
+        display: none;
 
         &:checked ~ div {
           max-height: initial;
@@ -80,11 +81,27 @@ $backgroundColor: #000000;
           transform: rotate(180deg) translateY(50%);
         }
       }
-    
-      div {
+
+      & > div {
         max-height: 0;
         overflow: hidden;
       }
+    }
+  }
+
+
+  .feature {
+    @extend .accordion;
+    width: 95%;
+    margin-inline: auto;
+
+    label {
+      border-bottom: none;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 1em;
     }
   }
 

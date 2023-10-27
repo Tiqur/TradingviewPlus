@@ -46,6 +46,10 @@ class TVPMenu {
     });
   }
 
+  //createFeatureHTML(feature: Feature): HTMLElement {
+  //  
+  //}
+
   injectFeatures(featuresArr: Feature[]) {
     const TVContentContainer = document.getElementById('tradingview-dropdown-content-container');
     const TVPContentContainer = document.getElementById('custom-dropdown-content-container');
