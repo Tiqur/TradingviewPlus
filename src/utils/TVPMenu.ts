@@ -46,9 +46,45 @@ class TVPMenu {
     });
   }
 
-  //createFeatureHTML(feature: Feature): HTMLElement {
-  //  
-  //}
+  //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+  makeid(length: number) {
+      let result = '';
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = characters.length;
+      let counter = 0;
+      while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+      }
+      return result;
+  }
+
+  createFeatureHTML(feature: Feature): HTMLElement {
+    const id = this.makeid(8);
+
+    const tab = document.createElement('div');
+    tab.className = 'tab';
+
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = id;
+
+    const h2 = document.createElement('h2');
+    const label = document.createElement('label');
+    label.setAttribute('for', id);
+    label.innerText = feature.getName();
+
+    const dropdownContent = document.createElement('div');
+
+    // For testing
+    dropdownContent.innerText = "test";
+
+    h2.appendChild(label);
+    tab.appendChild(input);
+    tab.appendChild(h2);
+    tab.appendChild(dropdownContent);
+    return tab;
+  }
 
   injectFeatures(featuresArr: Feature[]) {
     const TVContentContainer = document.getElementById('tradingview-dropdown-content-container');
@@ -66,8 +102,7 @@ class TVPMenu {
     // Dynamically insert features into menu
     featuresArr.forEach(feature => {
       const category = feature.getCategory();
-      const p = document.createElement('p');
-      p.innerText = feature.getName();
+      const featureHTML = this.createFeatureHTML(feature);
 
       let categoryContainer;
       switch(category) {
@@ -79,7 +114,7 @@ class TVPMenu {
           break;
       }
 
-      categoryContainer?.appendChild(p);
+      categoryContainer?.appendChild(featureHTML);
     });
   }
 
