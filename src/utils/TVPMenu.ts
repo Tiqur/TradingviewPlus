@@ -1,5 +1,8 @@
 class TVPMenu {
   constructor() {
+  }
+
+  init() {
     this.initResizeLogic();
     this.injectFeatures(Array.from(features.values()));
     this.initFuzzySearch();
@@ -46,6 +49,13 @@ class TVPMenu {
 
       categoryContainer?.appendChild(p);
     });
+  }
+
+  toggle() {
+    const container = document.getElementById('tvp-menu');
+    if (!container) return;
+
+    container.style.right = container.style.right == '0px' ? -container.getBoundingClientRect().width+'px': '0px';
   }
 
   initResizeLogic() {

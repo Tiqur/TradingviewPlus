@@ -26,10 +26,7 @@ class ToggleMenu extends Feature {
 
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
-      const container = document.getElementById('tvp-menu');
-      if (!container) return;
-
-      container.style.right = container.style.right == '0px' ? -container.getBoundingClientRect().width+'px': '0px';
+      menu.toggle();
     }
   }
 

@@ -14,6 +14,8 @@ const features = new Map<string, Feature>;
 // Init storage service
 const storageService = new StorageService('tvp-local-config');
 
+// Init menu
+const menu = new TVPMenu();
 
 // Disable default TV hotkeys
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
@@ -57,6 +59,6 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
   const tvpMenu = document.getElementById('tvp-menu');
   if (tvpMenu == null) {
     document.body.insertAdjacentHTML('beforeend', html);
-    const menu = new TVPMenu();
+    menu.init();
   }
 })
