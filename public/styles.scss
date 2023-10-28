@@ -120,12 +120,20 @@ $backgroundColor: #000000;
       align-items: center;
     }
 
-    svg {
-      margin-left: 0.4rem;
+    button {
+      padding: none;
+      margin: none;
+      background: none;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       &:hover {
         cursor: pointer;
       }
+
+      margin-left: 0.4rem;
     }
   }
 
