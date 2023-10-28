@@ -3,13 +3,13 @@ class ContextMenu {
 
   }
 
-  renderList(position: [number, number], listItems: ContextMenuListItem[]) {
+  //renderList(position: [number, number], listItems: ContextMenuListItem[]) {
 
-  }
+  //}
 
-  renderMenu(position: [number, number], content: ContextMenuContent) {
+  //renderMenu(position: [number, number], content: ContextMenuContent) {
 
-  }
+  //}
 
   destroy() {
 
