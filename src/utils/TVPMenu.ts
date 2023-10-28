@@ -64,8 +64,13 @@ class TVPMenu {
     container.className = 'tvp-feature';
 
     function onDotsClick() {
-      const cm = new ContextMenu();
-      console.log('test');
+      const menu = document.getElementById('tvp-menu');
+      const dots = container.querySelector('svg');
+      if (!menu || !dots) return;
+      const x = dots.getBoundingClientRect().x - menu.getBoundingClientRect().x;
+      console.log(x)
+      const cm = new ContextMenu([x, dots.getBoundingClientRect().y]);
+      cm.render();
     }
 
     container.innerHTML = `

@@ -6,7 +6,7 @@ $backgroundColor: #000000;
 #tvp-menu {
   display: flex;
   position: relative;
-  width: 40vw;
+  width: 45vw;
   height: 100vh;
   right: 0;
   top: 0;
@@ -153,5 +153,14 @@ $backgroundColor: #000000;
     background: #787b86;
     height: 80px;
     width: 4px;
+  }
+
+
+  .contextMenu {
+    position: absolute;
+    width: 20rem;
+    height: 30rem;
+    background: coral;
+    z-index: 99999;
   }
 }
