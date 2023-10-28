@@ -65,7 +65,7 @@ class TVPMenu {
 
     container.innerHTML = `
       <span>
-        <input type="checkbox">
+        <input type="checkbox" checked="${feature.isEnabled()}">
         <p>${feature.getName()}</p>
       </span>
       <span>
