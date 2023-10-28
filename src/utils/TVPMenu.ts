@@ -60,29 +60,24 @@ class TVPMenu {
   }
 
   createFeatureHTML(feature: Feature): HTMLElement {
-    const id = this.makeid(8);
+    const container = document.createElement('div');
+    container.className = 'tvp-feature';
 
-    const tab = document.createElement('div');
-    tab.className = 'tab';
+    container.innerHTML = `
+      <span>
+        <input type="checkbox">
+        <p>${feature.getName()}</p>
+      </span>
+      <span>
+        <span class="hotkeyLabel">
+          ${this.generateHotkeyString(feature)}
+        </span>
+      </span>
+    `;
+    return container;
+  }
 
-    const input = document.createElement('input');
-    input.className = 'hidden-input';
-    input.type = 'checkbox';
-    input.id = id;
-
-    const checkBox = document.createElement('input');
-    checkBox.type = 'checkbox';
-    checkBox.checked = feature.isEnabled();
-
-    const h2 = document.createElement('h2');
-    const label = document.createElement('label');
-    label.setAttribute('for', id);
-    label.innerText = feature.getName();
-
-    const dropdownContent = document.createElement('div');
-
-    const hotkeyLabel = document.createElement('span');
-    hotkeyLabel.className = 'hotkeyLabel';
+  generateHotkeyString(feature: Feature) {
     let hotkeyString = "";
     const hotkey = feature.getHotkey();
 
@@ -96,19 +91,7 @@ class TVPMenu {
       hotkeyString += "Meta + "
 
     hotkeyString += hotkey.key as string;
-
-    hotkeyLabel.innerText = hotkeyString;
-    h2.appendChild(hotkeyLabel);
-
-    // For testing
-    dropdownContent.innerText = "test";
-
-    h2.appendChild(checkBox);
-    h2.appendChild(label);
-    tab.appendChild(input);
-    tab.appendChild(h2);
-    tab.appendChild(dropdownContent);
-    return tab;
+    return hotkeyString;
   }
 
   injectFeatures(featuresArr: Feature[]) {

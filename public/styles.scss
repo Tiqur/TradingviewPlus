@@ -43,8 +43,6 @@ $backgroundColor: #000000;
   }
 
   .hotkeyLabel {
-    position: absolute;
-    right: 0;
     display: inline-block;
     min-width: 34px;
     line-height: 34px;
@@ -104,24 +102,15 @@ $backgroundColor: #000000;
   }
 
 
-  .feature {
-    @extend .accordion;
+  .tvp-feature {
     width: 95%;
     margin-inline: auto;
-
-    label {
-      border-bottom: none;
-      margin: 0 0 0 1em;
-    }
-
-    h2 {
-      font-size: 1em;
-      display: flex;
-      align-items: center;
-      position: relative;
-    }
-
-    input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    p {
+      display: inline-block;
     }
   }
 
