@@ -1,6 +1,6 @@
 class QuickToolbar extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Quick Toolbar',
       'Select tools from toolbar using keys 1-9',
@@ -13,7 +13,6 @@ class QuickToolbar extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
   }
 

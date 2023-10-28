@@ -1,6 +1,6 @@
 class InvertScale extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Invert Scale',
       'Inverts the chart\'s scale (y-axis)',
@@ -13,7 +13,6 @@ class InvertScale extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

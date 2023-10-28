@@ -12,7 +12,7 @@ const colors: Record<string, number> = {
 class ToggleAutoTimeframeColors extends Feature {
   canvas!: HTMLCanvasElement;
 
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Toggle Auto Timeframe Colors',
       'Automatically changes tool color on click',
@@ -25,7 +25,6 @@ class ToggleAutoTimeframeColors extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
 
     this.addContextMenuOptions([

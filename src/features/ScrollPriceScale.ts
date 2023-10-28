@@ -1,7 +1,7 @@
 class ScrollPriceScale extends Feature {
   triggerDown = false;
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Scroll Price Scale',
       'Allows you to scroll the price scale using a hotkey + the scroll wheel',
@@ -14,7 +14,6 @@ class ScrollPriceScale extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

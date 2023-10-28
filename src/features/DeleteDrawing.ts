@@ -1,6 +1,6 @@
 class DeleteDrawing extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Delete Drawing',
       'Deletes currently selected drawing',
@@ -13,7 +13,6 @@ class DeleteDrawing extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

@@ -1,6 +1,6 @@
 class ToggleMenu extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Toggle TVP Menu',
       'Toggles TVP\'s custom menu',
@@ -13,7 +13,6 @@ class ToggleMenu extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

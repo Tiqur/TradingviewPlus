@@ -11,9 +11,6 @@ console.log('Starting TradingViewPlus...');
 // Holds all features
 const features = new Map<string, Feature>;
 
-// Init storage service
-const storageService = new StorageService('tvp-local-config');
-
 // Init menu
 const menu = new TVPMenu();
 menu.initEventSuppression();
@@ -29,21 +26,21 @@ document.addEventListener('mousedown', (event: MouseEvent) => {[...features.valu
 document.addEventListener('wheel', (event: WheelEvent) => {[...features.values()].forEach(feature => feature.onMouseWheel(event))}, true);
 
 // Register features
-features.set('Auto Scale', new ToggleAutoScale(storageService));
-features.set('Log Scale', new ToggleLogScale(storageService));
-features.set('Auto Timeframe Colors', new ToggleAutoTimeframeColors(storageService));
-features.set('Ad Blocker', new ToggleAdBlocker(storageService));
-features.set('Copy Price', new CopyPrice(storageService));
-features.set('Delete Drawing', new DeleteDrawing(storageService));
-features.set('Symbol Search', new SymbolSearch(storageService));
-features.set('Quick Toolbar', new QuickToolbar(storageService));
-features.set('Invert Scale', new InvertScale(storageService));
-features.set('Line Style', new LineStyle(storageService));
-features.set('Line Width', new LineWidth(storageService));
-features.set('Replay Mode', new ToggleReplay(storageService));
-features.set('Scroll Price Scale', new ScrollPriceScale(storageService));
-features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar(storageService));
-features.set('Toggle Menu', new ToggleMenu(storageService));
+features.set('Auto Scale', new ToggleAutoScale());
+features.set('Log Scale', new ToggleLogScale());
+features.set('Auto Timeframe Colors', new ToggleAutoTimeframeColors());
+features.set('Ad Blocker', new ToggleAdBlocker());
+features.set('Copy Price', new CopyPrice());
+features.set('Delete Drawing', new DeleteDrawing());
+features.set('Symbol Search', new SymbolSearch());
+features.set('Quick Toolbar', new QuickToolbar());
+features.set('Invert Scale', new InvertScale());
+features.set('Line Style', new LineStyle());
+features.set('Line Width', new LineWidth());
+features.set('Replay Mode', new ToggleReplay());
+features.set('Scroll Price Scale', new ScrollPriceScale());
+features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar());
+features.set('Toggle Menu', new ToggleMenu());
 
 
 //features.get('Auto Scale')?.setHotkey({

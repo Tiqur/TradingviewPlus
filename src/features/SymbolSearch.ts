@@ -1,6 +1,6 @@
 class SymbolSearch extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Open Symbol Search',
       'Opens the symbol search menu',
@@ -13,7 +13,6 @@ class SymbolSearch extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

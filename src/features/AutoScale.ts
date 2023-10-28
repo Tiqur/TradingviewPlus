@@ -1,6 +1,6 @@
 class ToggleAutoScale extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Toggle Auto Scale',
       'Toggles the chart\'s "Auto" scale',
@@ -13,7 +13,6 @@ class ToggleAutoScale extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
 
     this.addContextMenuOptions([

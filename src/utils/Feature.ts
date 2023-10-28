@@ -6,16 +6,15 @@ abstract class Feature {
   private enabled: boolean;
   private hotkey: Hotkey;
   private category: Category;
-  private storageService: StorageService;
   private contextMenuOptions: ContextMenuListItem[] = [];
 
-  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, storageService: StorageService) {
+  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category) {
     this.name = name;
     this.tooltip = tooltip;
     this.enabled = enabled;
     this.hotkey = hotkey;
     this.category = category;
-    this.storageService = storageService;
+    this.loadConfigFromLocalStorage();
     this.init();
   }
 
@@ -25,6 +24,27 @@ abstract class Feature {
   public abstract onMouseMove(e: MouseEvent): void;
   public abstract onMouseDown(e: MouseEvent): void;
   public abstract onMouseWheel(e: WheelEvent): void;
+
+
+  async loadConfigFromLocalStorage() {
+    const configObject = (await browser.storage.local.get(this.getName())) as Record<string, string> | undefined;
+
+    if (configObject) {
+      const configJSON = configObject[this.getName()];
+      const configObj = JSON.parse(configJSON);
+      console.log(configObj)
+
+      this.name = configObj.name || this.name;
+      this.tooltip = configObj.tooltip || this.tooltip;
+      this.enabled = configObj.enabled || this.enabled;
+      this.hotkey = configObj.hotkey || this.hotkey;
+      this.category = configObj.category || this.category;
+    } else {
+      // Handle the case where the data is not found in storage.
+      this.saveToLocalStorage();
+    }
+  }
+
 
   public addContextMenuOptions(cmlis: ContextMenuListItem[]) {
     for (const cmli of cmlis) {
@@ -74,9 +94,10 @@ abstract class Feature {
     this.saveToLocalStorage();
   }
 
-  private saveToLocalStorage() {
+  private async saveToLocalStorage() {
     // Set to local storage
-    this.storageService.setValue(this.name, this.getJson());
+    await browser.storage.local.set({ [this.getName()]: this.getJson() });
+    console.log(await browser.storage.local.get(this.getName()));
   }
 
   public checkTrigger(e: KeyboardEvent): boolean {

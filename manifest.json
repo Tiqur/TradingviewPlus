@@ -22,7 +22,6 @@
         "dist/utils/ContextMenuListItem.js",
         "dist/utils/ContextMenu.js",
         "dist/utils/HotkeyManager.js",
-        "dist/di/services/StorageService.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",

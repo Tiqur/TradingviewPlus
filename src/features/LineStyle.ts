@@ -1,6 +1,6 @@
 class LineStyle extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Change Line Style',
       'Scrolls line styles ( solid, dashed, dotted )',
@@ -13,7 +13,6 @@ class LineStyle extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

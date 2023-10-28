@@ -1,6 +1,6 @@
 class ToggleReplay extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Toggle Replay Mode',
       'Toggles replay mode ( must have pro plan or higher )',
@@ -13,7 +13,6 @@ class ToggleReplay extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

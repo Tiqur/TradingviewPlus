@@ -1,6 +1,6 @@
 class LineWidth extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Change Line Width',
       'Scrolls line width ( 1px, 2px, 3px, 4px )',
@@ -13,7 +13,6 @@ class LineWidth extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

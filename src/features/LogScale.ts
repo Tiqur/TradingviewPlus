@@ -1,6 +1,6 @@
 class ToggleLogScale extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Toggle Log Scale',
       'Toggles the chart\'s "Log" scale',
@@ -13,7 +13,6 @@ class ToggleLogScale extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

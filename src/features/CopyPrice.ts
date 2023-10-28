@@ -1,7 +1,7 @@
 class CopyPrice extends Feature {
   private mousePos: [number, number] = [0, 0];
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Copy Price At Ticker',
       'Copies price at cursor position',
@@ -14,7 +14,6 @@ class CopyPrice extends Feature {
         meta: false
       },
       Category.TVP,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {

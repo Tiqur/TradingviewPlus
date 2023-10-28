@@ -1,6 +1,6 @@
 class ScrollToMostRecentBar extends Feature {
   
-  constructor(storageService: StorageService) {
+  constructor() {
     super(
       'Scroll To Most Recent Bar',
       'Scrolls to to most recent candle',
@@ -13,7 +13,6 @@ class ScrollToMostRecentBar extends Feature {
         meta: false
       },
       Category.TV,
-      storageService
     );
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey', () => {
