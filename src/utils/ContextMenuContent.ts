@@ -1,9 +1,0 @@
-class ContextMenuContent {
-  constructor() {
-
-  }
-
-  contentToRender() {
-
-  }
-}

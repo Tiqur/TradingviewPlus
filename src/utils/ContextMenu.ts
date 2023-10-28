@@ -69,9 +69,9 @@ class ContextMenu {
     // Render the list of items in the context menu.
   }
 
-  renderMenuContent(content: ContextMenuContent) {
+  renderElement(element: HTMLElement) {
     const container = this.render();
-    // Render the menu content.
+    container.appendChild(element)
   }
 
   destroy() {

@@ -72,7 +72,6 @@ class TVPMenu {
       const dots = container.querySelector('svg');
       if (!menu || !dots) return;
       const x = dots.getBoundingClientRect().x - menu.getBoundingClientRect().x;
-      console.log(x)
       const cm = new ContextMenu([x, dots.getBoundingClientRect().y]);
       cm.renderList(feature.getContextMenuOptions());
     }

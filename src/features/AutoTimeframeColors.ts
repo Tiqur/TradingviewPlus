@@ -73,11 +73,15 @@ class ToggleAutoTimeframeColors extends Feature {
 
         document.addEventListener('keyup', keyupListener);
         document.addEventListener('keydown', keydownListener);
-
-        console.log("Change Hotkey triggered");
       }),
       new ContextMenuListItem('Colors', () => {
-        console.log("Colors triggered");
+        // Launch timeframe colors config
+        const cm = new ContextMenu([0, 0]);
+        
+        // Create menu content elment
+        const container = document.createElement('div');
+        container.innerText = 'test';
+        cm.renderElement(container);
       })
     ]);
   }
