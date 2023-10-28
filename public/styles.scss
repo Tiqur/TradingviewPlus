@@ -3,6 +3,10 @@ $fontFamily: Arial, sans-serif;
 $textColor: #4e4b66;
 $backgroundColor: #000000;
 
+.tvp-light {
+  background: white !important;
+}
+
 #tvp-menu {
   display: flex;
   position: relative;
@@ -27,7 +31,6 @@ $backgroundColor: #000000;
       width: 100%;
 
       h1 {
-        color: white;
         margin: 2rem 0 0.4rem 0;
       }
 

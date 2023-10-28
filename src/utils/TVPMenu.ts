@@ -46,6 +46,10 @@ class TVPMenu {
     });
   }
 
+  isLightMode(): boolean {
+    return document.querySelector('[class*="theme-light"]') != null;
+  }
+
   //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   makeid(length: number) {
       let result = '';
@@ -164,6 +168,15 @@ class TVPMenu {
 
     if (!container) return;
 
+    // If light mode, change menu background color
+    if (this.isLightMode())
+      container.classList.add('tvp-light');
+    else
+      if (container.classList.contains('tvp-light'))
+        container.classList.remove('tvp-light');
+
+
+    // Unhide menu
     container.style.right = '0px';
 
     // This is kinda weird, but necessary otherwise there would 
