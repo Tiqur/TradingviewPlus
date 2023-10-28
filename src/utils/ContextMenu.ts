@@ -63,6 +63,7 @@ class ContextMenu {
     for (const li of listItems) {
       container.appendChild(li.getElement());
       this.destroyMenuStack.push(li.destroy.bind(li))
+      li.destroyParent = () => {this.destroy()};
     }
 
     // Render the list of items in the context menu.

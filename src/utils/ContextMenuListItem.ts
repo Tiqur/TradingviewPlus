@@ -9,6 +9,8 @@ class ContextMenuListItem {
     this.triggerAction = this.triggerAction.bind(this);
   }
 
+  destroyParent(): void {};
+
   getName() {
     return this.name;
   }
@@ -39,5 +41,6 @@ class ContextMenuListItem {
 
   triggerAction() {
     this.cb();
+    this.destroyParent();
   }
 }
