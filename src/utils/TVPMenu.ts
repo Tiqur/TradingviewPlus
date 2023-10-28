@@ -83,7 +83,7 @@ class TVPMenu {
         <p>${feature.getName()}</p>
       </span>
       <span>
-        <span class="hotkeyLabel">
+        <span class="hotkeyLabel" id="${feature.getName()}-hotkey-label">
           ${this.generateHotkeyString(feature)}
         </span>
         <button class="context-menu-button">

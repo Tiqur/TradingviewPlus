@@ -38,6 +38,13 @@ class ToggleAutoTimeframeColors extends Feature {
           meta: false,
         };
 
+        // Get label element
+        const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
+        if (!hotkeyLabel) return;
+
+        // Wait for key to be pressed
+        hotkeyLabel.innerText = '...';
+
         const keydownListener = (event: KeyboardEvent) => {
           if (event.key !== 'Meta' && event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
             hotkey.key = event.key;
