@@ -1,6 +1,7 @@
 class ContextMenu {
   position: [number, number];
   element!: HTMLElement;
+  destroyMenuStack: [Function] = [() => {}];
 
   constructor(position: [number, number]) {
     this.position = position;
@@ -61,6 +62,7 @@ class ContextMenu {
       
     for (const li of listItems) {
       container.appendChild(li.getElement());
+      this.destroyMenuStack.push(li.destroy)
     }
 
     // Render the list of items in the context menu.
@@ -72,8 +74,10 @@ class ContextMenu {
   }
 
   destroy() {
-    // TODO
-    // Remove menu list item events using menuListItem.removeEventListener() method
+    // Go through and call each function in this.destroyMenuStack before destroying context menu element
+    for (const cb of this.destroyMenuStack) {
+      cb();
+    }
 
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);

@@ -14,10 +14,18 @@ class ContextMenuListItem {
 
   getElement() {
     const p = document.createElement('p');
+    p.className = 'tpv-context-list-item';
     p.innerText = this.getName();
     this.element = p;
     this.registerEventListener();
     return this.element;
+  }
+
+  destroy() {
+    this.removeEventListener();
+    if (this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
+    }
   }
 
   registerEventListener() {
