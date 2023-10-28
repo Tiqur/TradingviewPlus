@@ -64,7 +64,7 @@ class TVPMenu {
     container.className = 'tvp-feature';
 
     function onDotsClick() {
-      //const cm = new ContextMenu();
+      const cm = new ContextMenu();
       console.log('test');
     }
 
