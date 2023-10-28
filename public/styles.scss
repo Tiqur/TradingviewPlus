@@ -158,9 +158,19 @@ $backgroundColor: #000000;
 
   .contextMenu {
     position: absolute;
-    width: 20rem;
-    height: 30rem;
-    background: coral;
+    background: black;
+    border: 1px solid #363a45;
     z-index: 99999;
+    padding: 0.4rem 0;
+    border-radius: 4px;
+
+    p:hover {
+      cursor: pointer;
+      background: #434651;
+    }
+
+    p {
+      padding: 0.4rem;
+    }
   }
 }

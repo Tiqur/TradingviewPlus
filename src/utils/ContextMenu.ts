@@ -24,10 +24,10 @@ class ContextMenu {
     document.removeEventListener('mousedown', this.handleOutsideClick);
   }
 
-  render() {
+  render(): HTMLElement {
     const container = document.createElement('div');
     const menu = document.getElementById('tvp-menu');
-    if (!menu || !container) return;
+    if (!menu) return container;
 
     this.element = container;
     container.className = 'contextMenu';
@@ -52,17 +52,29 @@ class ContextMenu {
 
     menu?.appendChild(container);
     this.listenForOutsideClicks();
+
+    return container;
   }
 
   renderList(listItems: ContextMenuListItem[]) {
+    const container = this.render();
+      
+    for (const li of listItems) {
+      container.appendChild(li.getElement());
+    }
+
     // Render the list of items in the context menu.
   }
 
-  renderMenu(content: ContextMenuContent) {
+  renderMenuContent(content: ContextMenuContent) {
+    const container = this.render();
     // Render the menu content.
   }
 
   destroy() {
+    // TODO
+    // Remove menu list item events using menuListItem.removeEventListener() method
+
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);
     }
