@@ -7,6 +7,7 @@ abstract class Feature {
   private hotkey: Hotkey;
   private category: Category;
   private storageService: StorageService;
+  private contextMenuOptions: ContextMenuListItem[] = [];
 
   constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, storageService: StorageService) {
     this.name = name;
@@ -24,6 +25,16 @@ abstract class Feature {
   public abstract onMouseMove(e: MouseEvent): void;
   public abstract onMouseDown(e: MouseEvent): void;
   public abstract onMouseWheel(e: WheelEvent): void;
+
+  public addContextMenuOptions(cmlis: ContextMenuListItem[]) {
+    for (const cmli of cmlis) {
+      this.contextMenuOptions.push(cmli);
+    }
+  }
+  
+  public getContextMenuOptions(): ContextMenuListItem[] {
+    return this.contextMenuOptions;
+  }
 
   public getCategory(): Category {
     return this.category;

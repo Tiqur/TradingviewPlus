@@ -6,6 +6,7 @@ class ContextMenuListItem {
   constructor(name: string, cb: Function) {
     this.name = name;
     this.cb = cb;
+    this.triggerAction = this.triggerAction.bind(this);
   }
 
   getName() {
@@ -37,7 +38,6 @@ class ContextMenuListItem {
   }
 
   triggerAction() {
-    console.log("trigger");
     this.cb();
   }
 }

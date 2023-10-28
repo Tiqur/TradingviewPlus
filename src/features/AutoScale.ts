@@ -15,6 +15,12 @@ class ToggleAutoScale extends Feature {
       Category.TV,
       storageService
     );
+
+    this.addContextMenuOptions([
+      new ContextMenuListItem('Change Hotkey', () => {
+        console.log("Change Hotkey triggered");
+      })
+    ]);
   }
 
 

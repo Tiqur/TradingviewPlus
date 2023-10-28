@@ -70,9 +70,7 @@ class TVPMenu {
       const x = dots.getBoundingClientRect().x - menu.getBoundingClientRect().x;
       console.log(x)
       const cm = new ContextMenu([x, dots.getBoundingClientRect().y]);
-      cm.renderList([
-        new ContextMenuListItem('Change Hotkey', () => {console.log('changing hotkey')})
-      ]);
+      cm.renderList(feature.getContextMenuOptions());
     }
 
     container.innerHTML = `

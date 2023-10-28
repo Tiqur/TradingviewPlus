@@ -15,6 +15,11 @@ class LineWidth extends Feature {
       Category.TVP,
       storageService
     );
+    this.addContextMenuOptions([
+      new ContextMenuListItem('Change Hotkey', () => {
+        console.log("Change Hotkey triggered");
+      })
+    ]);
   }
 
 
