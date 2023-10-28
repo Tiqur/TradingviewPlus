@@ -72,6 +72,9 @@ class TVPMenu {
         <span class="hotkeyLabel">
           ${this.generateHotkeyString(feature)}
         </span>
+        <svg width="16" height="20" viewBox="0 0 16 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16ZM8 24C3.6 24 0 27.6 0 32C0 36.4 3.6 40 8 40C12.4 40 16 36.4 16 32C16 27.6 12.4 24 8 24ZM8 48C3.6 48 0 51.6 0 56C0 60.4 3.6 64 8 64C12.4 64 16 60.4 16 56C16 51.6 12.4 48 8 48Z" fill="#C7C7C7"/>
+        </svg>
       </span>
     `;
     return container;

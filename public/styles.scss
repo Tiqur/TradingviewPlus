@@ -108,9 +108,24 @@ $backgroundColor: #000000;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 1rem 0;
     
     p {
       display: inline-block;
+      margin-left: 0.6rem;
+    }
+
+    & > span {
+      display: flex;
+      align-items: center;
+    }
+
+    svg {
+      margin-left: 0.4rem;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 
