@@ -34,11 +34,11 @@ abstract class Feature {
       const configObj = JSON.parse(configJSON);
       console.log(configObj)
 
-      this.name = configObj.name || this.name;
-      this.tooltip = configObj.tooltip || this.tooltip;
-      this.enabled = configObj.enabled || this.enabled;
-      this.hotkey = configObj.hotkey || this.hotkey;
-      this.category = configObj.category || this.category;
+      this.name = 'name' in configObj ? configObj.name : this.name;
+      this.tooltip = 'tooltip' in configObj ? configObj.tooltip : this.tooltip;
+      this.enabled = 'enabled' in configObj ? configObj.enabled : this.enabled;
+      this.hotkey = 'hotkey' in configObj ? configObj.hotkey : this.hotkey;
+      this.category = 'category' in configObj ? configObj.category : this.category;
     } else {
       // Handle the case where the data is not found in storage.
       this.saveToLocalStorage();

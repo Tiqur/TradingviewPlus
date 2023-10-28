@@ -77,29 +77,61 @@ class TVPMenu {
       cm.renderList(feature.getContextMenuOptions());
     }
 
-    container.innerHTML = `
-      <span>
-        <input type="checkbox" checked="${feature.isEnabled()}">
-        <p>${feature.getName()}</p>
-      </span>
-      <span>
-        <span class="hotkeyLabel" id="${feature.getName()}-hotkey-label">
-          ${this.generateHotkeyString(feature)}
-        </span>
-        <button class="context-menu-button">
-          <svg width="16" height="20" viewBox="0 0 16 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16ZM8 24C3.6 24 0 27.6 0 32C0 36.4 3.6 40 8 40C12.4 40 16 36.4 16 32C16 27.6 12.4 24 8 24ZM8 48C3.6 48 0 51.6 0 56C0 60.4 3.6 64 8 64C12.4 64 16 60.4 16 56C16 51.6 12.4 48 8 48Z" fill="#C7C7C7"/>
-          </svg>
-        </button>
-      </span>
+    // Create the first <span> element
+    const span1 = document.createElement('span');
+
+    // Create the checkbox input element
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = feature.isEnabled();
+
+    // Create the <p> element
+    const paragraph = document.createElement('p');
+    paragraph.textContent = feature.getName();
+
+    // Append the checkbox and paragraph to the first <span>
+    span1.appendChild(checkbox);
+    span1.appendChild(paragraph);
+
+    // Create the second <span> element
+    const span2 = document.createElement('span');
+
+    // Create the <span> element with class "hotkeyLabel"
+    const hotkeyLabel = document.createElement('span');
+    hotkeyLabel.classList.add('hotkeyLabel');
+    hotkeyLabel.id = `${feature.getName()}-hotkey-label`;
+    hotkeyLabel.textContent = this.generateHotkeyString(feature);
+
+    // Create the button element
+    const button = document.createElement('button');
+
+    // Create the SVG string
+    const svgString = `
+      <svg width="16" height="20" viewBox="0 0 16 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16ZM8 24C3.6 24 0 27.6 0 32C0 36.4 3.6 40 8 40C12.4 40 16 36.4 16 32C16 27.6 12.4 24 8 24ZM8 48C3.6 48 0 51.6 0 56C0 60.4 3.6 64 8 64C12.4 64 16 60.4 16 56C16 51.6 12.4 48 8 48Z" fill="#C7C7C7"/>
+      </svg>
     `;
 
+    // Set the innerHTML of the button to the SVG string
+    button.innerHTML = svgString;
+
+    // Append the hotkeyLabel and button to the second <span>
+    span2.appendChild(hotkeyLabel);
+    span2.appendChild(button);
+
+    // Append the two <span> elements to the container
+    container.appendChild(span1);
+    container.appendChild(span2);
+
     // TODO remove event listener on destroy to avoid memory leaks
-    container.addEventListener('click', event => {
-      const target = event.target as Element;
-      if (target?.classList.contains('context-menu-button') || target?.closest('.context-menu-button')) {
-        onDotsClick();
-      }
+    // Context menu button
+    button.addEventListener('click', () => {
+      onDotsClick();
+    });
+
+    // Checkbox event listener
+    checkbox.addEventListener('change', () => {
+      feature.toggleEnabled();
     });
 
     return container;
