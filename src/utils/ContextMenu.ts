@@ -71,6 +71,7 @@ class ContextMenu {
 
   renderElement(element: HTMLElement) {
     const container = this.render();
+    //container.innerHTML = "";
     container.appendChild(element)
   }
 

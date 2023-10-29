@@ -186,7 +186,6 @@ $backgroundColor: #000000;
     }
   }
 
-
   .auto-timeframe-colors-color-picker-context-menu {
     display: flex;
     flex-direction: column;
@@ -196,13 +195,10 @@ $backgroundColor: #000000;
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      .color-picker-square {
-        width: 1rem;
-        aspect-ratio: 1;
-        background: red;
-      }
-
+    }
+    .color-square {
+      width: 1rem;
+      aspect-ratio: 1;
     }
   }
 }
