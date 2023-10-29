@@ -12,12 +12,12 @@ $backgroundColor: #000000;
   position: relative;
   width: 45vw;
   height: 100vh;
-  right: 0;
+  left: 0;
   top: 0;
   z-index: 99999;
   position: fixed;
   background: $backgroundColor;
-  transition: right 0.3s ease-out;
+  transition: left 0.3s ease-out;
 
   section {
     height: 100vh;
@@ -145,12 +145,12 @@ $backgroundColor: #000000;
     height: 100vh;
     width: 35px;
     position: absolute;
-    left: 0;
+    right: 0;
     top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-left: 1px solid #363a45;
+    border-right: 1px solid #363a45;
 
     &:hover {
       cursor: ew-resize;

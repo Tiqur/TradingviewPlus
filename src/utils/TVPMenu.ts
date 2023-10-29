@@ -208,7 +208,7 @@ class TVPMenu {
 
 
     // Unhide menu
-    container.style.right = '0px';
+    container.style.left = '0px';
 
     // This is kinda weird, but necessary otherwise there would 
     // always be an "m" in the text input whenever the menu was opened.
@@ -224,14 +224,14 @@ class TVPMenu {
 
     if (!container) return;
 
-    container.style.right = -container.getBoundingClientRect().width+'px';
+    container.style.left = -container.getBoundingClientRect().width+'px';
     textBox.blur();
   }
 
   isOpen() {
     const container = document.getElementById('tvp-menu');
     if (!container) return false;
-    return container.style.right == '0px';
+    return container.style.left == '0px';
   }
 
   initResizeLogic() {
@@ -242,14 +242,13 @@ class TVPMenu {
 
     // Hide menu by default
     if (container && menuContainerWidth) {
-      container.style.right = -menuContainerWidth+'px';
+      container.style.left = -menuContainerWidth+'px';
     }
 
     // Menu resize logic
     document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
     const handleContainer = document.getElementById("handle-container");
     handleContainer?.addEventListener('mousedown', () => {
-      console.log('mousedown')
       mouseDown = true;
     });
 
@@ -259,7 +258,7 @@ class TVPMenu {
 
     document.addEventListener('mousemove', e => {
       if (mouseDown && container) {
-        menuContainerWidth = window.innerWidth - e.clientX;
+        menuContainerWidth = e.clientX;
         if (menuContainerWidth > 400 && menuContainerWidth < window.innerWidth) {
           container.style.width = menuContainerWidth+'px';
         } else {
