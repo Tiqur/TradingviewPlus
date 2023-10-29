@@ -91,6 +91,29 @@ class ToggleAutoTimeframeColors extends Feature {
   onKeyUp() {};
   onMouseWheel() {};
 
+  initDefaultColors() {
+    const once = this.getConfigValue('once');
+
+    // Do stuff if it doesn't exist.  
+    // Once done, it will save to local storage and won't execute again
+    // as long as cookies aren't cleared
+    if (once == undefined) {
+      console.debug("setting initial values");
+      this.setConfigValue('once', true);
+
+      // Default colors
+      this.setConfigValue('1m', 0);
+      this.setConfigValue('3m', 49);
+      this.setConfigValue('5m', 11);
+      this.setConfigValue('15m', 13);
+      this.setConfigValue('1h', 15);
+      this.setConfigValue('4h', 12);
+      this.setConfigValue('D', 10);
+      this.setConfigValue('W', 18);
+      this.saveToLocalStorage();
+    }
+  }
+
   // On canvas click
   onMouseDown(e: Event) {
     if (!this.isEnabled() || !this.canvas) return;
@@ -109,6 +132,8 @@ class ToggleAutoTimeframeColors extends Feature {
   }
 
   init() {
+    this.initDefaultColors();
+
     // Wait for chart to exist
     waitForElm('.chart-gui-wrapper').then(async (e) => {
       this.canvas = document.querySelectorAll('.chart-gui-wrapper canvas')[1] as HTMLCanvasElement;

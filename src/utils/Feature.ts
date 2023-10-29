@@ -7,6 +7,7 @@ abstract class Feature {
   private hotkey: Hotkey;
   private category: Category;
   private contextMenuOptions: ContextMenuListItem[] = [];
+  private config: Record<string, any> = {};
 
   constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category) {
     this.name = name;
@@ -14,8 +15,7 @@ abstract class Feature {
     this.enabled = enabled;
     this.hotkey = hotkey;
     this.category = category;
-    this.loadConfigFromLocalStorage();
-    this.init();
+    this.loadConfigFromLocalStorage().then(() => this.init());
   }
 
   public abstract init(): void;
@@ -25,24 +25,38 @@ abstract class Feature {
   public abstract onMouseDown(e: MouseEvent): void;
   public abstract onMouseWheel(e: WheelEvent): void;
 
+  public getConfig() {
+    return this.config;
+  }
+
+  public getConfigValue(key: string): any {
+    return this.config[key];
+  }
+
+  public setConfigValue(key: string, value: any) {
+    this.config[key] = value;
+  }
 
   async loadConfigFromLocalStorage() {
     const configObject = (await browser.storage.local.get(this.getName())) as Record<string, string> | undefined;
 
-    if (configObject) {
+    if (configObject != undefined && Object.keys(configObject).length > 0) {
       const configJSON = configObject[this.getName()];
       const configObj = JSON.parse(configJSON);
-      console.log(configObj)
 
       this.name = 'name' in configObj ? configObj.name : this.name;
       this.tooltip = 'tooltip' in configObj ? configObj.tooltip : this.tooltip;
       this.enabled = 'enabled' in configObj ? configObj.enabled : this.enabled;
       this.hotkey = 'hotkey' in configObj ? configObj.hotkey : this.hotkey;
       this.category = 'category' in configObj ? configObj.category : this.category;
+      this.config = 'config' in configObj ? configObj.config : this.config;
     } else {
       // Handle the case where the data is not found in storage.
       this.saveToLocalStorage();
     }
+
+    console.log(this.config);
+    //console.log(this.getConfigValue('once'));
   }
 
 
@@ -78,8 +92,6 @@ abstract class Feature {
 
     // Set to local storage
     this.saveToLocalStorage();
-    //console.log(this.getJson())
-    //this.storageService.printStorage();
 
     // Return true if successfully set
     return true;
@@ -94,10 +106,14 @@ abstract class Feature {
     this.saveToLocalStorage();
   }
 
-  private async saveToLocalStorage() {
+  public async saveToLocalStorage() {
     // Set to local storage
-    await browser.storage.local.set({ [this.getName()]: this.getJson() });
-    console.log(await browser.storage.local.get(this.getName()));
+    await browser.storage.local.set({[this.getName()]: this.getJson()});
+    await this.printLocalStorage();
+  }
+
+  public async printLocalStorage() {
+    console.log(JSON.parse((await browser.storage.local.get(this.getName()))[this.getName()]));
   }
 
   public checkTrigger(e: KeyboardEvent): boolean {
@@ -119,6 +135,7 @@ abstract class Feature {
       enabled: this.enabled,
       hotkey: this.hotkey,
       category: this.category,
+      config: this.config
     });
   }
 }

@@ -61,3 +61,6 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
     menu.open();
   }
 })
+
+
+
