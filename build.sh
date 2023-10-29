@@ -11,7 +11,7 @@ mkdir temp
 cp -r manifest.json dist/* temp
 
 # Zip contents "extension.xpi"
-zip extension.xpi temp/*
+zip -j extension.xpi temp/*
 
 # Delete temp dir
 rm -r temp
