@@ -77,6 +77,8 @@ class ToggleAutoTimeframeColors extends Feature {
       new ContextMenuListItem('Colors', () => {
         // Launch timeframe colors config
         const cm = new ContextMenu([0, 0]);
+
+        console.log(this.getConfigValue(''))
         
         // Create menu content elment
         const container = document.createElement('div');
@@ -91,6 +93,19 @@ class ToggleAutoTimeframeColors extends Feature {
   onKeyUp() {};
   onMouseWheel() {};
 
+
+  removeColor(key: string) {
+    const colorsCopy = this.getConfigValue('colors');
+    colorsCopy.delete(key);
+    this.setConfigValue('colors', colorsCopy);
+  }
+
+  addColor(timeframe: string, num: number) {
+    const colorsCopy = this.getConfigValue('colors');
+    colorsCopy[timeframe] = num;
+    this.setConfigValue('colors', colorsCopy);
+  }
+
   initDefaultColors() {
     const once = this.getConfigValue('once');
 
@@ -102,15 +117,18 @@ class ToggleAutoTimeframeColors extends Feature {
       this.setConfigValue('once', true);
 
       // Default colors
-      this.setConfigValue('1m', 0);
-      this.setConfigValue('3m', 49);
-      this.setConfigValue('5m', 11);
-      this.setConfigValue('15m', 13);
-      this.setConfigValue('1h', 15);
-      this.setConfigValue('4h', 12);
-      this.setConfigValue('D', 10);
-      this.setConfigValue('W', 18);
+      this.setConfigValue('colors', {
+        "1m": 0,
+        "3m": 49,
+        "5m": 11,
+        "15m": 13,
+        "1h": 15,
+        "4h": 12,
+        "D": 10,
+        "W": 18,
+      });
       this.saveToLocalStorage();
+      this.printLocalStorage();
     }
   }
 

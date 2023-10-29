@@ -51,6 +51,8 @@ features.set('Toggle Menu', new ToggleMenu());
 //  meta: false
 //});
 
+//browser.storage.local.clear();
+
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
