@@ -78,8 +78,17 @@ class ToggleAutoTimeframeColors extends Feature {
         document.addEventListener('keydown', keydownListener);
       }),
       new ContextMenuListItem('Colors', () => {
+
+
+        const dots = document.getElementById(`${this.getName()}-svg-dots`);
+        if (!dots) return;
+        const [x, y] = [dots.getBoundingClientRect().x, dots.getBoundingClientRect().y] 
+
+
         // Launch timeframe colors config
-        const cm = new ContextMenu([0, 0]);
+        const cm = new ContextMenu([x, y]);
+
+
         
         // Create menu content elment
         const container = document.createElement('div');
@@ -130,7 +139,7 @@ class ToggleAutoTimeframeColors extends Feature {
 
             //cm.destroy();
             const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left + 2;
-            const colorPickerCm = new ContextMenu([offset, 0]);
+            const colorPickerCm = new ContextMenu([x+offset, y]);
             ////colorPickerSquare.innerText = 'test';
             colorPickerCm.renderElement(colorPickerContainer);
 
