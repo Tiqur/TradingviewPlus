@@ -194,6 +194,9 @@ class TVPMenu {
   }
 
   open() {
+    this.revealBackground();
+
+    // Open menu
     const container = document.getElementById('tvp-menu');
     const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
 
@@ -218,7 +221,28 @@ class TVPMenu {
     }, 200);
   }
 
+  revealBackground() {
+    // Reveal background
+    const background = document.getElementById('tvp-background');
+    if (background) {
+      background.style.opacity = '0.3';
+      background.style.pointerEvents = 'initial';
+    }
+  }
+
+  hideBackground() {
+    // Hide background
+    const background = document.getElementById('tvp-background');
+    if (background) {
+      background.style.opacity = '0';
+      background.style.pointerEvents = 'none';
+    }
+  }
+
   close() {
+    this.hideBackground();
+
+    // Close menu
     const container = document.getElementById('tvp-menu');
     const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
 

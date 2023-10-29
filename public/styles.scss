@@ -7,6 +7,17 @@ $backgroundColor: #000000;
   background: white !important;
 }
 
+#tvp-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
 #tvp-menu {
   display: flex;
   position: relative;
