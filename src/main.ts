@@ -42,17 +42,6 @@ features.set('Scroll Price Scale', new ScrollPriceScale());
 features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar());
 features.set('Toggle Menu', new ToggleMenu());
 
-
-//features.get('Auto Scale')?.setHotkey({
-//  key: 'p',
-//  ctrl: false,
-//  shift: false,
-//  alt: false,
-//  meta: false
-//});
-
-//browser.storage.local.clear();
-
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
@@ -61,7 +50,4 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
     document.body.insertAdjacentHTML('beforeend', html);
     menu.init();
   }
-})
-
-
-
+});

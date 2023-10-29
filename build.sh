@@ -9,6 +9,7 @@ mkdir temp
 
 # Copy files into temp dir
 cp -r manifest.json dist/* temp
+cp public temp
 
 # Zip contents "extension.xpi"
 zip -j extension.xpi temp/*

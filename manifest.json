@@ -13,12 +13,10 @@
       "matches": ["*://*.tradingview.com/chart/*"],
       "js": [
         "dist/utils/Hotkey.js",
-        "dist/utils/Keybind.js",
         "dist/utils/waitForElem.js",
         "dist/utils/Feature.js",
         "dist/utils/fuzzySearch.js",
         "dist/utils/TVPMenu.js",
-        "dist/utils/ContextMenuContent.js",
         "dist/utils/ContextMenuListItem.js",
         "dist/utils/ContextMenu.js",
         "dist/utils/HotkeyManager.js",
