@@ -92,12 +92,9 @@ class ToggleAutoTimeframeColors extends Feature {
         Object.keys(colors).forEach(key => {
           const timeframe = key;
           const colorValue = colors[key];
-          //console.log(timeframe, colorValue);
 
           const colorContainer = document.createElement('div');
 
-          //const deleteButton = document.createElement('button');
-          //colorContainer.appendChild(deleteButton);
 
           const colorText = document.createElement('p');
           colorText.innerText = timeframe;
@@ -113,11 +110,21 @@ class ToggleAutoTimeframeColors extends Feature {
             const colorPickerContainer = document.createElement('div');
             colorPickerContainer.className = 'color-picker-context-menu';
 
-            defaultColors.forEach(dc => {
+            defaultColors.forEach((dc, colorIndex) => {
               const colorElement = document.createElement('span');
               colorElement.style.background = dc;
               colorElement.className = 'color-square';
               colorPickerContainer.appendChild(colorElement);
+              
+              // On color choose
+              const colorChooseCb = () => {
+                colorPickerCm.destroy();
+                colorElement.removeEventListener('click', colorChooseCb);
+                this.setColor(timeframe, colorIndex);
+                colorPickerSquare.style.background = defaultColors[colorIndex];
+              }
+
+              colorElement.addEventListener('click', colorChooseCb);
             });
 
 
@@ -171,7 +178,7 @@ class ToggleAutoTimeframeColors extends Feature {
     this.setConfigValue('colors', colorsCopy);
   }
 
-  addColor(timeframe: string, num: number) {
+  setColor(timeframe: string, num: number) {
     const colorsCopy = this.getConfigValue('colors');
     colorsCopy[timeframe] = num;
     this.setConfigValue('colors', colorsCopy);
