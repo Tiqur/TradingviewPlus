@@ -125,6 +125,24 @@ class ToggleAutoTimeframeColors extends Feature {
             const colorPickerCm = new ContextMenu([0, 0]);
             ////colorPickerSquare.innerText = 'test';
             colorPickerCm.renderElement(colorPickerContainer);
+
+            cm.setClickCallback((event: MouseEvent) => {
+              // Make it so the main color config menu doesn't close if
+              // the user clicks within the color picker menu
+              if (colorPickerCm.element != null) {
+                if (!(cm.element?.contains(event.target as Node) || colorPickerCm.element.contains(event.target as Node))) {
+                  cm.destroy();
+                  colorPickerCm.destroy();
+                }
+              } else {
+                if (!(cm.element?.contains(event.target as Node))) {
+                  cm.destroy();
+                }
+              }
+            });
+
+
+
             //cm.renderElement(colorPickerContainer);
           });
 

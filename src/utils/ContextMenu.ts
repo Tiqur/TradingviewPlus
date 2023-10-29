@@ -2,27 +2,35 @@ class ContextMenu {
   position: [number, number];
   element!: HTMLElement;
   destroyMenuStack: [Function] = [() => {}];
+  private clickCallback: (event: MouseEvent) => void;
+
 
   constructor(position: [number, number]) {
     this.position = position;
+    this.clickCallback = this.defaultClickCallback;
   }
 
-  private handleOutsideClick = (event: MouseEvent) => {
+  private defaultClickCallback = (event: MouseEvent) => {
     if (!this.element.contains(event.target as Node)) {
       this.destroy();
     }
   }
 
-  buildElement() {
-    // Build your context menu elements here.
+  public setClickCallback(callback: (event: MouseEvent) => void): void {
+    this.clickCallback = callback;
+    document.removeEventListener('mousedown', this.defaultClickCallback);
+    document.addEventListener('mousedown', (event) => {
+      callback(event);
+      document.removeEventListener('mousedown', callback);
+    });
   }
 
   listenForOutsideClicks() {
-    document.addEventListener('mousedown', this.handleOutsideClick);
+    document.addEventListener('mousedown', this.defaultClickCallback);
   }
 
-  removeOutsideClickHandler() {
-    document.removeEventListener('mousedown', this.handleOutsideClick);
+  removeOutsideClickListener() {
+    document.removeEventListener('mousedown', this.defaultClickCallback);
   }
 
   render(): HTMLElement {
@@ -84,6 +92,6 @@ class ContextMenu {
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);
     }
-    this.removeOutsideClickHandler();
+    this.removeOutsideClickListener();
   }
 }
