@@ -13,11 +13,9 @@ class DeleteDrawing extends Feature {
         meta: false
       },
       Category.TV,
+      true
     );
     this.addContextMenuOptions([
-      new ContextMenuListItem('Change Hotkey', () => {
-        console.log("Change Hotkey triggered");
-      })
     ]);
   }
 

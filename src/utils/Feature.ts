@@ -9,13 +9,17 @@ abstract class Feature {
   private contextMenuOptions: ContextMenuListItem[] = [];
   private config: Record<string, any> = {};
 
-  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category) {
+  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, editableHotkey: boolean = true) {
     this.name = name;
     this.tooltip = tooltip;
     this.enabled = enabled;
     this.hotkey = hotkey;
     this.category = category;
     this.loadConfigFromLocalStorage().then(() => this.init());
+
+    if (editableHotkey) {
+      this.addHotkeyEditContextMenuItem();
+    }
   }
 
   public abstract init(): void;
@@ -24,6 +28,57 @@ abstract class Feature {
   public abstract onMouseMove(e: MouseEvent): void;
   public abstract onMouseDown(e: MouseEvent): void;
   public abstract onMouseWheel(e: WheelEvent): void;
+
+  private addHotkeyEditContextMenuItem() {
+      const cmli = new ContextMenuListItem('Change Hotkey', () => {
+       let hotkey = {
+          key: '',
+          ctrl: false,
+          shift: false,
+          alt: false,
+          meta: false,
+        };
+
+        // Get label element
+        const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
+        if (!hotkeyLabel) return;
+
+        // Wait for key to be pressed
+        hotkeyLabel.innerText = '...';
+
+        const keydownListener = (event: KeyboardEvent) => {
+          if (event.key !== 'Meta' && event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
+            hotkey.key = event.key;
+            hotkey.ctrl = event.ctrlKey;
+            hotkey.shift = event.shiftKey;
+            hotkey.alt = event.altKey;
+            hotkey.meta = event.metaKey;
+
+            event.preventDefault();
+          }
+        }
+
+        const keyupListener = () => {
+          // Update 'this.hotkey' with the newly selected hotkey
+          console.log("new hotkey:", hotkey);
+          this.setHotkey(hotkey)
+
+          // Re-render menu while maintaining fuzzy search results
+          // This is kinda hacky
+          const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
+          textBox.dispatchEvent(new InputEvent('input'));
+
+          // Remove event listeners to stop listening for hotkey input
+          document.removeEventListener('keydown', keydownListener);
+          document.removeEventListener('keyup', keyupListener);
+        }
+
+        document.addEventListener('keyup', keyupListener);
+        document.addEventListener('keydown', keydownListener);
+      });
+
+      this.contextMenuOptions.push(cmli);
+  }
 
   public getConfig() {
     return this.config;

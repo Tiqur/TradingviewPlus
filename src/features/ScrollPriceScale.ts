@@ -14,11 +14,9 @@ class ScrollPriceScale extends Feature {
         meta: false
       },
       Category.TVP,
+      true
     );
     this.addContextMenuOptions([
-      new ContextMenuListItem('Change Hotkey', () => {
-        console.log("Change Hotkey triggered");
-      })
     ]);
   }
 

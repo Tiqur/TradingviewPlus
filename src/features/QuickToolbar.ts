@@ -13,6 +13,7 @@ class QuickToolbar extends Feature {
         meta: false
       },
       Category.TVP,
+      false
     );
   }
 
