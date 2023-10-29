@@ -83,7 +83,7 @@ class ToggleAutoTimeframeColors extends Feature {
         
         // Create menu content elment
         const container = document.createElement('div');
-        container.className = 'auto-timeframe-colors-color-picker-context-menu';
+        container.className = 'auto-timeframe-colors-context-menu';
 
 
         // Get colors from config
@@ -111,7 +111,7 @@ class ToggleAutoTimeframeColors extends Feature {
 
             // Inject color picker into menu, replace current element
             const colorPickerContainer = document.createElement('div');
-            colorPickerContainer.className = 'auto-timeframe-colors-color-picker-context-menu';
+            colorPickerContainer.className = 'color-picker-context-menu';
 
             defaultColors.forEach(dc => {
               const colorElement = document.createElement('span');
@@ -122,7 +122,7 @@ class ToggleAutoTimeframeColors extends Feature {
 
 
             //cm.destroy();
-            const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left;
+            const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left + 2;
             const colorPickerCm = new ContextMenu([offset, 0]);
             ////colorPickerSquare.innerText = 'test';
             colorPickerCm.renderElement(colorPickerContainer);
