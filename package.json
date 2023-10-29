@@ -1,0 +1,17 @@
+{
+  "name": "tradingviewplus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "npx nodemon --watch src --ext ts --exec 'npx tsc && npx sass --watch public/:dist/'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "sass": "^1.69.4",
+    "typescript": "^5.2.2"
+  }
+}

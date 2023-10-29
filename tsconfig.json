@@ -1,0 +1,14 @@
+{
+   "compilerOptions": {
+      "strict": true,
+      "module": "commonjs",
+      "target": "es2017",
+      "esModuleInterop": true,
+      "sourceMap": true,
+      "rootDir": "src",
+      "outDir": "dist",
+      "noEmitOnError": true,
+      "typeRoots": [ "node_modules/@types" ],
+      "lib": ["es2019", "dom"]
+   }
+}
