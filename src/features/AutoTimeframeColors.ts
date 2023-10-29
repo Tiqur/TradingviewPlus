@@ -122,7 +122,8 @@ class ToggleAutoTimeframeColors extends Feature {
 
 
             //cm.destroy();
-            const colorPickerCm = new ContextMenu([0, 0]);
+            const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left;
+            const colorPickerCm = new ContextMenu([offset, 0]);
             ////colorPickerSquare.innerText = 'test';
             colorPickerCm.renderElement(colorPickerContainer);
 
