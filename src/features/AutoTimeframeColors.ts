@@ -77,12 +77,37 @@ class ToggleAutoTimeframeColors extends Feature {
       new ContextMenuListItem('Colors', () => {
         // Launch timeframe colors config
         const cm = new ContextMenu([0, 0]);
-
-        console.log(this.getConfigValue(''))
         
         // Create menu content elment
         const container = document.createElement('div');
-        container.innerText = 'test';
+        container.className = 'auto-timeframe-colors-color-picker-context-menu';
+
+
+        // Get colors from config
+        const colors = this.getConfigValue('colors');
+
+        Object.keys(colors).forEach(key => {
+          const timeframe = key;
+          const colorValue = colors[key];
+          //console.log(timeframe, colorValue);
+
+          const colorContainer = document.createElement('div');
+
+          //const deleteButton = document.createElement('button');
+          //colorContainer.appendChild(deleteButton);
+
+          const colorText = document.createElement('p');
+          colorText.innerText = timeframe;
+          colorContainer.appendChild(colorText);
+
+          const colorPickerSquare = document.createElement('div');
+          colorPickerSquare.className = 'color-picker-square';
+          colorContainer.appendChild(colorPickerSquare);
+
+          // Append color container
+          container.appendChild(colorContainer);
+        });
+
         cm.renderElement(container);
       })
     ]);
