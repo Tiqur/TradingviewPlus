@@ -8,11 +8,13 @@ npx sass public/:dist/
 mkdir temp
 
 # Copy files into temp dir
-cp -r manifest.json dist/* temp
-cp public temp
+cp -r manifest.json public/ dist/ temp
 
 # Zip contents "extension.xpi"
-zip -j extension.xpi temp/*
+cd temp
+zip -x "*.map" -x "*.scss" -r extension.xpi *
+mv extension.xpi ..
+cd ..
 
 # Delete temp dir
 rm -r temp
