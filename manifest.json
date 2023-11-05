@@ -35,6 +35,8 @@
         "dist/features/ScrollPriceScale.js",
         "dist/features/ScrollToMostRecentBar.js",
         "dist/features/ToggleMenu.js",
+        "dist/features/MoveTimeLeft.js",
+        "dist/features/MoveTimeRight.js",
         "dist/main.js"
       ],
       "css": [
