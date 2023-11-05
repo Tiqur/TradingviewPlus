@@ -136,6 +136,9 @@ class TVPMenu {
     let hotkeyString = "";
     const hotkey = feature.getHotkey();
 
+    if (hotkey.key == null)
+      return "N/A";
+
     if (hotkey.alt)
       hotkeyString += "Alt + "
     else if (hotkey.ctrl)
