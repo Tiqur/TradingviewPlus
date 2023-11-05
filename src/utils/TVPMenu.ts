@@ -46,10 +46,6 @@ class TVPMenu {
     });
   }
 
-  isLightMode(): boolean {
-    return document.querySelector('[class*="theme-light"]') != null;
-  }
-
   //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   makeid(length: number) {
       let result = '';
@@ -203,7 +199,7 @@ class TVPMenu {
     if (!container) return;
 
     // If light mode, change menu background color
-    if (this.isLightMode())
+    if (isLightMode())
       container.classList.add('tvp-light');
     else
       if (container.classList.contains('tvp-light'))
