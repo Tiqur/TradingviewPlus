@@ -16,6 +16,7 @@ $backgroundColor: #000000;
   background: black;
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  pointer-events: none;
 }
 
 #tvp-menu {
