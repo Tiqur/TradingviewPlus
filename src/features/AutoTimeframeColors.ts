@@ -18,18 +18,18 @@ class ToggleAutoTimeframeColors extends Feature {
 
   constructor() {
     super(
-      'Toggle Auto Timeframe Colors',
+      'Auto Timeframe Colors',
       'Automatically changes tool color on click',
       true,
       {
-        key: 's',
+        key: null,
         ctrl: false,
         shift: false,
         alt: false,
         meta: false
       },
       Category.TVP,
-      true
+      false
     );
 
     this.addContextMenuOptions([

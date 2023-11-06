@@ -2,11 +2,11 @@ class ToggleAdBlocker extends Feature {
   
   constructor() {
     super(
-      'Toggle Ad Blocker',
-      'Toggles the TVP\'s built in Ad blocker',
+      'Ad Blocker',
+      'TVP\'s built-in Ad blocker',
       true,
       {
-        key: ']',
+        key: null,
         ctrl: false,
         shift: false,
         alt: false,
@@ -20,17 +20,9 @@ class ToggleAdBlocker extends Feature {
   }
 
   onMouseDown() {};
-
   onMouseMove() {};
-
-  onKeyDown(e: KeyboardEvent) {
-    if (this.checkTrigger(e)) {
-      this.toggleEnabled();
-    }
-  };
-
+  onKeyDown() {};
   onMouseWheel() {};
-
   onKeyUp() {};
 
   init() {
