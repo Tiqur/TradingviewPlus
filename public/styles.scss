@@ -159,6 +159,11 @@ $tvBlue: #2962ff;
     justify-content: space-between;
     align-items: center;
     margin: 1rem 0;
+    
+    p {
+      display: inline-block;
+      margin-left: 0.6rem;
+    }
 
     & > span {
       display: flex;
