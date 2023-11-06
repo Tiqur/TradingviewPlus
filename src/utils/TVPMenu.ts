@@ -66,7 +66,7 @@ class TVPMenu {
     function onDotsClick() {
       const menu = document.getElementById('tvp-menu');
       const dots = container.querySelector('svg');
-      if (!menu || !dots) return;
+      if (!menu || !dots || feature.getContextMenuOptions().length === 0) return;
       const x = dots.getBoundingClientRect().x - menu.getBoundingClientRect().x;
       const cm = new ContextMenu([x, dots.getBoundingClientRect().y]);
       cm.renderList(feature.getContextMenuOptions());
@@ -76,16 +76,16 @@ class TVPMenu {
     const span1 = document.createElement('span');
 
     // Create the checkbox input element
-    //const checkbox = document.createElement('input');
-    //checkbox.type = 'checkbox';
-    //checkbox.checked = feature.isEnabled();
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = feature.isEnabled();
 
     // Create the <p> element
     const paragraph = document.createElement('p');
     paragraph.textContent = feature.getName();
 
     // Append the checkbox and paragraph to the first <span>
-    //span1.appendChild(checkbox);
+    span1.appendChild(checkbox);
     span1.appendChild(paragraph);
 
     // Create the second <span> element
@@ -125,9 +125,9 @@ class TVPMenu {
     });
 
     // Checkbox event listener
-    //checkbox.addEventListener('change', () => {
-    //  feature.toggleEnabled();
-    //});
+    checkbox.addEventListener('change', () => {
+      feature.toggleEnabled();
+    });
 
     return container;
   }
