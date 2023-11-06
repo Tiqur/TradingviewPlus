@@ -13,6 +13,7 @@
       "matches": ["*://*.tradingview.com/chart/*"],
       "js": [
         "dist/utils/isLightMode.js",
+        "dist/utils/snackbar.js",
         "dist/utils/Hotkey.js",
         "dist/utils/waitForElem.js",
         "dist/utils/Feature.js",

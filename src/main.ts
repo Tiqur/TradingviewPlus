@@ -44,6 +44,7 @@ features.set('Toggle Menu', new ToggleMenu());
 features.set('Move Time Left', new MoveTimeLeft());
 features.set('Move Time Right', new MoveTimeRight());
 
+
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
