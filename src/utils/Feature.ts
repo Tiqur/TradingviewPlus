@@ -155,6 +155,8 @@ abstract class Feature {
 
   public toggleEnabled() {
     this.enabled = !this.enabled;
+
+    snackBar(`${this.getName()} is now ${this.isEnabled() ? 'enabled' : 'disabled'}`);
     this.saveToLocalStorage();
   }
 
