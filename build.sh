@@ -35,8 +35,13 @@ mkdir temp
 # Copy files into temp dir
 cp -r $MANIFEST_NAME public/ dist/ temp
 
-# Zip contents "extension.xpi"
+# Go into temp dir
 cd temp
+
+# Rename manifest
+mv *manifest.json manifest.json
+
+# Zip contents "extension.xpi"
 zip -x "*.map" -x "*.scss" -r $OUTPUT_FILE_NAME *
 mv $OUTPUT_FILE_NAME ..
 cd ..
