@@ -19,7 +19,7 @@ $tvBlue: #2962ff;
   visibility: hidden;
   top: 0;
   margin-top: 2em;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 #tvp-snackbar.show {
@@ -57,7 +57,7 @@ $tvBlue: #2962ff;
   height: 100vh;
   left: 0;
   top: 0;
-  z-index: 99999;
+  z-index: 999;
   position: fixed;
   background: $backgroundColor;
   transition: left 0.3s ease-out;
