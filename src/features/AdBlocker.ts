@@ -23,7 +23,11 @@ class ToggleAdBlocker extends Feature {
 
   onMouseMove() {};
 
-  onKeyDown() {};
+  onKeyDown(e: KeyboardEvent) {
+    if (this.checkTrigger(e)) {
+      this.toggleEnabled();
+    }
+  };
 
   onMouseWheel() {};
 
@@ -58,12 +62,5 @@ class ToggleAdBlocker extends Feature {
         }
       }
     }).observe(document.body, config);
-
-    // Toggle enabled
-    document.addEventListener('keydown', e => {
-      if (this.checkTrigger(e)) {
-        this.toggleEnabled();
-      }
-    });
   }
 }
