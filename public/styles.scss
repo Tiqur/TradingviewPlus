@@ -2,10 +2,41 @@ $fontSize: 16px;
 $fontFamily: Arial, sans-serif;
 $textColor: #4e4b66;
 $backgroundColor: #000000;
+$tvBlue: #2962ff;
 
 .tvp-light {
   background: white !important;
 }
+
+#tvp-snackbar {
+  color: white;
+  background: $tvBlue;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  visibility: hidden;
+  top: 0;
+  margin-top: 2em;
+  z-index: 9999;
+}
+
+#tvp-snackbar.show {
+  visibility: visible;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+  from {margin-top: 0; opacity: 0;}
+  to {margin-top: 2em; opacity: 1;}
+}
+
+@keyframes fadeout {
+  from {margin-top: 2em; opacity: 1;}
+  to {margin-top: 0; opacity: 0;}
+}
+
 
 #tvp-background {
   position: fixed;
@@ -16,6 +47,7 @@ $backgroundColor: #000000;
   background: black;
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  pointer-events: none;
 }
 
 #tvp-menu {
@@ -43,6 +75,10 @@ $backgroundColor: #000000;
 
       h1 {
         margin: 2rem 0 0.4rem 0;
+      }
+
+      h3 {
+        font-weight: initial;
       }
 
       input[type="text"] {

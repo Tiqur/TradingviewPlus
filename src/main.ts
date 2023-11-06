@@ -41,6 +41,9 @@ features.set('Replay Mode', new ToggleReplay());
 features.set('Scroll Price Scale', new ScrollPriceScale());
 features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar());
 features.set('Toggle Menu', new ToggleMenu());
+features.set('Move Time Left', new MoveTimeLeft());
+features.set('Move Time Right', new MoveTimeRight());
+
 
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.

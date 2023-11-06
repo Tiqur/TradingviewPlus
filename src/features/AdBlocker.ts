@@ -16,57 +16,6 @@ class ToggleAdBlocker extends Feature {
       true
     );
     this.addContextMenuOptions([
-      new ContextMenuListItem('Change Hotkey', () => {
-       let hotkey = {
-          key: '',
-          ctrl: false,
-          shift: false,
-          alt: false,
-          meta: false,
-        };
-
-        // Get label element
-        const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
-        if (!hotkeyLabel) return;
-
-        // Wait for key to be pressed
-        hotkeyLabel.innerText = '...';
-
-        const keydownListener = (event: KeyboardEvent) => {
-          if (event.key !== 'Meta' && event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
-            hotkey.key = event.key;
-            hotkey.ctrl = event.ctrlKey;
-            hotkey.shift = event.shiftKey;
-            hotkey.alt = event.altKey;
-            hotkey.meta = event.metaKey;
-
-            event.preventDefault();
-          }
-        }
-
-        const keyupListener = () => {
-          // Update 'this.hotkey' with the newly selected hotkey
-          console.log("new hotkey:", hotkey);
-          this.setHotkey(hotkey)
-
-          // Re-render menu while maintaining fuzzy search results
-          // This is kinda hacky
-          const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
-          textBox.dispatchEvent(new InputEvent('input'));
-
-          // Remove event listeners to stop listening for hotkey input
-          document.removeEventListener('keydown', keydownListener);
-          document.removeEventListener('keyup', keyupListener);
-        }
-
-        document.addEventListener('keyup', keyupListener);
-        document.addEventListener('keydown', keydownListener);
-
-        console.log("Change Hotkey triggered");
-      }),
-      new ContextMenuListItem('Change Hotkey', () => {
-        console.log("Change Hotkey triggered");
-      })
     ]);
   }
 
@@ -74,7 +23,11 @@ class ToggleAdBlocker extends Feature {
 
   onMouseMove() {};
 
-  onKeyDown() {};
+  onKeyDown(e: KeyboardEvent) {
+    if (this.checkTrigger(e)) {
+      this.toggleEnabled();
+    }
+  };
 
   onMouseWheel() {};
 
@@ -109,12 +62,5 @@ class ToggleAdBlocker extends Feature {
         }
       }
     }).observe(document.body, config);
-
-    // Toggle enabled
-    document.addEventListener('keydown', e => {
-      if (this.checkTrigger(e)) {
-        this.toggleEnabled();
-      }
-    });
   }
 }

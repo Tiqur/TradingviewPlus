@@ -46,10 +46,6 @@ class TVPMenu {
     });
   }
 
-  isLightMode(): boolean {
-    return document.querySelector('[class*="theme-light"]') != null;
-  }
-
   //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   makeid(length: number) {
       let result = '';
@@ -80,16 +76,16 @@ class TVPMenu {
     const span1 = document.createElement('span');
 
     // Create the checkbox input element
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = feature.isEnabled();
+    //const checkbox = document.createElement('input');
+    //checkbox.type = 'checkbox';
+    //checkbox.checked = feature.isEnabled();
 
     // Create the <p> element
     const paragraph = document.createElement('p');
     paragraph.textContent = feature.getName();
 
     // Append the checkbox and paragraph to the first <span>
-    span1.appendChild(checkbox);
+    //span1.appendChild(checkbox);
     span1.appendChild(paragraph);
 
     // Create the second <span> element
@@ -129,9 +125,9 @@ class TVPMenu {
     });
 
     // Checkbox event listener
-    checkbox.addEventListener('change', () => {
-      feature.toggleEnabled();
-    });
+    //checkbox.addEventListener('change', () => {
+    //  feature.toggleEnabled();
+    //});
 
     return container;
   }
@@ -139,6 +135,9 @@ class TVPMenu {
   generateHotkeyString(feature: Feature) {
     let hotkeyString = "";
     const hotkey = feature.getHotkey();
+
+    if (hotkey.key == null)
+      return "N/A";
 
     if (hotkey.alt)
       hotkeyString += "Alt + "
@@ -203,7 +202,7 @@ class TVPMenu {
     if (!container) return;
 
     // If light mode, change menu background color
-    if (this.isLightMode())
+    if (isLightMode())
       container.classList.add('tvp-light');
     else
       if (container.classList.contains('tvp-light'))

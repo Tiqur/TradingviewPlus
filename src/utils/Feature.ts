@@ -60,7 +60,6 @@ abstract class Feature {
 
         const keyupListener = () => {
           // Update 'this.hotkey' with the newly selected hotkey
-          console.log("new hotkey:", hotkey);
           this.setHotkey(hotkey)
 
           // Re-render menu while maintaining fuzzy search results
@@ -110,8 +109,6 @@ abstract class Feature {
       this.saveToLocalStorage();
     }
 
-    console.log(this.config);
-    //console.log(this.getConfigValue('once'));
   }
 
 
@@ -158,6 +155,8 @@ abstract class Feature {
 
   public toggleEnabled() {
     this.enabled = !this.enabled;
+
+    snackBar(`${this.getName()} is now ${this.isEnabled() ? 'enabled' : 'disabled'}`);
     this.saveToLocalStorage();
   }
 

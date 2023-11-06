@@ -44,6 +44,13 @@ class ContextMenu {
     // Calculate the width of the container without adding it to the DOM
     container.style.visibility = 'hidden';
 
+    // If light mode, change menu background color
+    if (isLightMode())
+      container.classList.add('tvp-light');
+    else
+      if (container.classList.contains('tvp-light'))
+        container.classList.remove('tvp-light');
+
     menu.appendChild(container);
     
     // Calculate the width

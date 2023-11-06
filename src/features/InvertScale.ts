@@ -6,7 +6,7 @@ class InvertScale extends Feature {
       'Inverts the chart\'s scale (y-axis)',
       true,
       {
-        key: 'i',
+        key: 'e',
         ctrl: false,
         shift: false,
         alt: false,
