@@ -66,7 +66,7 @@ class TVPMenu {
     function onDotsClick() {
       const menu = document.getElementById('tvp-menu');
       const dots = container.querySelector('svg');
-      if (!menu || !dots) return;
+      if (!menu || !dots || feature.getContextMenuOptions().length === 0) return;
       const x = dots.getBoundingClientRect().x - menu.getBoundingClientRect().x;
       const cm = new ContextMenu([x, dots.getBoundingClientRect().y]);
       cm.renderList(feature.getContextMenuOptions());
