@@ -50,8 +50,6 @@ class ContextMenu {
     else
       if (container.classList.contains('tvp-light'))
         container.classList.remove('tvp-light');
-
-    menu.appendChild(container);
     
     // Calculate the width
     const containerWidth = container.offsetWidth;
@@ -66,7 +64,7 @@ class ContextMenu {
     container.style.left = this.position[0] + 'px';
     container.style.top = this.position[1] + 'px';
 
-    menu?.appendChild(container);
+    menu.appendChild(container);
     this.listenForOutsideClicks();
 
     return container;
