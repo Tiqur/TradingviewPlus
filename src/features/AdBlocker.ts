@@ -13,7 +13,7 @@ class ToggleAdBlocker extends Feature {
         meta: false
       },
       Category.TVP,
-      true
+      false
     );
     this.addContextMenuOptions([
     ]);
