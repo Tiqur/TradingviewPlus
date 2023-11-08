@@ -15,7 +15,10 @@
 ## Features
 
 ## Building
-run `build.sh firefox|chrome` to build for firefox or chrome respectively
+run `build.sh firefox|chrome|opera` to build for firefox, chrome or oepra respectively
+
+## Testing
+run `./web-ext.sh`
 
 ## Contributing
 
