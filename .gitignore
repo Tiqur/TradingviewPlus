@@ -1,6 +1,8 @@
 node_modules/
 dist/*
 
+/manifest.json
+
 temp/
 *.xpi
 *.zip
