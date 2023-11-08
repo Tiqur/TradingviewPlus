@@ -15,7 +15,7 @@
 ## Features
 
 ## Building
-run build.sh to build for firefox
+run `build.sh firefox|chrome` to build for firefox or chrome respectively
 
 ## Contributing
 
