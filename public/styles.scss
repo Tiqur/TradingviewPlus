@@ -63,6 +63,7 @@ $darkGrey: #434651;
   position: fixed;
   background: $backgroundColor;
   transition: left 0.3s ease-out;
+  border: 1px solid white;
 
   section {
     height: 100vh;
