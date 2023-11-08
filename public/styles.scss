@@ -63,8 +63,8 @@ $darkGrey: #434651;
   position: fixed;
   background: $backgroundColor;
   transition: left 0.3s ease-out;
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
+  border-top: 1px solid $borderColor;
+  border-bottom: 1px solid $borderColor;
 
   section {
     height: 100vh;
