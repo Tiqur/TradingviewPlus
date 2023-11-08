@@ -4,6 +4,7 @@ $textColor: #4e4b66;
 $backgroundColor: #000000;
 $tvBlue: #2962ff;
 $borderColor: #787b86;
+$lightborderColor: #363a45;
 $darkGrey: #434651;
 
 .tvp-light {
@@ -63,6 +64,7 @@ $darkGrey: #434651;
   position: fixed;
   background: $backgroundColor;
   transition: left 0.3s ease-out;
+
 
   section {
     height: 100vh;
