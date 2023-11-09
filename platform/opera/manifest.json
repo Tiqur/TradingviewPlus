@@ -1,0 +1,51 @@
+{
+  "manifest_version": 2,
+  "name": "TradingviewPlus",
+  "version": "4.0.0",
+  "author": "Tiqur",
+
+  "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
+
+  "permissions": ["storage"],
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.tradingview.com/chart/*"],
+      "js": [
+        "dist/utils/isLightMode.js",
+        "dist/utils/snackbar.js",
+        "dist/utils/Hotkey.js",
+        "dist/utils/waitForElem.js",
+        "dist/utils/Feature.js",
+        "dist/utils/fuzzySearch.js",
+        "dist/utils/TVPMenu.js",
+        "dist/utils/ContextMenuListItem.js",
+        "dist/utils/ContextMenu.js",
+        "dist/features/AutoScale.js",
+        "dist/features/LogScale.js",
+        "dist/features/AutoTimeframeColors.js",
+        "dist/features/AdBlocker.js",
+        "dist/features/CopyPrice.js",
+        "dist/features/DeleteDrawing.js",
+        "dist/features/SymbolSearch.js",
+        "dist/features/QuickToolbar.js",
+        "dist/features/InvertScale.js",
+        "dist/features/LineStyle.js",
+        "dist/features/LineWidth.js",
+        "dist/features/Replay.js",
+        "dist/features/ScrollPriceScale.js",
+        "dist/features/ScrollToMostRecentBar.js",
+        "dist/features/ToggleMenu.js",
+        "dist/features/MoveTimeLeft.js",
+        "dist/features/MoveTimeRight.js",
+        "dist/main.js"
+      ],
+      "css": [
+        "dist/styles.css"
+      ],
+      "web_accessible_resources": [
+        "public/menu.html"
+      ]
+    }
+  ]
+}
