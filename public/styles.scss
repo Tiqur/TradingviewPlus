@@ -64,6 +64,7 @@ $darkGrey: #434651;
   position: fixed;
   background: $backgroundColor;
   transition: left 0.3s ease-out;
+  box-sizing: border-box;
   border-top: 1px solid $lightborderColor;
   border-bottom: 1px solid $lightborderColor;
 
