@@ -33,7 +33,6 @@ features.set('Ad Blocker', new ToggleAdBlocker());
 features.set('Copy Price', new CopyPrice());
 features.set('Delete Drawing', new DeleteDrawing());
 features.set('Symbol Search', new SymbolSearch());
-features.set('Quick Toolbar', new QuickToolbar());
 features.set('Invert Scale', new InvertScale());
 features.set('Line Style', new LineStyle());
 features.set('Line Width', new LineWidth());
@@ -42,9 +41,10 @@ features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar());
 features.set('Toggle Menu', new ToggleMenu());
 features.set('Move Time Left', new MoveTimeLeft());
 features.set('Move Time Right', new MoveTimeRight());
+features.set('Quick Toolbar', new QuickToolbar());
 features.set('Timeframe Scroll', new TimeframeScroll());
-features.set('Zoom Chart', new ZoomChart());
 features.set('Scroll Price Scale', new ScrollPriceScale());
+features.set('Zoom Chart', new ZoomChart());
 
 
 // [TEMP] Fetch and inject HTML 
