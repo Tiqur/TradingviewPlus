@@ -25,6 +25,12 @@ class ContextMenu {
     });
   }
 
+  updatePosition(position: [number, number]) {
+    this.position = position;
+    this.element.style.left = this.position[0] + 'px';
+    this.element.style.top = this.position[1] + 'px';
+  }
+
   listenForOutsideClicks() {
     document.addEventListener('mousedown', this.defaultClickCallback);
   }
@@ -86,6 +92,16 @@ class ContextMenu {
     const container = this.render();
     //container.innerHTML = "";
     container.appendChild(element)
+  }
+
+  hide() {
+    if (this.element)
+      this.element.hidden = true;
+  }
+
+  show() {
+    if (this.element)
+      this.element.hidden = false;
   }
 
   destroy() {
