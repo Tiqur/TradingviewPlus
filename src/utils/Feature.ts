@@ -65,9 +65,14 @@ abstract class Feature {
         }
 
         const keyupListener = () => {
-          // Update 'this.hotkey' with the newly selected hotkey
-          this.setHotkey(hotkey)
 
+          if (!checkDuplicateHotkeys(features, hotkey)) {
+            // Update 'this.hotkey' with the newly selected hotkey
+            this.setHotkey(hotkey)
+          } else {
+            snackBar('Error: Duplicate Keybind');
+          }
+        
           // Re-render menu while maintaining fuzzy search results
           // This is kinda hacky
           const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
