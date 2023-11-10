@@ -38,6 +38,7 @@
         "dist/features/ToggleMenu.js",
         "dist/features/MoveTimeLeft.js",
         "dist/features/MoveTimeRight.js",
+        "dist/features/TimeframeScroll.js",
         "dist/main.js"
       ],
       "css": [

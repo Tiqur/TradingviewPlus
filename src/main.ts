@@ -43,6 +43,7 @@ features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar());
 features.set('Toggle Menu', new ToggleMenu());
 features.set('Move Time Left', new MoveTimeLeft());
 features.set('Move Time Right', new MoveTimeRight());
+features.set('Timeframe Scroll', new TimeframeScroll());
 
 
 // [TEMP] Fetch and inject HTML 
