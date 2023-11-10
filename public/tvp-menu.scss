@@ -1,0 +1,147 @@
+@use 'variables';
+@use 'hide-scrollbar-mixin';
+@use 'tvp-light.scss';
+
+#tvp-menu {
+  display: flex;
+  position: relative;
+  width: 45vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  position: fixed;
+  background: variables.$backgroundColor;
+  transition: left 0.3s ease-out;
+  box-sizing: border-box;
+  border-top: 1px solid variables.$lightborderColor;
+  border-bottom: 1px solid variables.$lightborderColor;
+
+  section {
+    height: 100vh;
+    width: clamp(250px, 70%, 800px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: scroll;
+    @include hide-scrollbar-mixin.hide-scrollbar;
+
+    div {
+      width: 100%;
+
+      h1 {
+        margin: 2rem 0 0.4rem 0;
+      }
+
+      h3 {
+        font-weight: initial;
+      }
+
+      input[type="text"] {
+        box-sizing: border-box;
+        border: 1px solid variables.$borderColor;
+        border-radius: 4px;
+        height: 1.6rem;
+        margin-top: 1rem;
+        width: 100%;
+        background: none;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .hotkeyLabel {
+    display: inline-block;
+    min-width: 34px;
+    line-height: 34px;
+    height: 34px;
+    border: 1px solid variables.$darkGrey;
+    border-radius: 6px;
+    box-shadow: 0 2px 0 variables.$darkGrey;
+    text-align: center;
+    z-index: 1;
+  }
+
+  
+  .accordion {
+    width: 100%;
+
+    label {
+      width: 100%;
+      display: inline-block;
+      padding: 1.4rem 0rem;
+      border-bottom: 1px solid variables.$borderColor;
+      margin-bottom: 1rem;
+      position: relative;
+
+      svg {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.2s ease-out;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .tab {
+      .hidden-input {
+        opacity: 0;
+        z-index: -1;
+        display: none;
+
+        &:checked ~ div {
+          max-height: initial;
+        }
+
+        &:checked ~ h2 label svg {
+          transform: rotate(180deg) translateY(50%);
+        }
+      }
+
+      & > div {
+        max-height: 0;
+        overflow: hidden;
+      }
+    }
+  }
+
+
+  .tvp-feature {
+    margin-inline: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    
+    p {
+      display: inline-block;
+      margin-left: 0.6rem;
+    }
+
+    & > span {
+      display: flex;
+      align-items: center;
+    }
+
+    button {
+      padding: none;
+      margin: none;
+      background: none;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      margin-left: 0.4rem;
+    }
+  }
+}

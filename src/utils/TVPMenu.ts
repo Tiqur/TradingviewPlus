@@ -270,7 +270,7 @@ class TVPMenu {
 
     // Menu resize logic
     document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
-    const handleContainer = document.getElementById("handle-container");
+    const handleContainer = document.getElementById("tvp-menu-handle-container");
     handleContainer?.addEventListener('mousedown', () => {
       mouseDown = true;
     });

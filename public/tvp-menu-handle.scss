@@ -1,0 +1,27 @@
+@use 'variables';
+
+#tvp-menu-handle-container {
+  height: 100vh;
+  width: 35px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #363a45;
+
+  &:hover {
+    cursor: ew-resize;
+  }
+
+  &:hover #handle {
+    background: #9598A1;
+  }
+}
+
+#tvp-menu-handle {
+  background: variables.$borderColor;
+  height: 80px;
+  width: 4px;
+}
