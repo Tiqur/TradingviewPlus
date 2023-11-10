@@ -1,19 +1,19 @@
-class ScrollPriceScale extends Feature {
+class ZoomChart extends Feature {
   triggerDown = false;
-  heldKeys: Record<string, boolean> = {};
   
   constructor() {
     super(
-      'Scroll Price Scale',
-      'Allows you to scroll the price scale using a hotkey + the scroll wheel',
+      'Zoom Chart',
+      'Allows you to zoom both chart axes at once',
       true,
       {
         key: null,
-        ctrl: false,
+        ctrl: true,
         shift: true,
         alt: false,
         meta: false
-      }, Category.TVP,
+      },
+      Category.TVP,
       false
     );
     this.addContextMenuOptions([
@@ -27,9 +27,6 @@ class ScrollPriceScale extends Feature {
 
   onMouseWheel(e: WheelEvent) {
     if (this.triggerDown && (e as WheelEvent).clientX !== 0) {
-      // Stop x axis froms scrolling
-      e.stopPropagation();
-
       // Scroll price axis
       document.querySelector('[class="price-axis"]')?.dispatchEvent(new WheelEvent('wheel', {"deltaY": (e as WheelEvent).deltaY*8}));
     }
@@ -40,24 +37,14 @@ class ScrollPriceScale extends Feature {
   // instead of having to hardcode it like this
 
   onKeyDown(e: KeyboardEvent) {
-    this.heldKeys[e.key] = true;
-
-    const condition = (e.key == "Shift")
-    if (condition && this.isEnabled() && Object.keys(this.heldKeys).length == 1) {
+    const condition = (e.key == "Shift" && e.ctrlKey) || (e.key == "Control" && e.shiftKey);
+    if (condition && this.isEnabled()) {
       this.triggerDown = true;
-    } else {
-      this.triggerDown = false;
     }
   }
 
   onKeyUp(e: KeyboardEvent) {
-    // When any key is released, remove it from map
-    delete this.heldKeys[e.key];
-
-    // Update trigger if only one left is in map ( Shift )
-    this.triggerDown = Object.keys(this.heldKeys).length == 1;
-
-    if (e.key == "Shift") {
+    if (e.key == "Shift" || e.key == "Control") {
       this.triggerDown = false;
     }
   }

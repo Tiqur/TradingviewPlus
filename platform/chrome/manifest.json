@@ -39,6 +39,7 @@
         "dist/features/MoveTimeLeft.js",
         "dist/features/MoveTimeRight.js",
         "dist/features/TimeframeScroll.js",
+        "dist/features/ZoomChart.js",
         "dist/main.js"
       ],
       "css": [
