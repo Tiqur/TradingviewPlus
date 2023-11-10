@@ -101,6 +101,7 @@ $darkGrey: #434651;
       }
 
       input[type="text"] {
+        box-sizing: border-box;
         border: 1px solid $borderColor;
         border-radius: 4px;
         height: 1.6rem;
