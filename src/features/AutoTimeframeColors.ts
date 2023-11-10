@@ -58,23 +58,27 @@ class ToggleAutoTimeframeColors extends Feature {
           const timeframe = key;
           const colorValue = colors[key];
 
+          // Container to hold each color square for their respective timeframe
           const colorContainer = document.createElement('div');
 
-
+          // Text containing the timeframe
           const colorText = document.createElement('p');
           colorText.innerText = timeframe;
           colorContainer.appendChild(colorText);
 
+          // The color square itself
           const colorPickerSquare = document.createElement('div');
           colorPickerSquare.className = 'color-square';
           colorPickerSquare.style.background = defaultColors[colorValue];
 
+          // On click, open / create color picker menu
           colorPickerSquare.addEventListener('click', () => {
 
             // Inject color picker into menu, replace current element
             const colorPickerContainer = document.createElement('div');
             colorPickerContainer.className = 'color-picker-context-menu';
 
+            // Create and initialize click even for each color square
             defaultColors.forEach((dc, colorIndex) => {
               const colorElement = document.createElement('span');
               colorElement.style.background = dc;
@@ -93,15 +97,18 @@ class ToggleAutoTimeframeColors extends Feature {
             });
 
 
-            //cm.destroy();
+            // Calculate position
             const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left + 2;
+
+            // Create new context menu
             const colorPickerCm = new ContextMenu([x+offset, y]);
-            ////colorPickerSquare.innerText = 'test';
+
+            // Render color picker container
             colorPickerCm.renderElement(colorPickerContainer);
 
+            // Make it so the main color config menu doesn't close if
+            // the user clicks within the color picker menu
             cm.setClickCallback((event: MouseEvent) => {
-              // Make it so the main color config menu doesn't close if
-              // the user clicks within the color picker menu
               if (colorPickerCm.element != null) {
                 if (!(cm.element?.contains(event.target as Node) || colorPickerCm.element.contains(event.target as Node))) {
                   cm.destroy();
