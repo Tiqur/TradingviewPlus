@@ -8,14 +8,16 @@ abstract class Feature {
   private category: Category;
   private contextMenuOptions: ContextMenuListItem[] = [];
   private config: Record<string, any> = {};
+  private alternateHotkeyLabels: null | string[] = null;
 
-  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, editableHotkey: boolean = true) {
+  constructor(name: string, tooltip: string, enabled: boolean, hotkey: Hotkey, category: Category, editableHotkey: boolean = true, alternateHotkeyLabels: null | string[] = null) {
     this.name = name;
     this.tooltip = tooltip;
     this.enabled = enabled;
     this.hotkey = hotkey;
     this.category = category;
     this.loadConfigFromLocalStorage().then(() => this.init());
+    this.alternateHotkeyLabels = alternateHotkeyLabels;
 
     if (editableHotkey) {
       this.addHotkeyEditContextMenuItem();
@@ -28,6 +30,10 @@ abstract class Feature {
   public abstract onMouseMove(e: MouseEvent): void;
   public abstract onMouseDown(e: MouseEvent): void;
   public abstract onMouseWheel(e: WheelEvent): void;
+
+  public getAlternateHotkeyLabels(): null | string[] {
+    return this.alternateHotkeyLabels;
+  }
 
   private addHotkeyEditContextMenuItem() {
       const cmli = new ContextMenuListItem('Change Hotkey', () => {

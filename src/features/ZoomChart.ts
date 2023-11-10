@@ -14,7 +14,8 @@ class ZoomChart extends Feature {
         meta: false
       },
       Category.TVP,
-      false
+      false,
+      ["Ctrl", "Shift", "Scroll"]
     );
     this.addContextMenuOptions([
     ]);

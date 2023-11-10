@@ -13,7 +13,8 @@ class QuickToolbar extends Feature {
         meta: false
       },
       Category.TVP,
-      false
+      false,
+      ["Keys 1-9"]
     );
   }
 

@@ -133,7 +133,13 @@ class TVPMenu {
     return container;
   }
 
-  generateHotkeyString(feature: Feature) {
+  generateHotkeyString(feature: Feature): string {
+    const altLabels = feature.getAlternateHotkeyLabels();
+
+    if (altLabels !== null) {
+      return altLabels.join(' + ');
+    }
+
     let hotkeyString = "";
     const hotkey = feature.getHotkey();
 
