@@ -34,8 +34,28 @@ class ToggleAutoTimeframeColors extends Feature {
 
     this.addContextMenuOptions([
       new ContextMenuListItem('Colors', () => {
+        // Create new context menu for color picker
+        const colorPickerCm = new ContextMenu([0, 0]);
+
+        let selectedTimeframe: string | null = null;
+        let selectedColorPickerSquare: HTMLElement | null = null;
+
+        // Callback for color choose
+        const colorPickerMenu = this.createColorPickerMenu((colorIndex: number) => {
+          if (!selectedTimeframe || !selectedColorPickerSquare) return;
+          this.setColor(selectedTimeframe, colorIndex);
+          selectedColorPickerSquare.style.background = defaultColors[colorIndex];
+          colorPickerCm.hide();
+        });
+
+        // Render color picker container
+        colorPickerCm.renderElement(colorPickerMenu);
+
+        // Hide initially on open
+        colorPickerCm.hide();
 
 
+        // Get position of dots
         const dots = document.getElementById(`${this.getName()}-svg-dots`);
         if (!dots) return;
         const [x, y] = [dots.getBoundingClientRect().x, dots.getBoundingClientRect().y] 
@@ -44,16 +64,15 @@ class ToggleAutoTimeframeColors extends Feature {
         // Launch timeframe colors config
         const cm = new ContextMenu([x, y]);
 
-
-        
         // Create menu content elment
         const container = document.createElement('div');
         container.className = 'auto-timeframe-colors-context-menu';
 
-
         // Get colors from config
         const colors = this.getConfigValue('colors');
 
+
+        // Create each element containing timeframe and color square
         Object.keys(colors).forEach(key => {
           const timeframe = key;
           const colorValue = colors[key];
@@ -73,57 +92,9 @@ class ToggleAutoTimeframeColors extends Feature {
 
           // On click, open / create color picker menu
           colorPickerSquare.addEventListener('click', () => {
-
-            // Inject color picker into menu, replace current element
-            const colorPickerContainer = document.createElement('div');
-            colorPickerContainer.className = 'color-picker-context-menu';
-
-            // Create and initialize click even for each color square
-            defaultColors.forEach((dc, colorIndex) => {
-              const colorElement = document.createElement('span');
-              colorElement.style.background = dc;
-              colorElement.className = 'color-square';
-              colorPickerContainer.appendChild(colorElement);
-              
-              // On color choose
-              const colorChooseCb = () => {
-                colorPickerCm.destroy();
-                colorElement.removeEventListener('click', colorChooseCb);
-                this.setColor(timeframe, colorIndex);
-                colorPickerSquare.style.background = defaultColors[colorIndex];
-              }
-
-              colorElement.addEventListener('click', colorChooseCb);
-            });
-
-
-            // Calculate position
-            const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left + 2;
-
-            // Create new context menu
-            const colorPickerCm = new ContextMenu([x+offset, y]);
-
-            // Render color picker container
-            colorPickerCm.renderElement(colorPickerContainer);
-
-            // Make it so the main color config menu doesn't close if
-            // the user clicks within the color picker menu
-            cm.setClickCallback((event: MouseEvent) => {
-              if (colorPickerCm.element != null) {
-                if (!(cm.element?.contains(event.target as Node) || colorPickerCm.element.contains(event.target as Node))) {
-                  cm.destroy();
-                  colorPickerCm.destroy();
-                }
-              } else {
-                if (!(cm.element?.contains(event.target as Node))) {
-                  cm.destroy();
-                }
-              }
-            });
-
-
-
-            //cm.renderElement(colorPickerContainer);
+            selectedColorPickerSquare = colorPickerSquare;
+            selectedTimeframe = timeframe;
+            colorPickerCm.show();
           });
 
           colorContainer.appendChild(colorPickerSquare);
@@ -134,6 +105,33 @@ class ToggleAutoTimeframeColors extends Feature {
         });
 
         cm.renderElement(container);
+
+        // Make it so the main color config menu doesn't close if
+        // the user clicks within the color picker menu
+        cm.setClickCallback((event: MouseEvent) => {
+          if (colorPickerCm.element != null) {
+            if (!(cm.element?.contains(event.target as Node) || colorPickerCm.element.contains(event.target as Node))) {
+              cm.destroy();
+              colorPickerCm.destroy();
+            }
+          } else {
+            if (!(cm.element?.contains(event.target as Node))) {
+              cm.destroy();
+            }
+          }
+        });
+
+        // Make it so ColorPickerMenu doesn't close if clicking within cm
+        colorPickerCm.setClickCallback((event: MouseEvent) => {
+          if (!(cm.element?.contains(event.target as Node) || colorPickerCm.element.contains(event.target as Node))) {
+            colorPickerCm.destroy();
+          }
+        });
+
+        /* Update ColorPickerMenu position */
+        // Calculate position
+        const offset = cm.element.getBoundingClientRect().right - cm.element.getBoundingClientRect().left + 2;
+        colorPickerCm.updatePosition([x+offset, y]);
       })
     ]);
   }
@@ -181,6 +179,24 @@ class ToggleAutoTimeframeColors extends Feature {
       this.saveToLocalStorage();
       this.printLocalStorage();
     }
+  }
+
+  createColorPickerMenu(colorChooseCb: Function): HTMLElement {
+    // Inject color picker into menu, replace current element
+    const colorPickerContainer = document.createElement('div');
+    colorPickerContainer.className = 'color-picker-context-menu';
+
+    // Create and initialize click even for each color square
+    defaultColors.forEach((dc, colorIndex) => {
+      const colorElement = document.createElement('span');
+      colorElement.style.background = dc;
+      colorElement.className = 'color-square';
+      colorPickerContainer.appendChild(colorElement);
+      
+      colorElement.addEventListener('click', () => {colorChooseCb(colorIndex)});
+    });
+
+    return colorPickerContainer;
   }
 
   // On canvas click
