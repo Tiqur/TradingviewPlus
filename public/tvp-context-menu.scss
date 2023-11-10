@@ -10,7 +10,15 @@
 
   p:hover {
     cursor: pointer;
-    background: variables.$darkGrey;
+    background: variables.$lightGrey;
+  }
+
+  // Dark mode
+  &:not(.tvp-light) {
+    p:hover {
+      cursor: pointer;
+      background: variables.$darkGrey;
+    }
   }
 
   p {
