@@ -14,11 +14,50 @@
 
 ## Features
 
+### Custom Features
+- **Auto Timeframe Colors:**
+> When active, automatically changes drawing colors depending on which timeframe is active.
+
+- **Ad Blocker**
+> When active, attempts to block all advertisements.
+
+- **Change Line Style**
+> Keybind to easily change a drawing's line style ( solid, dashed, etc. )
+
+- **Change Line Width**
+> Keybind to easily change a drawing's line width ( 1px, 2px, etc. )
+
+- **Toggle TVP Menu**
+> Keybind to toggle TradingViewPlus's built in side menu
+
+- **Quick Toolbar**
+> Gives quick access to the favorited tools toolbar using keys 1-9
+
+- **Scroll Timeframes**
+> When active, allows you to scroll through timeframes in order using Tab + Scroll
+
+- **Scroll Price Scale**
+> When active, allows you to scroll the chart's vertical scale using Shift + Scroll
+
+- **Zoom Chart**
+> When active, allows you to scroll BOTH of the chart's scales at the same time using Ctrl + Shift + Scroll
+
+
+### Additional Editable Keybinds
+- **Toggle Auto Scale**
+- **Toggle Log Scale**
+- **Delete Drawing**
+- **Open Symbol Search**
+- **Invert Scale**
+- **Scroll To Most Recent Bar**
+- **Move Time Left**
+- **Move Time Right**
+
 ## Building
 run `build.sh firefox|chrome|opera` to build for firefox, chrome or oepra respectively
 
 ## Testing
-run `./web-ext.sh`
+	./web-ext.sh
 
 ## Contributing
 
