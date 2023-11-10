@@ -43,7 +43,12 @@
         "dist/main.js"
       ],
       "css": [
-        "dist/styles.css"
+        "dist/tvp-menu.css",
+        "dist/tvp-snackbar.css",
+        "dist/tvp-background.css",
+        "dist/tvp-context-menu.css",
+        "dist/tvp-menu-handle.css",
+        "dist/tvp-light.css"
       ],
       "web_accessible_resources": [
         "public/menu.html"
