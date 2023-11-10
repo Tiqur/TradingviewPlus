@@ -38,12 +38,13 @@ features.set('Invert Scale', new InvertScale());
 features.set('Line Style', new LineStyle());
 features.set('Line Width', new LineWidth());
 features.set('Replay Mode', new ToggleReplay());
-features.set('Scroll Price Scale', new ScrollPriceScale());
 features.set('Scroll To Most Recent Bar', new ScrollToMostRecentBar());
 features.set('Toggle Menu', new ToggleMenu());
 features.set('Move Time Left', new MoveTimeLeft());
 features.set('Move Time Right', new MoveTimeRight());
 features.set('Timeframe Scroll', new TimeframeScroll());
+features.set('Zoom Chart', new ZoomChart());
+features.set('Scroll Price Scale', new ScrollPriceScale());
 
 
 // [TEMP] Fetch and inject HTML 
