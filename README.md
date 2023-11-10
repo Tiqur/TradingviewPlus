@@ -10,7 +10,7 @@
 	<a href=""><img src="https://user-images.githubusercontent.com/585534/107280692-ac7b5f00-6a26-11eb-85c7-088926504452.png" alt="Get TradingViewPlus for Opera"></a>
 </p>
 
-<h1 align="center">TradingViewPlus: Adds various new features and enhancements for TradingView™</h1>
+<h1 align="center">TradingViewPlus: Adds various features and quality of life improvements to TradingView™</h1>
 
 ## Features
 
