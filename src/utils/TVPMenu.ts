@@ -6,6 +6,7 @@ class TVPMenu {
     this.initResizeLogic();
     this.injectFeatures(Array.from(features.values()));
     this.initFuzzySearch();
+    this.initTvpBackgroundEvents();
   }
 
   initEventSuppression() {
@@ -255,6 +256,15 @@ class TVPMenu {
     const container = document.getElementById('tvp-menu');
     if (!container) return false;
     return container.style.left == '0px';
+  }
+
+  initTvpBackgroundEvents() {
+    const background = document.getElementById('tvp-background');
+    if (background) {
+      background.addEventListener('click', () => {
+        this.close();
+      })
+    }
   }
 
   initResizeLogic() {
