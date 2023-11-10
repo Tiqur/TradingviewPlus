@@ -14,7 +14,8 @@ class TimeframeScroll extends Feature {
         meta: false
       },
       Category.TVP,
-      true
+      false,
+      ["Tab", "Scroll"]
     );
     this.addContextMenuOptions([
     ]);

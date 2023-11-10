@@ -14,7 +14,8 @@ class ScrollPriceScale extends Feature {
         alt: false,
         meta: false
       }, Category.TVP,
-      false
+      false,
+      ["Shift", "Scroll"]
     );
     this.addContextMenuOptions([
     ]);
