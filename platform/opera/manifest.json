@@ -12,6 +12,7 @@
     {
       "matches": ["*://*.tradingview.com/chart/*"],
       "js": [
+        "dist/lib/purify.min.js",
         "dist/utils/isLightMode.js",
         "dist/utils/snackbar.js",
         "dist/utils/Hotkey.js",

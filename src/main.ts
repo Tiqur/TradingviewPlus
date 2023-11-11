@@ -46,13 +46,27 @@ features.set('Timeframe Scroll', new TimeframeScroll());
 features.set('Scroll Price Scale', new ScrollPriceScale());
 features.set('Zoom Chart', new ZoomChart());
 
+// Create TVP background
+const tvp_background = document.createElement('div');
+tvp_background.id = 'tvp-background';
+if (document.getElementById('tvp-background') == null) {
+  document.body.insertAdjacentElement('beforeend', tvp_background);
+}
 
 // [TEMP] Fetch and inject HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
+  // Sanitize HTML
+  const sanitized_html = DOMPurify.sanitize(html);
+
+  // Parse HTML into HTMLElement
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(sanitized_html, 'text/html');
+  const element = doc.body.firstChild;
+
   const tvpMenu = document.getElementById('tvp-menu');
-  if (tvpMenu == null) {
-    document.body.insertAdjacentHTML('beforeend', html);
+  if (tvpMenu == null && element != null) {
+    document.body.insertAdjacentElement('beforeend', element as Element);
     menu.init();
   }
 });
