@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TradingviewPlus",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
