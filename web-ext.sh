@@ -15,6 +15,9 @@ tsc
 # Compile scss
 npx sass public/:dist/
 
+# Copy lib to dist
+cp -r lib/ dist/
+
 # Remove old manifest
 rm manifest.json
 

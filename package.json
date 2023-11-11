@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "npx nodemon --watch src --ext ts --exec 'npx tsc && npx sass --watch public/:dist/'"
+    "watch": "cp -r lib/ dist/ && npx nodemon --watch src --ext ts --exec 'npx tsc && npx sass --watch public/:dist/'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
     "nodemon": "^3.0.1",
     "sass": "^1.69.4",
     "typescript": "^5.2.2"
