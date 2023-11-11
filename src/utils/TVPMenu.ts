@@ -109,7 +109,7 @@ class TVPMenu {
     `;
 
     // Set the innerHTML of the button to the SVG string
-    button.innerHTML = svgString;
+    button.innerHTML = DOMPurify.sanitize(svgString);
 
     // Append the hotkeyLabel and button to the second <span>
     span2.appendChild(hotkeyLabel);
