@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "TradingviewPlus",
   "version": "4.0.0",
   "author": "Tiqur",
@@ -21,6 +21,7 @@
         "dist/utils/TVPMenu.js",
         "dist/utils/ContextMenuListItem.js",
         "dist/utils/ContextMenu.js",
+        "dist/utils/checkDuplicateHotkeys.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
@@ -43,11 +44,22 @@
         "dist/main.js"
       ],
       "css": [
-        "dist/styles.css"
-      ],
-      "web_accessible_resources": [
-        "public/menu.html"
+        "dist/tvp-menu.css",
+        "dist/tvp-snackbar.css",
+        "dist/tvp-background.css",
+        "dist/tvp-context-menu.css",
+        "dist/tvp-menu-handle.css",
+        "dist/tvp-light.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["public/menu.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ]
 }
