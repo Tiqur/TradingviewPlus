@@ -27,6 +27,7 @@ class ScrollPriceScale extends Feature {
   onMouseMove() {};
 
   onMouseWheel(e: WheelEvent) {
+    //console.log(Object.keys(this.heldKeys));
     if (this.triggerDown && (e as WheelEvent).clientX !== 0) {
       // Stop x axis froms scrolling
       e.stopPropagation();
@@ -41,7 +42,8 @@ class ScrollPriceScale extends Feature {
   // instead of having to hardcode it like this
 
   onKeyDown(e: KeyboardEvent) {
-    this.heldKeys[e.key] = true;
+    if (e.key.length > 0)
+      this.heldKeys[e.key] = true;
 
     const condition = (e.key == "Shift")
     if (condition && this.isEnabled() && Object.keys(this.heldKeys).length == 1) {
