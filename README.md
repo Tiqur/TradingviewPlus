@@ -14,6 +14,8 @@
 
 ## Features
 
+Press "m" to open the menu
+
 ### Custom Features
 - **Auto Timeframe Colors:**
 > When active, automatically changes drawing colors depending on which timeframe is active.
