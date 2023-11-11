@@ -6,7 +6,7 @@
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab"],
 
   "content_scripts": [
     {
