@@ -54,10 +54,10 @@
 - **Move Time Right**
 
 ## Building
-run `build.sh firefox|chrome|opera` to build for firefox, chrome or oepra respectively
+run `./build.sh firefox|chrome|opera` to build for firefox, chrome or opera respectively
 
 ## Testing
-	./web-ext.sh
+run `./web-ext.sh firefox|chrome|opera` to start web-ext for firefox, chrome or opera respectively
 
 ## Contributing
 
