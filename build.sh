@@ -13,22 +13,22 @@ OUTPUT_FILE_NAME=""
 if [ "$1" == "firefox" ]; then
   echo "Building for Firefox..."
   MANIFEST_PATH="platform/firefox/manifest.json"
-  OUTPUT_FILE_NAME="extension.xpi"
+  OUTPUT_FILE_NAME="tvp-firefox.xpi"
 elif [ "$1" == "chrome" ]; then
   echo "Building for Chrome..."
   MANIFEST_PATH="platform/chrome/manifest.json"
-  OUTPUT_FILE_NAME="extension.zip"
+  OUTPUT_FILE_NAME="tvp-chrome.zip"
 elif [ "$1" == "opera" ]; then
   echo "Building for Opera..."
   MANIFEST_PATH="platform/opera/manifest.json"
-  OUTPUT_FILE_NAME="extension.zip"
+  OUTPUT_FILE_NAME="tvp-opera.zip"
 else
   echo "Invalid argument. Supported values are 'firefox', 'chrome' and 'opera'."
   exit 1
 fi
 
 # Compile typescript
-tsc
+npx tsc
 
 # Compile scss
 npx sass public/:dist/
