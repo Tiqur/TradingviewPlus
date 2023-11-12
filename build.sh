@@ -28,7 +28,7 @@ else
 fi
 
 # Compile typescript
-tsc
+npx tsc
 
 # Compile scss
 npx sass public/:dist/
