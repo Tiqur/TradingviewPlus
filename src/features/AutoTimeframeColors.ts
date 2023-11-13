@@ -212,7 +212,8 @@ class ToggleAutoTimeframeColors extends Feature {
       // Click Line tool colors on toolbar
       (document.querySelector('[data-name="line-tool-color"]') as HTMLElement).click()
       const allColors = document.querySelectorAll('[data-name="line-tool-color-menu"] div:not([class]) button');
-      (allColors[colors[currentTimeframe]] as HTMLElement).click();
+      const local_colors = this.getConfigValue('colors');
+      (allColors[local_colors[currentTimeframe]] as HTMLElement).click();
     })
   }
 
