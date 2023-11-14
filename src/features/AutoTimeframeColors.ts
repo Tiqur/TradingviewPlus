@@ -22,7 +22,7 @@ class ToggleAutoTimeframeColors extends Feature {
       'Automatically changes tool color on click',
       true,
       {
-        key: null,
+        key: 's',
         ctrl: false,
         shift: false,
         alt: false,
