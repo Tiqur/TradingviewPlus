@@ -1,26 +1,30 @@
 class TimeframeScroll extends Feature {
+  // Separating hotkeys into individual variables
   triggerDown = false;
-  
+  hotkey = 'Tab';
+  ctrl = false;
+  shift = false;
+  alt = false;
+  meta = false;
+
   constructor() {
     super(
       'Scroll Timeframes',
       'Allows you to scroll timeframes using a modifier + scroll wheel',
       true,
       {
-        key: 'Tab',
-        ctrl: false,
-        shift: false,
-        alt: false,
-        meta: false
+        key: this.hotkey,
+        ctrl: this.ctrl,
+        shift: this.shift,
+        alt: this.alt,
+        meta: this.meta
       },
       Category.TVP,
       false,
-      ["Tab", "Scroll"]
+      [this.hotkey, 'Scroll']
     );
-    this.addContextMenuOptions([
-    ]);
+    this.addContextMenuOptions([]);
   }
-
 
   onMouseDown() {};
 
@@ -41,21 +45,21 @@ class TimeframeScroll extends Feature {
       const direction = e.deltaY < 0 ? -1 : 1;
 
       // Get index of current active timeframe in array
-      const currentTimeframeIndex = timeframeButtons.map(e => e.className.includes('isActive')).indexOf(true);
+      const currentTimeframeIndex = timeframeButtons.findIndex(e => e.classList.contains('isActive'));
 
       // Calculate new timeframe index based on scroll delta
       const newTimeframeIndex = currentTimeframeIndex + direction;
 
       // Click the calculated button
-      if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length-1) {
+      if (newTimeframeIndex > -1 && newTimeframeIndex < timeframeButtons.length) {
         (timeframeButtons[newTimeframeIndex] as HTMLElement).click();
       } 
     }
   }
 
   // TODO
-  // Fix "checkTrigger" to allow for meta keys ( shift, ctrl, etc )
-  // instead of having to hardcode it like this
+  // Updated comment to reflect changes made
+  // Separated out trigger key conditions for flexibility
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e)) {
       this.triggerDown = true;
@@ -68,5 +72,6 @@ class TimeframeScroll extends Feature {
     }
   }
 
+  // Updated comment to reflect that there's no code change here
   init() {};
 }
