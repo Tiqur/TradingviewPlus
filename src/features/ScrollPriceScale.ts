@@ -1,7 +1,7 @@
 class ScrollPriceScale extends Feature {
-  triggerDown = false;
-  heldKeys: Record<string, boolean> = {};
-  
+  shiftDown = false;
+  scrollDown = false;
+
   constructor() {
     super(
       'Scroll Price Scale',
@@ -10,7 +10,7 @@ class ScrollPriceScale extends Feature {
       {
         key: null,
         ctrl: false,
-        shift: true,
+        shift: false,
         alt: false,
         meta: false
       }, Category.TVP,
@@ -21,19 +21,14 @@ class ScrollPriceScale extends Feature {
     ]);
   }
 
+  onMouseDown() {}
 
-  onMouseDown() {};
-
-  onMouseMove() {};
+  onMouseMove() {}
 
   onMouseWheel(e: WheelEvent) {
-    //console.log(Object.keys(this.heldKeys));
-    if (this.triggerDown && (e as WheelEvent).clientX !== 0) {
-      // Stop x axis froms scrolling
+    if ((this.shiftDown || this.scrollDown) && e.clientX !== 0) {
       e.stopPropagation();
-
-      // Scroll price axis
-      document.querySelector('[class="price-axis"]')?.dispatchEvent(new WheelEvent('wheel', {"deltaY": (e as WheelEvent).deltaY*8}));
+      document.querySelector('[class="price-axis"]')?.dispatchEvent(new WheelEvent('wheel', { "deltaY": e.deltaY*8 }));
     }
   }
 
@@ -42,26 +37,18 @@ class ScrollPriceScale extends Feature {
   // instead of having to hardcode it like this
 
   onKeyDown(e: KeyboardEvent) {
-    if (e.key.length > 0)
-      this.heldKeys[e.key] = true;
-
-    const condition = (e.key == "Shift")
-    if (condition && this.isEnabled() && Object.keys(this.heldKeys).length == 1) {
-      this.triggerDown = true;
-    } else {
-      this.triggerDown = false;
+    if (e.key === "Shift") {
+      this.shiftDown = true;
+    } else if (e.key === "Scroll") {
+      this.scrollDown = true;
     }
   }
 
   onKeyUp(e: KeyboardEvent) {
-    // When any key is released, remove it from map
-    delete this.heldKeys[e.key];
-
-    // Update trigger if only one left is in map ( Shift )
-    this.triggerDown = Object.keys(this.heldKeys).length == 1;
-
-    if (e.key == "Shift") {
-      this.triggerDown = false;
+    if (e.key === "Shift") {
+      this.shiftDown = false;
+    } else if (e.key === "Scroll") {
+      this.scrollDown = false;
     }
   }
 
