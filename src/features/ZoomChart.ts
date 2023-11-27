@@ -32,7 +32,7 @@ class ZoomChart extends Feature {
     }
   }
 
-  // Comment explaining change: Updated comment for clarity
+  // TODO
   // Fix "checkTrigger" to allow for meta keys (shift, ctrl, etc)
   // instead of having to hardcode it like this
   onKeyDown(e: KeyboardEvent) {
@@ -42,7 +42,6 @@ class ZoomChart extends Feature {
     }
   }
 
-  // Comment explaining change: Added a comment for better readability
   // Added handling for both Shift and Control keys
   onKeyUp(e: KeyboardEvent) {
     if (e.key === "Shift" || e.key === "Control") {

@@ -1,7 +1,7 @@
 class ScrollPriceScale extends Feature {
-  shiftDown = false;
-  scrollDown = false;
-
+  triggerDown = false;
+  heldKeys: Record<string, boolean> = {};
+  
   constructor() {
     super(
       'Scroll Price Scale',
@@ -10,7 +10,7 @@ class ScrollPriceScale extends Feature {
       {
         key: null,
         ctrl: false,
-        shift: false,
+        shift: true,
         alt: false,
         meta: false
       }, Category.TVP,
@@ -21,14 +21,19 @@ class ScrollPriceScale extends Feature {
     ]);
   }
 
-  onMouseDown() {}
 
-  onMouseMove() {}
+  onMouseDown() {};
+
+  onMouseMove() {};
 
   onMouseWheel(e: WheelEvent) {
-    if ((this.shiftDown || this.scrollDown) && e.clientX !== 0) {
+    //console.log(Object.keys(this.heldKeys));
+    if (this.triggerDown && (e as WheelEvent).clientX !== 0) {
+      // Stop x axis froms scrolling
       e.stopPropagation();
-      document.querySelector('[class="price-axis"]')?.dispatchEvent(new WheelEvent('wheel', { "deltaY": e.deltaY*8 }));
+
+      // Scroll price axis
+      document.querySelector('[class="price-axis"]')?.dispatchEvent(new WheelEvent('wheel', {"deltaY": (e as WheelEvent).deltaY*8}));
     }
   }
 
@@ -37,18 +42,26 @@ class ScrollPriceScale extends Feature {
   // instead of having to hardcode it like this
 
   onKeyDown(e: KeyboardEvent) {
-    if (e.key === "Shift") {
-      this.shiftDown = true;
-    } else if (e.key === "Scroll") {
-      this.scrollDown = true;
+    if (e.key.length > 0)
+      this.heldKeys[e.key] = true;
+
+    const condition = (e.key == "Shift")
+    if (condition && this.isEnabled() && Object.keys(this.heldKeys).length == 1) {
+      this.triggerDown = true;
+    } else {
+      this.triggerDown = false;
     }
   }
 
   onKeyUp(e: KeyboardEvent) {
-    if (e.key === "Shift") {
-      this.shiftDown = false;
-    } else if (e.key === "Scroll") {
-      this.scrollDown = false;
+    // When any key is released, remove it from map
+    delete this.heldKeys[e.key];
+
+    // Update trigger if only one left is in map ( Shift )
+    this.triggerDown = Object.keys(this.heldKeys).length == 1;
+
+    if (e.key == "Shift") {
+      this.triggerDown = false;
     }
   }
 
