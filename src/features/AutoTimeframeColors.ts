@@ -38,6 +38,7 @@ class ToggleAutoTimeframeColors extends Feature {
       new ContextMenuListItem('Colors', () => {
         // Create new context menu for color picker
         const colorPickerCm = new ContextMenu([0, 0]);
+
         let selectedTimeframe: string | null = null;
         let selectedColorPickerSquare: HTMLElement | null = null;
 
@@ -62,7 +63,7 @@ class ToggleAutoTimeframeColors extends Feature {
         // Launch timeframe colors config
         const cm = new ContextMenu([x, y]);
 
-        // Create menu content elment
+        // Create menu content element
         const container = document.createElement('div');
         container.className = 'auto-timeframe-colors-context-menu';
 
@@ -96,6 +97,7 @@ class ToggleAutoTimeframeColors extends Feature {
           
           colorContainer.appendChild(colorPickerSquare);
 
+          
           // Append color container
           container.appendChild(colorContainer);
         });
@@ -161,6 +163,7 @@ class ToggleAutoTimeframeColors extends Feature {
       console.debug("Setting initial values");
       this.setConfigValue('once', true);
 
+
       const colorsExist = this.getConfigValue('colors');
       if (!colorsExist) {
 
@@ -205,6 +208,7 @@ class ToggleAutoTimeframeColors extends Feature {
     if (!this.isEnabled() || !this.canvas) return;
 
     // On canvas click
+    // Get current timeframe
     const currentTimeframe = document.querySelector('#header-toolbar-intervals div button[class*="isActive"]')?.textContent;
     if (currentTimeframe == null) return;
 
