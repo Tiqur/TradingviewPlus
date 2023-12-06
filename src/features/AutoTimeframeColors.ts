@@ -8,6 +8,7 @@ const colors: Record<string, number> = {
   "D": 10,
   "W": 18,
   "M": 16,
+  "12M": 3,
 }
 
 // All TV default colors
@@ -175,6 +176,7 @@ class ToggleAutoTimeframeColors extends Feature {
         "D": 10,
         "W": 18,
         "M": 16,
+	"12M": 3,
       });
       this.saveToLocalStorage();
       this.printLocalStorage();
