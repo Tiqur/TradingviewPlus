@@ -169,6 +169,9 @@ abstract class Feature {
 
     snackBar(`${this.getName()} is now ${this.isEnabled() ? 'enabled' : 'disabled'}`);
     this.saveToLocalStorage();
+
+    // Resets checkboxes.  Very indirect but it works
+    menu.injectFeatures(Array.from(features.values()));
   }
 
   public async saveToLocalStorage() {

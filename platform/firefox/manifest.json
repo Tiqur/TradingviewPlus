@@ -26,6 +26,7 @@
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
+        "dist/features/ToggleAutoTimeframeColors.js",
         "dist/features/AdBlocker.js",
         "dist/features/CopyPrice.js",
         "dist/features/DeleteDrawing.js",
