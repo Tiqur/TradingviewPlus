@@ -28,7 +28,8 @@ document.addEventListener('wheel', (event: WheelEvent) => {[...features.values()
 // Register features
 features.set('Auto Scale', new ToggleAutoScale());
 features.set('Log Scale', new ToggleLogScale());
-features.set('Auto Timeframe Colors', new ToggleAutoTimeframeColors());
+features.set('Auto Timeframe Colors', new AutoTimeframeColors());
+features.set('Toggle Auto Timeframe Colors', new ToggleAutoTimeframeColors());
 features.set('Ad Blocker', new ToggleAdBlocker());
 features.set('Copy Price', new CopyPrice());
 features.set('Delete Drawing', new DeleteDrawing());
