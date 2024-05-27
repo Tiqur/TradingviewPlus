@@ -153,6 +153,7 @@ class ToggleAutoTimeframeColors extends Feature {
     const colorsCopy = this.getConfigValue('colors');
     colorsCopy[timeframe] = num;
     this.setConfigValue('colors', colorsCopy);
+    this.saveToLocalStorage();
   }
 
   initDefaultColors() {
@@ -215,6 +216,7 @@ class ToggleAutoTimeframeColors extends Feature {
       (document.querySelector('[data-name="line-tool-color"]') as HTMLElement).click()
       const allColors = document.querySelectorAll('[data-name="line-tool-color-menu"] div:not([class]) button');
       const local_colors = this.getConfigValue('colors');
+      console.log(local_colors);
       (allColors[local_colors[currentTimeframe]] as HTMLElement).click();
     })
   }
