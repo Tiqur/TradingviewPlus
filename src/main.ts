@@ -1,6 +1,8 @@
 // hmmmm
 declare const chrome: any;
 
+const VERSION = "v5.0.4";
+
 // For chrome extension
 if (typeof browser === "undefined") {
     var browser = chrome;
@@ -54,7 +56,47 @@ if (document.getElementById('tvp-background') == null) {
   document.body.insertAdjacentElement('beforeend', tvp_background);
 }
 
-// [TEMP] Fetch and inject HTML 
+
+
+// Fetch and inject Changelog pop-up HTML 
+// This should likely be changed into a feature at some point
+fetch(browser.runtime.getURL('public/changelog_popup.html')).then(r => r.text()).then(async html => {
+  // Sanitize HTML
+  const sanitized_html = DOMPurify.sanitize(html);
+
+  // Parse HTML into HTMLElement
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(sanitized_html, 'text/html');
+  const element = doc.body.firstChild;
+
+  document.body.insertAdjacentElement('beforeend', element as Element);
+
+  // Inject current version
+  const changelogVersion = document.getElementById('tvp-changelog-version');
+  if (changelogVersion) {
+    changelogVersion.innerText = `${VERSION} Changelog`;
+  }
+
+  const popupElement = document.getElementById('tvp-changelog-popup');
+
+  // If extension version in cookies is different than current version, show pop-up then update it.
+  const version = await browser.storage.local.get('tvp_version');
+
+  if (version['tvp_version'] != VERSION) {
+    popupElement?.toggleAttribute('open');
+    await browser.storage.local.set({tvp_version: VERSION});
+  }
+
+  // Close pop-up
+  const changelogConfirmButton = document.getElementById('tvp-changelog-confirm');
+  changelogConfirmButton?.addEventListener('click', () => {
+    popupElement?.removeAttribute('open');
+  })
+});
+
+
+
+// [TEMP] Fetch and inject TVP menu HTML 
 // make this into a service ( not hard-coded ) at some point. This is just for testing purposes.
 fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async html => {
   // Sanitize HTML

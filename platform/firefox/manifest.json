@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "TradingviewPlus",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
@@ -51,7 +51,8 @@
         "dist/tvp-background.css",
         "dist/tvp-context-menu.css",
         "dist/tvp-menu-handle.css",
-        "dist/tvp-light.css"
+        "dist/tvp-light.css",
+        "dist/tvp-changelog-popup.css"
       ],
       "web_accessible_resources": [
         "public/menu.html"
