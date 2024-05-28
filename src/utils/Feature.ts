@@ -100,6 +100,7 @@ abstract class Feature {
 
   public setConfigValue(key: string, value: any) {
     this.config[key] = value;
+    this.saveToLocalStorage();
   }
 
   async loadConfigFromLocalStorage() {
