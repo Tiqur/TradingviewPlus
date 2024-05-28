@@ -1,0 +1,21 @@
+#tvp-changelog-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+
+  ul {
+    list-style-position: inside;
+  }
+
+  li {
+    margin-top: 1rem;
+  }
+
+  button {
+    float: right;
+    padding: 0.4rem 0.8rem;
+  }
+}

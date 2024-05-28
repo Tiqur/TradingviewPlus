@@ -7,6 +7,15 @@ class TVPMenu {
     this.injectFeatures(Array.from(features.values()));
     this.initFuzzySearch();
     this.initTvpBackgroundEvents();
+    this.initInjectCurrentVersion();
+  }
+
+  initInjectCurrentVersion() {
+    const versionElement = document.getElementById('tvp-menu-version');
+    
+    if (versionElement) {
+      versionElement.innerText = VERSION;
+    }
   }
 
   initEventSuppression() {
