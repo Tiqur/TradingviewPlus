@@ -10,7 +10,11 @@
       default = pkgs.mkShell {
         buildInputs = with pkgs; [
           nodejs
+          zip
         ];
+        shellHook = ''
+          npm i -s typescript
+        '';
       };
     });
   };
