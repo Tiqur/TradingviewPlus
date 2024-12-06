@@ -33,6 +33,9 @@ npx tsc
 # Compile scss
 npx sass public/:dist/
 
+# Copy lib to dist
+cp -r lib/ dist/
+
 # Create temp dir
 mkdir temp
 
