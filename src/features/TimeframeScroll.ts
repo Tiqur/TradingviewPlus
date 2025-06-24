@@ -15,7 +15,7 @@ class TimeframeScroll extends Feature {
       },
       Category.TVP,
       false,
-      ["Tab", "Scroll", "[", "]"]
+      ["Tab + Scroll | '[' & ']'"]
     );
     this.addContextMenuOptions([
     ]);
