@@ -20,6 +20,13 @@ menu.initEventSuppression();
 // Disable default TV hotkeys
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
+// Prevent browser from navigating on "[" and "]"
+window.addEventListener('keydown', (e) => {
+    if (e.key === '[' || e.key === ']') {
+        e.preventDefault();
+    }
+}, true);
+
 // Register Events
 document.addEventListener('keydown', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyDown(event))});
 document.addEventListener('keyup', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyUp(event))});
