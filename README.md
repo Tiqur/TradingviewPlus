@@ -61,7 +61,7 @@ run `./build.sh firefox|chrome|opera` to build for firefox, chrome or opera resp
 ### Building for Windows
 Below is a README section tailored for a simple Windows user to set up WSL, install necessary dependencies, and run the `build.sh` script for the TradingviewPlus project. It assumes the user wants to replicate the original author’s setup without modifying the script and omits the `export MANIFEST_NAME` step since you noted it wasn’t needed.
 
-## Running the Build Script on Windows with WSL
+#### Running the Build Script on Windows with WSL
 
 This section guides Windows users through setting up Windows Subsystem for Linux (WSL), installing required dependencies, and running the `build.sh` script to build the TradingviewPlus extension (e.g., for Opera).
 
