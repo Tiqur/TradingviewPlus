@@ -57,7 +57,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["public/menu.html"],
+      "resources": ["public/menu.html", "public/changelog_popup.html"],
       "matches": ["<all_urls>"]
     }
   ]

@@ -55,7 +55,8 @@
         "dist/tvp-changelog-popup.css"
       ],
       "web_accessible_resources": [
-        "public/menu.html"
+        "public/menu.html",
+        "public/changelog_popup.html"
       ]
     }
   ]
