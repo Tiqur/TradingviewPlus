@@ -178,11 +178,6 @@ abstract class Feature {
   public async saveToLocalStorage() {
     // Set to local storage
     await browser.storage.local.set({[this.getName()]: this.getJson()});
-    await this.printLocalStorage();
-  }
-
-  public async printLocalStorage() {
-    console.log(JSON.parse((await browser.storage.local.get(this.getName()))[this.getName()]));
   }
 
   public checkTrigger(e: KeyboardEvent): boolean {

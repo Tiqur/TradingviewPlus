@@ -160,7 +160,6 @@ class AutoTimeframeColors extends Feature {
     // Once done, it will save to local storage and won't execute again
     // as long as cookies aren't cleared
     if (once == undefined) {
-      console.debug("setting initial values");
       this.setConfigValue('once', true);
 
       // Default colors
@@ -176,8 +175,6 @@ class AutoTimeframeColors extends Feature {
         "M": 16,
         "12M": 3,
       });
-
-      this.printLocalStorage();
     }
   }
 
@@ -213,7 +210,6 @@ class AutoTimeframeColors extends Feature {
       (document.querySelector('[data-name="line-tool-color"]') as HTMLElement).click()
       const allColors = document.querySelectorAll('[data-name="line-tool-color-menu"] div:not([class]) button');
       const local_colors = this.getConfigValue('colors');
-      console.log(local_colors);
       (allColors[local_colors[currentTimeframe]] as HTMLElement).click();
     })
   }
