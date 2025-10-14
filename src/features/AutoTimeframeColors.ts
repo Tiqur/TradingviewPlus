@@ -203,8 +203,45 @@ class AutoTimeframeColors extends Feature {
   onMouseDown(e: Event) {
     if (!this.isEnabled() || !this.canvas) return;
 
-    // Get current timeframe
-    const currentTimeframe = document.querySelector('#header-toolbar-intervals div button[class*="isActive"]')?.textContent;
+    // Get current timeframe with multiple fallback methods
+    const currentTimeframe: string | null = (
+      // Method 1: Original selector with class containing "isActive"
+      (document.querySelector('#header-toolbar-intervals div button[class*="isActive"]') as HTMLElement)?.textContent ||
+      
+      // Method 2: Fallback - check for any class containing 'active' or 'selected'
+      (() => {
+        const allTimeframeButtons = Array.from(document.querySelectorAll('#header-toolbar-intervals div button')) as HTMLElement[];
+        const foundElement = allTimeframeButtons.find(button =>
+          Array.from(button.classList).some(className =>
+            className.toLowerCase().includes('active') ||
+            className.toLowerCase().includes('selected')
+          )
+        );
+        return foundElement?.textContent || null;
+      })() ||
+      
+      // Method 3: Fallback - check for aria-selected attribute
+      (document.querySelector('#header-toolbar-intervals div button[aria-selected="true"]') as HTMLElement)?.textContent ||
+      
+      // Method 4: Fallback - check for any attribute containing 'active' or 'selected'
+      (() => {
+        const allTimeframeButtons = Array.from(document.querySelectorAll('#header-toolbar-intervals div button')) as HTMLElement[];
+        const foundElement = allTimeframeButtons.find(button => {
+          for (let i = 0; i < button.attributes.length; i++) {
+            const attr = button.attributes[i];
+            if (attr.name.includes('active') || attr.value.includes('active') ||
+                attr.name.includes('selected') || attr.value.includes('selected')) {
+              return true;
+            }
+          }
+          return false;
+        });
+        return foundElement?.textContent || null;
+      })() ||
+      
+      null
+    );
+    
     if (currentTimeframe == null) return;
 
     // Wait for toolbar
