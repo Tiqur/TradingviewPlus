@@ -8,14 +8,14 @@
   padding: 0.4rem 0;
   border-radius: 4px;
 
-  p:hover {
+  p:not(.timeframe-text):hover {
     cursor: pointer;
     background: variables.$lightGrey;
   }
 
   // Dark mode
   &:not(.tvp-light) {
-    p:hover {
+    p:not(.timeframe-text):hover {
       cursor: pointer;
       background: variables.$darkGrey;
     }
