@@ -75,6 +75,7 @@ class AutoTimeframeColors extends Feature {
             // Text containing the timeframe
             const colorText = document.createElement('p');
             colorText.innerText = timeframe;
+            colorText.className = 'timeframe-text';
             colorContainer.appendChild(colorText);
 
             // The color square itself
