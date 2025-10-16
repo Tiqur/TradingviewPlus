@@ -244,11 +244,17 @@ class AutoTimeframeColors extends Feature {
 
     // Wait for toolbar
     waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
-      // Click Line tool colors on toolbar
-      (document.querySelector('[data-name="line-tool-color"]') as HTMLElement).click()
-      const allColors = document.querySelectorAll('[data-name="line-tool-color-menu"] div:not([class]) button');
-      const local_colors = this.getConfigValue('colors');
-      (allColors[local_colors[currentTimeframe]] as HTMLElement).click();
+      // Wait for the color selector to be available before clicking
+      waitForElm('[data-name="line-tool-color"]').then((colorElement) => {
+        if (colorElement) {
+          (colorElement as HTMLElement).click();
+          const allColors = document.querySelectorAll('[data-name="line-tool-color-menu"] div:not([class]) button');
+          const local_colors = this.getConfigValue('colors');
+          if (allColors.length > 0 && local_colors[currentTimeframe] !== undefined && allColors[local_colors[currentTimeframe]]) {
+            (allColors[local_colors[currentTimeframe]] as HTMLElement).click();
+          }
+        }
+      });
     })
   }
 
