@@ -56,10 +56,11 @@ Press "m" to open the menu
 - **Move Time Right**
 
 ## Building
-run `./build.sh firefox|chrome|opera` to build for firefox, chrome or opera respectively
+run `npm run build-firefox`, `npm run build-chrome`, or `npm run build-opera` to build for firefox, chrome or opera respectively
+run `npm run build` to build all three at once.
 
 ## Testing
-run `./web-ext.sh firefox|chrome|opera` to start web-ext for firefox, chrome or opera respectively
+run `npm run dev-firefox`, `npm run dev-chrome`, or `npm run dev-opera` to start development mode for firefox, chrome or opera respectively
 
 ## Contributing
 
