@@ -15,13 +15,13 @@ const configs = {
   opera: { manifest: "platform/opera/manifest.json", output: "tvp-opera.zip" },
 };
 
-// Run a command safely
+// --- Utility to run shell commands ---
 function run(cmd, silent = false) {
   console.log(silent ? "" : `> ${cmd}`);
   execSync(cmd, { stdio: silent ? "ignore" : "inherit", shell: true });
 }
 
-// --- Auto-install required packages ---
+// --- Ensure required dev dependencies are present ---
 function ensureDependencies() {
   const required = ["typescript", "sass"];
   const missing = required.filter((pkg) => {
@@ -39,6 +39,37 @@ function ensureDependencies() {
   }
 }
 
+// --- Copy lib → dist/lib with safeguard for purify.min.js ---
+function copyLibToDist() {
+  console.log("📁 Copying lib → dist/lib...");
+  const libDir = path.join(rootDir, "lib");
+  const distLibDir = path.join(distDir, "lib");
+
+  mkdirSync(distDir, { recursive: true });
+  mkdirSync(distLibDir, { recursive: true });
+
+  if (existsSync(libDir)) {
+    cpSync(libDir, distLibDir, { recursive: true, force: true });
+    console.log("✅ Copied lib → dist/lib");
+
+    // Safeguard: copy purify.min.js to both dist and dist/lib
+    const purifySrc = path.join(libDir, "purify.min.js");
+    const purifyDest1 = path.join(distDir, "purify.min.js");
+    const purifyDest2 = path.join(distLibDir, "purify.min.js");
+
+    if (existsSync(purifySrc)) {
+      cpSync(purifySrc, purifyDest1, { force: true });
+      cpSync(purifySrc, purifyDest2, { force: true });
+      console.log("🧩 Copied purify.min.js → dist/ and dist/lib/");
+    } else {
+      console.warn("⚠️ purify.min.js not found in lib/");
+    }
+  } else {
+    console.warn("⚠️ lib directory not found");
+  }
+}
+
+// --- Core build logic ---
 async function build(browser, config) {
   console.log(`\n🚀 Building for ${browser.toUpperCase()}...`);
 
@@ -60,7 +91,7 @@ try {
   // Step 0: Ensure dependencies
   ensureDependencies();
 
-  // If no argument passed, build all
+  // Step 1: No args → build all
   if (args.length === 0) {
     console.log("⚙️ Compiling TypeScript...");
     run("npx tsc");
@@ -68,9 +99,7 @@ try {
     console.log("🎨 Compiling SCSS...");
     run("npx sass public/:dist/");
 
-    if (!existsSync(distDir)) mkdirSync(distDir);
-    console.log("📁 Copying lib → dist...");
-    cpSync("lib", distDir, { recursive: true });
+    copyLibToDist();
 
     for (const [browser, config] of Object.entries(configs)) {
       await build(browser, config);
@@ -80,7 +109,7 @@ try {
     process.exit(0);
   }
 
-  // If specific browser passed
+  // Step 2: Build for specific browser
   const browser = args[0];
   const config = configs[browser];
   if (!config) {
@@ -95,8 +124,7 @@ try {
   console.log("🎨 Compiling SCSS...");
   run("npx sass public/:dist/");
 
-  if (!existsSync(distDir)) mkdirSync(distDir);
-  cpSync("lib", distDir, { recursive: true });
+  copyLibToDist();
 
   await build(browser, config);
 } catch (err) {
