@@ -153,16 +153,36 @@ try {
   console.log("🎨 Compiling SCSS...");
   run("npx sass public/:dist/");
 
+  
   console.log("📁 Copying lib → dist/lib...");
   const libDir = path.join(rootDir, "lib");
-  const distLibDir = path.join(rootDir, "dist", "lib");
+  const distDir = path.join(rootDir, "dist");
+  const distLibDir = path.join(distDir, "lib");
+
+  // ensure dist directories exist
+  mkdirSync(distDir, { recursive: true });
+  mkdirSync(distLibDir, { recursive: true });
 
   if (existsSync(libDir)) {
     cpSync(libDir, distLibDir, { recursive: true, force: true });
     console.log("✅ Copied lib → dist/lib");
+
+    // Safeguard: copy purify.min.js to both targets
+    const purifySrc = path.join(libDir, "purify.min.js");
+    const purifyDest1 = path.join(distDir, "purify.min.js");
+    const purifyDest2 = path.join(distLibDir, "purify.min.js");
+
+    if (existsSync(purifySrc)) {
+      cpSync(purifySrc, purifyDest1, { force: true });
+      cpSync(purifySrc, purifyDest2, { force: true });
+      console.log("🧩 Copied purify.min.js → dist/ and dist/lib/");
+    } else {
+      console.warn("⚠️ purify.min.js not found in lib/");
+    }
   } else {
     console.warn("⚠️ lib directory not found");
   }
+
 
   console.log("🧹 Cleaning old manifest...");
   try { rmSync(path.join(rootDir, "manifest.json")); } catch {}
