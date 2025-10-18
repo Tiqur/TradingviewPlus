@@ -103,9 +103,8 @@ class TVPMenu {
 
     // Create the <span> element with class "hotkeyLabel"
     const hotkeyLabel = document.createElement('span');
-    hotkeyLabel.classList.add('hotkeyLabel');
     hotkeyLabel.id = `${feature.getName()}-hotkey-label`;
-    hotkeyLabel.textContent = this.generateHotkeyString(feature);
+    hotkeyLabel.innerHTML = DOMPurify.sanitize(this.generateHotkeyString(feature));
 
     // Create the button element
     const button = document.createElement('button');
@@ -143,29 +142,52 @@ class TVPMenu {
   }
 
   generateHotkeyString(feature: Feature): string {
+    const wrapInHotkeyLabelSpan = (text: string) => {
+      return `<span class="hotkeyLabel">${text}</span>`;
+    };
+
     const altLabels = feature.getAlternateHotkeyLabels();
 
     if (altLabels !== null) {
-      return altLabels.join(' + ');
+      const allAltParts: string[] = [];
+      altLabels.forEach(label => {
+        label.split(' + ').forEach(part => {
+          allAltParts.push(wrapInHotkeyLabelSpan(part.trim()));
+        });
+      });
+      return allAltParts.join(' + ');
     }
 
-    let hotkeyString = "";
+    const parts: string[] = [];
     const hotkey = feature.getHotkey();
 
-    if (hotkey.key == null)
-      return "N/A";
+    if (hotkey.key == null) {
+      return wrapInHotkeyLabelSpan("N/A");
+    }
 
-    if (hotkey.alt)
-      hotkeyString += "Alt + "
-    else if (hotkey.ctrl)
-      hotkeyString += "Ctrl + "
-    else if (hotkey.shift)
-      hotkeyString += "Shift + "
-    else if (hotkey.meta)
-      hotkeyString += "Meta + "
+    if (hotkey.alt) {
+      parts.push(wrapInHotkeyLabelSpan("Alt"));
+    }
+    if (hotkey.ctrl) {
+      parts.push(wrapInHotkeyLabelSpan("Ctrl"));
+    }
+    if (hotkey.shift) {
+      parts.push(wrapInHotkeyLabelSpan("Shift"));
+    }
+    if (hotkey.meta) {
+      parts.push(wrapInHotkeyLabelSpan("Meta"));
+    }
 
-    hotkeyString += hotkey.key as string;
-    return hotkeyString;
+    // Handle hotkey.key: if it contains " + ", split into multiple spans, otherwise a single span
+    if (hotkey.key.includes(' + ')) {
+      hotkey.key.split(' + ').forEach(keyPart => {
+        parts.push(wrapInHotkeyLabelSpan(keyPart.trim()));
+      });
+    } else {
+      parts.push(wrapInHotkeyLabelSpan(hotkey.key as string));
+    }
+
+    return parts.join(' + ');
   }
 
   injectFeatures(featuresArr: Feature[]) {
