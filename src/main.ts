@@ -22,6 +22,11 @@ const anyMouseHotkeys = () => {
   for (const [, f] of features) {
     const hk = (f as any).getHotkey?.() || (f as any).hotkey;
     if (hk?.key && mouseTokens.has(hk.key)) return true;
+
+    const h1 = (f as any).getConfigValue?.('hotkey1');
+    const h2 = (f as any).getConfigValue?.('hotkey2');
+    if (h1?.key && mouseTokens.has(h1.key)) return true;
+    if (h2?.key && mouseTokens.has(h2.key)) return true;
   }
   return false;
 };
@@ -32,6 +37,7 @@ document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 // Register Events
 document.addEventListener('keydown', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyDown(event))});
 document.addEventListener('keyup', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyUp(event))});
+
 // Wheel → synthetic “key” event
 document.addEventListener('wheel', (e) => {
   if (!anyMouseHotkeys()) return;
@@ -58,6 +64,16 @@ document.addEventListener('mouseup', (e) => {
   const synthetic = { key, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: (e as any).metaKey } as KeyboardEvent;
   for (const [, feature] of features) feature.onKeyUp?.(synthetic);
 }, { capture: true });
+
+// Forward real wheel events to features (needed for TimeframeScroll, etc.)
+document.addEventListener(
+  'wheel',
+  (event: WheelEvent) => {
+    // let features call preventDefault on wheel
+    for (const [, feature] of features) feature.onMouseWheel(event);
+  },
+  { capture: true, passive: false }  // <- passive: false is required
+);
 
 // Register features
 features.set('Auto Scale', new ToggleAutoScale());

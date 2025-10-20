@@ -16,6 +16,7 @@
         "dist/utils/isLightMode.js",
         "dist/utils/snackbar.js",
         "dist/utils/Hotkey.js",
+        "dist/utils/HotkeyCapture.js",
         "dist/utils/waitForElem.js",
         "dist/utils/Feature.js",
         "dist/utils/fuzzySearch.js",
