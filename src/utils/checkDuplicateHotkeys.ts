@@ -4,8 +4,9 @@ function checkDuplicateHotkeys(
 ):
   | { duplicate: true; reason: 'duplicate' | 'modifier_only' | 'unmappable' }
   | false {
-  // reject modifier-only bindings
-  const modifierOnly = !hotkey.key || ['Shift', 'Control', 'Alt'].includes(hotkey.key);
+  // reject modifier-only bindings (including Meta alone)
+  const modifierOnly =
+    !hotkey.key || ['Shift', 'Control', 'Alt', 'Meta'].includes(hotkey.key);
   if (modifierOnly) return { duplicate: true, reason: 'modifier_only' };
 
   // reject unmappable keys
@@ -21,8 +22,9 @@ function checkDuplicateHotkeys(
     const sameCtrl  = !!existing.ctrl  === !!hotkey.ctrl;
     const sameShift = !!existing.shift === !!hotkey.shift;
     const sameAlt   = !!existing.alt   === !!hotkey.alt;
+    const sameMeta  = !!existing.meta  === !!hotkey.meta;
 
-    if (sameKey && sameCtrl && sameShift && sameAlt)
+    if (sameKey && sameCtrl && sameShift && sameAlt && sameMeta)
       return { duplicate: true, reason: 'duplicate' };
   }
   return false;
