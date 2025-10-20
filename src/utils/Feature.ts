@@ -66,11 +66,16 @@ abstract class Feature {
 
         const keyupListener = () => {
 
-          if (!checkDuplicateHotkeys(features, hotkey)) {
-            // Update 'this.hotkey' with the newly selected hotkey
-            this.setHotkey(hotkey)
+          const result = checkDuplicateHotkeys(features, hotkey);
+          if (!result) {
+            this.setHotkey(hotkey);
           } else {
-            snackBar('Error: Duplicate Keybind');
+            if (result.reason === 'modifier_only')
+              snackBar('Error: Modifier-only keybinds (Ctrl, Shift, Alt) are not supported');
+            else if (result.reason === 'unmappable')
+              snackBar('Error: This key cannot be assigned as a hotkey (Esc, Enter, Space, etc.)');
+            else
+              snackBar('Error: Duplicate Keybind');
           }
         
           // Re-render menu while maintaining fuzzy search results
