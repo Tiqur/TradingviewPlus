@@ -142,6 +142,16 @@ class TVPMenu {
   }
 
   generateHotkeyString(feature: Feature): string {
+    const pretty = (k: string) => ({
+      WheelUp: 'Wheel Up',
+      WheelDown: 'Wheel Down',
+      MouseLeft: 'Mouse Left',
+      MouseMiddle: 'MMB',
+      MouseRight: 'Mouse Right',
+      Mouse4: 'Mouse4',
+      Mouse5: 'Mouse5'
+    }[k] || k);
+    
     const wrapInHotkeyLabelSpan = (text: string) => {
       return `<span class="hotkeyLabel">${text}</span>`;
     };
@@ -152,7 +162,7 @@ class TVPMenu {
       const allAltParts: string[] = [];
       altLabels.forEach(label => {
         label.split(' + ').forEach(part => {
-          allAltParts.push(wrapInHotkeyLabelSpan(part.trim()));
+          allAltParts.push(wrapInHotkeyLabelSpan(pretty(part.trim())));
         });
       });
       return allAltParts.join(' + ');
@@ -178,13 +188,12 @@ class TVPMenu {
       parts.push(wrapInHotkeyLabelSpan("Meta"));
     }
 
-    // Handle hotkey.key: if it contains " + ", split into multiple spans, otherwise a single span
-    if (hotkey.key.includes(' + ')) {
+    if (typeof hotkey.key === 'string' && hotkey.key.includes(' + ')) {
       hotkey.key.split(' + ').forEach(keyPart => {
-        parts.push(wrapInHotkeyLabelSpan(keyPart.trim()));
+        parts.push(wrapInHotkeyLabelSpan(pretty(keyPart.trim())));
       });
     } else {
-      parts.push(wrapInHotkeyLabelSpan(hotkey.key as string));
+      parts.push(wrapInHotkeyLabelSpan(pretty(hotkey.key as string)));
     }
 
     return parts.join(' + ');

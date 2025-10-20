@@ -17,15 +17,47 @@ const features = new Map<string, Feature>;
 const menu = new TVPMenu();
 menu.initEventSuppression();
 
+const mouseTokens = new Set(['WheelUp','WheelDown','MouseLeft','MouseMiddle','MouseRight','Mouse4','Mouse5']);
+const anyMouseHotkeys = () => {
+  for (const [, f] of features) {
+    const hk = (f as any).getHotkey?.() || (f as any).hotkey;
+    if (hk?.key && mouseTokens.has(hk.key)) return true;
+  }
+  return false;
+};
+
 // Disable default TV hotkeys
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
 // Register Events
 document.addEventListener('keydown', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyDown(event))});
 document.addEventListener('keyup', (event: KeyboardEvent) => {[...features.values()].forEach(feature => feature.onKeyUp(event))});
-document.addEventListener('mousemove', (event: MouseEvent) => {[...features.values()].forEach(feature => feature.onMouseMove(event))});
-document.addEventListener('mousedown', (event: MouseEvent) => {[...features.values()].forEach(feature => feature.onMouseDown(event))});
-document.addEventListener('wheel', (event: WheelEvent) => {[...features.values()].forEach(feature => feature.onMouseWheel(event))}, true);
+// Wheel → synthetic “key” event
+document.addEventListener('wheel', (e) => {
+  if (!anyMouseHotkeys()) return;
+  const key = e.deltaY < 0 ? 'WheelUp' : 'WheelDown';
+  const synthetic = { key, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: (e as any).metaKey } as KeyboardEvent;
+  for (const [, feature] of features) feature.onKeyDown?.(synthetic);
+}, { capture: true });
+
+// Mouse down/up → synthetic key events
+document.addEventListener('mousedown', (e) => {
+  if (!anyMouseHotkeys()) return;
+  const mapBtn = (b: number) => b === 0 ? 'MouseLeft' : b === 1 ? 'MouseMiddle' : b === 2 ? 'MouseRight' : b === 3 ? 'Mouse4' : b === 4 ? 'Mouse5' : null;
+  const key = mapBtn(e.button);
+  if (!key) return;
+  const synthetic = { key, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: (e as any).metaKey } as KeyboardEvent;
+  for (const [, feature] of features) feature.onKeyDown?.(synthetic);
+}, { capture: true });
+
+document.addEventListener('mouseup', (e) => {
+  if (!anyMouseHotkeys()) return;
+  const mapBtn = (b: number) => b === 0 ? 'MouseLeft' : b === 1 ? 'MouseMiddle' : b === 2 ? 'MouseRight' : b === 3 ? 'Mouse4' : b === 4 ? 'Mouse5' : null;
+  const key = mapBtn(e.button);
+  if (!key) return;
+  const synthetic = { key, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: (e as any).metaKey } as KeyboardEvent;
+  for (const [, feature] of features) feature.onKeyUp?.(synthetic);
+}, { capture: true });
 
 // Register features
 features.set('Auto Scale', new ToggleAutoScale());
