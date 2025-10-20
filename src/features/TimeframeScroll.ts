@@ -1,101 +1,123 @@
 class TimeframeScroll extends Feature {
-  triggerDown = false;
   private scrollTimeout: number | null = null;
-  
+
   constructor() {
     super(
       'Scroll Timeframes',
-      'Allows you to scroll timeframes using a modifier + scroll wheel',
+      'Allows you to scroll through favourite timeframes',
       true,
-      {
-        key: 'Tab',
-        ctrl: false,
-        shift: false,
-        alt: false,
-        meta: false
-      },
+      { key: null, ctrl: false, shift: false, alt: false, meta: false },
       Category.TVP,
       false,
-      ["Tab", "Scroll"]
+      ['Alt', 'Shift', 'Scroll']
     );
+
+    if (!this.getConfigValue('hotkey1'))
+      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:true,  meta:false });    // “next”
+    if (!this.getConfigValue('hotkey2'))
+      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:true,  meta:false });    // “previous”
+
     this.addContextMenuOptions([
+      new ContextMenuListItem('Change Hotkey 1', () => {
+        const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
+        captureHotkey((res) => {
+          const rerender = () => (document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null)
+            ?.dispatchEvent(new InputEvent('input'));
+          if (res === 'cancel') { snackBar('Keybind assignment canceled'); rerender(); return; }
+          if (res === 'clear')  { this.setConfigValue('hotkey1', { key: null, ctrl:false, shift:false, alt:false, meta:false }); this.saveToLocalStorage(); snackBar('Hotkey 1 cleared'); rerender(); return; }
+          const dup = checkDuplicateHotkeys(features, res);
+          if (!dup) { this.setConfigValue('hotkey1', res); this.saveToLocalStorage(); }
+          else snackBar(dup.reason === 'modifier_only' ? 'Error: Modifier-only keybinds are not supported'
+                        : dup.reason === 'unmappable'   ? 'Error: This key cannot be assigned'
+                                                         : 'Error: Duplicate Keybind');
+          rerender();
+        });
+      }),
+      new ContextMenuListItem('Change Hotkey 2', () => {
+        const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
+        captureHotkey((res) => {
+          const rerender = () => (document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null)
+            ?.dispatchEvent(new InputEvent('input'));
+          if (res === 'cancel') { snackBar('Keybind assignment canceled'); rerender(); return; }
+          if (res === 'clear')  { this.setConfigValue('hotkey2', { key: null, ctrl:false, shift:false, alt:false, meta:false }); this.saveToLocalStorage(); snackBar('Hotkey 2 cleared'); rerender(); return; }
+          const dup = checkDuplicateHotkeys(features, res);
+          if (!dup) { this.setConfigValue('hotkey2', res); this.saveToLocalStorage(); }
+          else snackBar(dup.reason === 'modifier_only' ? 'Error: Modifier-only keybinds are not supported'
+                        : dup.reason === 'unmappable'   ? 'Error: This key cannot be assigned'
+                                                         : 'Error: Duplicate Keybind');
+          rerender();
+        });
+      }),
     ]);
   }
 
-
-  onMouseDown() {};
-
-  onMouseMove() {};
-
+  // ===== event entry points =====
   onMouseWheel(e: WheelEvent) {
-    if (this.triggerDown) {
-      // Prevent multiple scroll events from processing simultaneously
-      if (this.scrollTimeout) {
-        window.clearTimeout(this.scrollTimeout);
-      }
-
-      // Debounce the scroll events to ensure DOM has time to update
-      this.scrollTimeout = window.setTimeout(() => {
-        this.processScroll(e);
-        this.scrollTimeout = null;
-      }, 50); // Reduced delay for faster response
-    }
+    // direction from wheel
+    const dir = e.deltaY < 0 ? +1 : -1;
+    // allow wheel-only path if mods match either bind
+    if (this.matchesSubHotkey(e, 'hotkey1') && dir === +1) return this.queueStep(+1, e);
+    if (this.matchesSubHotkey(e, 'hotkey2') && dir === -1) return this.queueStep(-1, e);
   }
-
-  private processScroll(e: WheelEvent) {
-    // Get each individual timeframe button and convert NodeList to array
-    const timeframeButtons = Array.from(document.querySelectorAll('#header-toolbar-intervals div[role="radiogroup"] button'));
-    
-    if (timeframeButtons.length === 0) {
-      return;
-    }
-
-    // Get current timeframe - try to find the active button by looking for 'isActive' in classList
-    const activeButton = document.querySelector('#header-toolbar-intervals div[role="radiogroup"] button.isActive-GwQQdU8S') as HTMLElement;
-    if (!activeButton) {
-      return;
-    }
-
-    // Get direction of scroll wheel
-    // Negative deltaY = scroll up = move to next timeframe (higher index)
-    // Positive deltaY = scroll down = move to previous timeframe (lower index)
-    const direction = e.deltaY < 0 ? 1 : -1;
-
-    // Get index of current active timeframe in the DOM array (no sorting needed, use natural order)
-    const currentTimeframeIndex = timeframeButtons.indexOf(activeButton);
-
-    if (currentTimeframeIndex === -1) {
-      return;
-    }
-
-    // Calculate new timeframe index based on scroll delta without wraparound
-    const newTimeframeIndex = currentTimeframeIndex + direction;
-    
-    // Only click if we're within valid range (no wraparound)
-    if (newTimeframeIndex >= 0 && newTimeframeIndex < timeframeButtons.length) {
-      const targetButton = timeframeButtons[newTimeframeIndex];
-      if (targetButton) {
-        (targetButton as HTMLElement).click();
-      }
-    }
- }
-
-  // TODO
-  // Fix "checkTrigger" to allow for meta keys ( shift, ctrl, etc )
-  // instead of having to hardcode it like this
+  onMouseDown(e: MouseEvent) {
+    // mouse buttons can trigger steps
+    if (this.matchesSubHotkey(e, 'hotkey1')) return this.queueStep(+1, e);
+    if (this.matchesSubHotkey(e, 'hotkey2')) return this.queueStep(-1, e);
+  }
   onKeyDown(e: KeyboardEvent) {
-    if (this.checkTrigger(e)) {
-      this.triggerDown = true;
-    }
+    // keyboard keys can trigger steps
+    if (this.matchesSubHotkey(e, 'hotkey1')) return this.queueStep(+1, e);
+    if (this.matchesSubHotkey(e, 'hotkey2')) return this.queueStep(-1, e);
+  }
+  onKeyUp(_e: KeyboardEvent) {}
+  onMouseMove(_e: MouseEvent) {}
+  onMouseDownCapture?(_e: MouseEvent) {} // ignore if your base class doesn’t declare
+  init() {}
+
+  // ===== matching and action =====
+  private matchesSubHotkey(ev: KeyboardEvent | MouseEvent | WheelEvent, which: 'hotkey1'|'hotkey2'): boolean {
+    const hk = this.getConfigValue(which) as Hotkey | undefined;
+    return this.matches(hk, ev);
   }
 
-  onKeyUp(e: KeyboardEvent) {
-    if (this.checkTrigger(e)) {
-      this.triggerDown = false;
+  private normalizeEventKey(ev: KeyboardEvent | MouseEvent | WheelEvent): string | null {
+    if ('key' in ev) return ev.key; // keyboard
+    if ('deltaY' in ev) return ev.deltaY < 0 ? 'WheelUp' : 'WheelDown'; // wheel
+    if ('button' in ev) { // mouse buttons
+      const b = ev.button;
+      return b === 0 ? 'MouseLeft' : b === 1 ? 'MouseMiddle' : b === 2 ? 'MouseRight' : b === 3 ? 'Mouse4' : b === 4 ? 'Mouse5' : null;
     }
+    return null;
   }
 
-  init() {
-    // Initialization is not required for this feature as it works on scroll events
+  private matches(hk: Hotkey | undefined, ev: KeyboardEvent | MouseEvent | WheelEvent): boolean {
+    if (!hk || !hk.key) return false;
+    const eventKey = this.normalizeEventKey(ev);
+    if (!eventKey) return false;
+    return hk.key.toLowerCase() === eventKey.toLowerCase()
+        && !!hk.alt   === !!(ev as any).altKey
+        && !!hk.ctrl  === !!(ev as any).ctrlKey
+        && !!hk.meta  === !!(ev as any).metaKey
+        && !!hk.shift === !!(ev as any).shiftKey;
+  }
+
+  private queueStep(direction: 1 | -1, e: Event) {
+    // stop native behavior on wheel and button to avoid TV interference
+    if (e.cancelable) { e.preventDefault(); e.stopPropagation(); }
+    if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
+    this.scrollTimeout = window.setTimeout(() => { this.processStep(direction); this.scrollTimeout = null; }, 50);
+  }
+
+  private processStep(direction: 1 | -1) {
+    const buttons = Array.from(document.querySelectorAll('#header-toolbar-intervals div[role="radiogroup"] button'));
+    if (buttons.length === 0) return;
+    const active = document.querySelector('#header-toolbar-intervals div[role="radiogroup"] button.isActive-GwQQdU8S') as HTMLElement | null;
+    if (!active) return;
+
+    const idx = buttons.indexOf(active);
+    if (idx === -1) return;
+
+    const next = idx + direction;
+    if (next >= 0 && next < buttons.length) (buttons[next] as HTMLElement).click();
   }
 }
