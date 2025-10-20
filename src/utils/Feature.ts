@@ -53,6 +53,38 @@ abstract class Feature {
         hotkeyLabel.innerText = '...';
 
         const keydownListener = (event: KeyboardEvent) => {
+          // exit capture with Escape
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            snackBar('Keybind assignment canceled');
+
+            document.removeEventListener('keydown', keydownListener);
+            document.removeEventListener('keyup', keyupListener);
+
+            // re-render menu (keeps fuzzy search)
+            const textBox = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null;
+            textBox?.dispatchEvent(new InputEvent('input'));
+            return;
+          }
+
+          // clear bind with Delete
+          if (event.key === 'Delete') {
+            event.preventDefault();
+            const cleared: Hotkey = { key: null, ctrl: false, shift: false, alt: false, meta: false };
+
+            this.setConfigValue('hotkey', cleared);  // update persisted config
+            this.setHotkey(cleared);
+            this.saveToLocalStorage();
+
+            const textBox = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null;
+            textBox?.dispatchEvent(new InputEvent('input'));
+            snackBar('Keybind cleared');
+
+            document.removeEventListener('keydown', keydownListener);
+            document.removeEventListener('keyup', keyupListener);
+            return;
+          }
+
           if (event.key !== 'Meta' && event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
             hotkey.key = event.key;
             hotkey.ctrl = event.ctrlKey;
@@ -186,12 +218,15 @@ abstract class Feature {
   }
 
   public checkTrigger(e: KeyboardEvent): boolean {
-    return (this.hotkey.key == null || this.hotkey.key?.toLowerCase() == e.key.toLowerCase())
-      && this.hotkey.alt == e.altKey
-      && this.hotkey.ctrl == e.ctrlKey
-      && this.hotkey.meta == e.metaKey
-      && this.hotkey.shift == e.shiftKey;
+    if (!this.hotkey || !this.hotkey.key) return false;
+
+    return this.hotkey.key.toLowerCase() === e.key.toLowerCase()
+      && this.hotkey.alt === e.altKey
+      && this.hotkey.ctrl === e.ctrlKey
+      && this.hotkey.meta === e.metaKey
+      && this.hotkey.shift === e.shiftKey;
   }
+
 
   public isEnabled(): boolean {
     return this.enabled;

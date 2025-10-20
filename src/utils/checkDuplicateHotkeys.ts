@@ -10,7 +10,7 @@ function checkDuplicateHotkeys(
   if (modifierOnly) return { duplicate: true, reason: 'modifier_only' };
 
   // reject unmappable keys
-  const unmappableKeys = ['Escape', 'Enter', ' ', 'Tab', 'CapsLock', 'ContextMenu'];
+  const unmappableKeys = ['Enter', ' ', 'Tab', 'CapsLock', 'ContextMenu'];
   const key = hotkey.key as string; // safe after modifierOnly check
   if (unmappableKeys.includes(key)) return { duplicate: true, reason: 'unmappable' };
 
