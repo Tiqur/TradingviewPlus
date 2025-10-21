@@ -51,7 +51,8 @@
         "dist/tvp-background.css",
         "dist/tvp-context-menu.css",
         "dist/tvp-menu-handle.css",
-        "dist/tvp-light.css"
+        "dist/tvp-light.css",
+        "dist/tvp-changelog-popup.css"
       ]
     }
   ],
