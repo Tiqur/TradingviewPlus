@@ -104,7 +104,70 @@ class TVPMenu {
     // Create the <span> element with class "hotkeyLabel"
     const hotkeyLabel = document.createElement('span');
     hotkeyLabel.id = `${feature.getName()}-hotkey-label`;
-    hotkeyLabel.innerHTML = DOMPurify.sanitize(this.generateHotkeyString(feature));
+
+    // dual-label support for features that store sub-hotkeys
+    const hk1 = (feature as any).getConfigValue?.('hotkey1') as Hotkey | undefined;
+    const hk2 = (feature as any).getConfigValue?.('hotkey2') as Hotkey | undefined;
+
+    const pretty = (k: string) => ({
+      WheelUp: 'Wheel Up',
+      WheelDown: 'Wheel Down',
+      MouseLeft: 'Mouse Left',
+      MouseMiddle: 'MMB',
+      MouseRight: 'Mouse Right',
+      Mouse4: 'Mouse4',
+      Mouse5: 'Mouse5'
+    }[k] || k);
+
+    const wrap = (text: string) => `<span class="hotkeyLabel">${text}</span>`;
+    const sameMods = (a?: Hotkey, b?: Hotkey) =>
+      !!a && !!b &&
+      !!a.ctrl  === !!b.ctrl &&
+      !!a.shift === !!b.shift &&
+      !!a.alt   === !!b.alt &&
+      !!a.meta  === !!b.meta;
+
+    const fmt = (hk?: Hotkey) => {
+      if (!hk || hk.key == null) return wrap('N/A');
+      const parts: string[] = [];
+      if (hk.alt) parts.push(wrap('Alt'));
+      if (hk.ctrl) parts.push(wrap('Ctrl'));
+      if (hk.shift) parts.push(wrap('Shift'));
+      if (hk.meta) parts.push(wrap('Meta'));
+      parts.push(wrap(pretty(hk.key)));
+      return parts.join(' + ');
+    };
+
+    // If either sub-hotkey object exists, render dual label logic with Scroll merge
+    if (hk1 !== undefined || hk2 !== undefined) {
+      const k1 = hk1?.key ?? null;
+      const k2 = hk2?.key ?? null;
+
+      // both provided but unbound → single N/A
+      if (k1 === null && k2 === null) {
+        hotkeyLabel.innerHTML = DOMPurify.sanitize(wrap('N/A'));
+      } else {
+        const isUpDown = (k: string | null) => k === 'WheelUp' || k === 'WheelDown';
+        const bothWheels = isUpDown(k1) && isUpDown(k2);
+
+        if (bothWheels && sameMods(hk1, hk2)) {
+          const modsParts: string[] = [];
+          if (hk1!.alt)  modsParts.push(wrap('Alt'));
+          if (hk1!.ctrl) modsParts.push(wrap('Ctrl'));
+          if (hk1!.shift)modsParts.push(wrap('Shift'));
+          if (hk1!.meta) modsParts.push(wrap('Meta'));
+          modsParts.push(wrap('Scroll'));
+          hotkeyLabel.innerHTML = DOMPurify.sanitize(modsParts.join(' + '));
+        } else {
+          const left  = k1 !== null ? fmt(hk1) : wrap('N/A');
+          const right = k2 !== null ? fmt(hk2) : wrap('N/A');
+          hotkeyLabel.innerHTML = DOMPurify.sanitize(`${left} | ${right}`);
+        }
+      }
+    } else {
+      // keep existing single-hotkey path
+      hotkeyLabel.innerHTML = DOMPurify.sanitize(this.generateHotkeyString(feature));
+    }
 
     // Create the button element
     const button = document.createElement('button');
@@ -142,6 +205,16 @@ class TVPMenu {
   }
 
   generateHotkeyString(feature: Feature): string {
+    const pretty = (k: string) => ({
+      WheelUp: 'Wheel Up',
+      WheelDown: 'Wheel Down',
+      MouseLeft: 'Mouse Left',
+      MouseMiddle: 'MMB',
+      MouseRight: 'Mouse Right',
+      Mouse4: 'Mouse4',
+      Mouse5: 'Mouse5'
+    }[k] || k);
+
     const wrapInHotkeyLabelSpan = (text: string) => {
       return `<span class="hotkeyLabel">${text}</span>`;
     };
@@ -152,7 +225,7 @@ class TVPMenu {
       const allAltParts: string[] = [];
       altLabels.forEach(label => {
         label.split(' + ').forEach(part => {
-          allAltParts.push(wrapInHotkeyLabelSpan(part.trim()));
+          allAltParts.push(wrapInHotkeyLabelSpan(pretty(part.trim())));
         });
       });
       return allAltParts.join(' + ');
@@ -178,13 +251,12 @@ class TVPMenu {
       parts.push(wrapInHotkeyLabelSpan("Meta"));
     }
 
-    // Handle hotkey.key: if it contains " + ", split into multiple spans, otherwise a single span
-    if (hotkey.key.includes(' + ')) {
+    if (typeof hotkey.key === 'string' && hotkey.key.includes(' + ')) {
       hotkey.key.split(' + ').forEach(keyPart => {
-        parts.push(wrapInHotkeyLabelSpan(keyPart.trim()));
+        parts.push(wrapInHotkeyLabelSpan(pretty(keyPart.trim())));
       });
     } else {
-      parts.push(wrapInHotkeyLabelSpan(hotkey.key as string));
+      parts.push(wrapInHotkeyLabelSpan(pretty(hotkey.key as string)));
     }
 
     return parts.join(' + ');

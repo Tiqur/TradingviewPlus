@@ -36,58 +36,48 @@ abstract class Feature {
   }
 
   private addHotkeyEditContextMenuItem() {
-      const cmli = new ContextMenuListItem('Change Hotkey', () => {
-       let hotkey = {
-          key: '',
-          ctrl: false,
-          shift: false,
-          alt: false,
-          meta: false,
+    const cmli = new ContextMenuListItem('Change Hotkey', () => {
+      const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
+      if (hotkeyLabel) hotkeyLabel.textContent = '...';
+
+      captureHotkey((res) => {
+        const rerender = () => {
+          const tb = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null;
+          tb?.dispatchEvent(new InputEvent('input'));
         };
 
-        // Get label element
-        const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
-        if (!hotkeyLabel) return;
-
-        // Wait for key to be pressed
-        hotkeyLabel.innerText = '...';
-
-        const keydownListener = (event: KeyboardEvent) => {
-          if (event.key !== 'Meta' && event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
-            hotkey.key = event.key;
-            hotkey.ctrl = event.ctrlKey;
-            hotkey.shift = event.shiftKey;
-            hotkey.alt = event.altKey;
-            hotkey.meta = event.metaKey;
-
-            event.preventDefault();
-          }
+        if (res === 'cancel') {
+          snackBar('Keybind assignment canceled');
+          rerender();
+          return;
         }
 
-        const keyupListener = () => {
+        if (res === 'clear') {
+          const cleared: Hotkey = { key: null, ctrl:false, shift:false, alt:false, meta:false };
+          this.setConfigValue('hotkey', cleared);
+          this.setHotkey(cleared);
+          this.saveToLocalStorage();
+          snackBar('Keybind cleared');
+          rerender();
+          return;
+        }
 
-          if (!checkDuplicateHotkeys(features, hotkey)) {
-            // Update 'this.hotkey' with the newly selected hotkey
-            this.setHotkey(hotkey)
-          } else {
+        const result = checkDuplicateHotkeys(features, res);
+        if (!result) {
+          this.setHotkey(res);
+        } else {
+          if (result.reason === 'modifier_only')
+            snackBar('Error: Modifier-only keybinds (Ctrl, Shift, Alt) are not supported');
+          else if (result.reason === 'unmappable')
+            snackBar('Error: This key cannot be assigned as a hotkey (Enter, Space, etc.)');
+          else
             snackBar('Error: Duplicate Keybind');
-          }
-        
-          // Re-render menu while maintaining fuzzy search results
-          // This is kinda hacky
-          const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
-          textBox.dispatchEvent(new InputEvent('input'));
-
-          // Remove event listeners to stop listening for hotkey input
-          document.removeEventListener('keydown', keydownListener);
-          document.removeEventListener('keyup', keyupListener);
         }
-
-        document.addEventListener('keyup', keyupListener);
-        document.addEventListener('keydown', keydownListener);
+        rerender();
       });
+    });
 
-      this.contextMenuOptions.push(cmli);
+    this.contextMenuOptions.push(cmli);
   }
 
   public getConfig() {
@@ -180,13 +170,33 @@ abstract class Feature {
     await browser.storage.local.set({[this.getName()]: this.getJson()});
   }
 
-  public checkTrigger(e: KeyboardEvent): boolean {
-    return (this.hotkey.key == null || this.hotkey.key?.toLowerCase() == e.key.toLowerCase())
-      && this.hotkey.alt == e.altKey
-      && this.hotkey.ctrl == e.ctrlKey
-      && this.hotkey.meta == e.metaKey
-      && this.hotkey.shift == e.shiftKey;
+  public checkTrigger(e: KeyboardEvent | MouseEvent | WheelEvent): boolean {
+    if (!this.hotkey || !this.hotkey.key) return false;
+
+    // normalize event → token
+    let eventKey: string | null = null;
+    if ('key' in e) {
+      eventKey = e.key;
+    } else if ('deltaY' in e) {
+      eventKey = e.deltaY < 0 ? 'WheelUp' : 'WheelDown';
+    } else if ('button' in e) {
+      eventKey = e.button === 0 ? 'MouseLeft'
+        : e.button === 1 ? 'MouseMiddle'
+        : e.button === 2 ? 'MouseRight'
+        : e.button === 3 ? 'Mouse4'
+        : e.button === 4 ? 'Mouse5'
+        : null;
+    }
+
+    if (!eventKey) return false;
+
+    return this.hotkey.key.toLowerCase() === eventKey.toLowerCase()
+      && this.hotkey.alt === !!(e as any).altKey
+      && this.hotkey.ctrl === !!(e as any).ctrlKey
+      && this.hotkey.meta === !!(e as any).metaKey
+      && this.hotkey.shift === !!(e as any).shiftKey;
   }
+
 
   public isEnabled(): boolean {
     return this.enabled;
