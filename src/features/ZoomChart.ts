@@ -1,8 +1,16 @@
 // ========= ZoomChart =========
 class ZoomChart extends Feature {
-  private zoomTimeout: number | null = null;
+  private zoomTimeout: number | null = null; // kept for compatibility
   private static readonly MULTIPLIER = 8;     // keep old *8 scaling
   private static readonly BASE_STEP  = 100;   // used when zoom is triggered by non-wheel inputs
+
+  // new: buffered flush + key-hold repeat
+  private pendingDelta = 0;
+  private flushTimer: number | null = null;
+  private holdStartTimer: number | null = null;
+  private holdInterval: number | null = null;
+  private wheelQuietTimer: number | null = null; // NEW
+  private lastTriggerWasWheel = false; // NEW
 
   constructor() {
     super(
@@ -56,20 +64,27 @@ class ZoomChart extends Feature {
   }
 
   // ===== event entry points =====
+  // onMouseWheel
   onMouseWheel(e: WheelEvent) {
-    const dir = e.deltaY < 0 ? +1 : -1; // up=in, down=out
-    if (this.matchesSubHotkey(e, 'hotkey1') && dir === +1) return this.queueZoom(+1, e, Math.abs(e.deltaY));
-    if (this.matchesSubHotkey(e, 'hotkey2') && dir === -1) return this.queueZoom(-1, e, Math.abs(e.deltaY));
+    const dir = e.deltaY < 0 ? +1 : -1;
+    if (this.matchesSubHotkey(e, 'hotkey1') && dir === +1) { this.bumpWheelQuiet(); return this.queueZoom(+1, e, Math.abs(e.deltaY)); } // CHANGED
+    if (this.matchesSubHotkey(e, 'hotkey2') && dir === -1) { this.bumpWheelQuiet(); return this.queueZoom(-1, e, Math.abs(e.deltaY)); } // CHANGED
   }
+
   onMouseDown(e: MouseEvent) {
     if (this.matchesSubHotkey(e, 'hotkey1')) return this.queueZoom(+1, e);
     if (this.matchesSubHotkey(e, 'hotkey2')) return this.queueZoom(-1, e);
   }
   onKeyDown(e: KeyboardEvent) {
-    if (this.matchesSubHotkey(e, 'hotkey1')) return this.queueZoom(+1, e);
-    if (this.matchesSubHotkey(e, 'hotkey2')) return this.queueZoom(-1, e);
+    const isWheelKey = e.key === 'WheelUp' || e.key === 'WheelDown';
+    if (this.matchesSubHotkey(e, 'hotkey1')) {
+      if (!isWheelKey) { this.queueZoom(+1, e); this.startKeyRepeat(+1); }
+    }
+    if (this.matchesSubHotkey(e, 'hotkey2')) {
+      if (!isWheelKey) { this.queueZoom(-1, e); this.startKeyRepeat(-1); }
+    }
   }
-  onKeyUp(_e: KeyboardEvent) {}
+  onKeyUp(_e: KeyboardEvent) { this.stopKeyRepeat(); }
   onMouseMove(_e: MouseEvent) {}
   onMouseDownCapture?(_e: MouseEvent) {}
   init() {
@@ -122,27 +137,102 @@ class ZoomChart extends Feature {
   }
 
   // ===== action =====
+  // queueZoom
   private queueZoom(direction: 1 | -1, e: Event, wheelAbsDelta?: number) {
-    // Let native Ctrl+Shift+Wheel zoom the time axis; only suppress for non-wheel triggers
-    if (wheelAbsDelta === undefined && (e as Event).cancelable) {
-      e.preventDefault(); e.stopPropagation();
-    }
-    if (this.zoomTimeout) window.clearTimeout(this.zoomTimeout);
-    const deltaY = (wheelAbsDelta ?? ZoomChart.BASE_STEP)
-                 * ZoomChart.MULTIPLIER
-                 * (direction > 0 ? -1 : +1);
-    this.zoomTimeout = window.setTimeout(() => { this.processZoom(deltaY); this.zoomTimeout = null; }, 50);
+    if (wheelAbsDelta === undefined && (e as Event).cancelable) { e.preventDefault(); e.stopPropagation(); }
+    const delta = (wheelAbsDelta ?? ZoomChart.BASE_STEP) * ZoomChart.MULTIPLIER * (direction > 0 ? -1 : +1);
+    this.lastTriggerWasWheel = wheelAbsDelta !== undefined; // NEW
+    this.pendingDelta += delta;
+    this.ensureFlushLoop();
   }
 
-  private processZoom(deltaY: number) {
-    const axis = document.querySelector('.price-axis') as HTMLElement | null; // was [class="price-axis"]
-    if (!axis) return;
-    const r = axis.getBoundingClientRect();
-    const evt = new WheelEvent('wheel', {
-      deltaY, bubbles: true, cancelable: true,
-      clientX: Math.floor(r.left + 4),
-      clientY: Math.floor(r.top + 4)
-    });
-    axis.dispatchEvent(evt);
+
+  private ensureFlushLoop() {
+    if (this.flushTimer !== null) return;
+    this.flushTimer = window.setInterval(() => {
+      if (this.pendingDelta !== 0) {
+        const d = this.pendingDelta;
+        this.pendingDelta = 0;
+        this.processZoom(d);
+      } else {
+        window.clearInterval(this.flushTimer!);
+        this.flushTimer = null;
+      }
+    }, 16);
   }
+
+  private startKeyRepeat(direction: 1 | -1) {
+    if (this.holdStartTimer !== null || this.holdInterval !== null) return;
+    this.holdStartTimer = window.setTimeout(() => {
+      this.holdStartTimer = null;
+      this.holdInterval = window.setInterval(() => {
+        const step = ZoomChart.BASE_STEP * ZoomChart.MULTIPLIER * (direction > 0 ? -1 : +1);
+        this.pendingDelta += step;
+        this.ensureFlushLoop();
+      }, 50);
+    }, 300);
+  }
+
+  private stopKeyRepeat() { // CHANGED
+    if (this.holdStartTimer !== null) { window.clearTimeout(this.holdStartTimer); this.holdStartTimer = null; }
+    if (this.holdInterval   !== null) { window.clearInterval(this.holdInterval); this.holdInterval = null; }
+    if (this.wheelQuietTimer!== null) { window.clearTimeout(this.wheelQuietTimer); this.wheelQuietTimer = null; }
+    this.pendingDelta = 0;
+    if (this.flushTimer     !== null) { window.clearInterval(this.flushTimer); this.flushTimer = null; }
+  }
+
+  private bumpWheelQuiet() { // NEW
+    if (this.wheelQuietTimer !== null) window.clearTimeout(this.wheelQuietTimer);
+    this.wheelQuietTimer = window.setTimeout(() => this.stopKeyRepeat(), 80);
+  }
+
+  // processZoom
+  private processZoom(deltaY: number) {
+    // Y: price axis (unchanged)
+    const price = document.querySelector('.price-axis') as HTMLElement | null;
+    if (price) {
+      const r = price.getBoundingClientRect();
+      price.dispatchEvent(new WheelEvent('wheel', {
+        deltaY, bubbles: true, cancelable: true,
+        clientX: Math.floor(r.left + 4),
+        clientY: Math.floor(r.top + 4)
+      }));
+    }
+
+    // X: only for non-wheel triggers
+    if (!this.lastTriggerWasWheel) {
+      // smaller delta for time zoom
+      const xDeltaAbs = Math.max(1, Math.floor(Math.abs(deltaY) / ZoomChart.MULTIPLIER));
+      const xDelta = (deltaY < 0 ? -1 : 1) * xDeltaAbs;
+
+      // prefer time axis; fallback to pane but without shift
+      const time = document.querySelector('.time-axis') as HTMLElement | null;
+      if (time) {
+        const rt = time.getBoundingClientRect();
+        time.dispatchEvent(new WheelEvent('wheel', {
+          deltaY: xDelta, bubbles: true, cancelable: true,
+          altKey: true, /* no shiftKey */
+          clientX: Math.floor(rt.left + 8),
+          clientY: Math.floor(rt.top + 8)
+        }));
+      } else if (price) {
+        const r = price.getBoundingClientRect();
+        const tx = Math.max(1, Math.floor(r.left - 10));
+        const ty = Math.floor(r.bottom - 6);
+        const pane = document.elementFromPoint(tx, ty) as HTMLElement | null
+                  || document.querySelector('.pane-views, .chart-widget, canvas') as HTMLElement | null;
+        if (pane) {
+          const pr = pane.getBoundingClientRect();
+          const cx = Math.min(Math.max(tx, pr.left + 2), pr.right - 2);
+          const cy = Math.min(Math.max(ty, pr.top + 2), pr.bottom - 2);
+          pane.dispatchEvent(new WheelEvent('wheel', {
+            deltaY: xDelta, bubbles: true, cancelable: true,
+            altKey: true, /* no shiftKey */
+            clientX: cx, clientY: cy
+          }));
+        }
+      }
+    }
+  }
+
 }

@@ -1,8 +1,15 @@
 // ========= ScrollPriceScale =========
 class ScrollPriceScale extends Feature {
-  private scrollTimeout: number | null = null;
+  private scrollTimeout: number | null = null; // kept for compatibility
   private static readonly MULTIPLIER = 8;
   private static readonly BASE_STEP  = 100;
+
+  // new: buffered flush + key-hold repeat
+  private pendingDelta = 0;
+  private flushTimer: number | null = null;
+  private holdStartTimer: number | null = null;
+  private holdInterval: number | null = null;
+  private wheelQuietTimer: number | null = null; // NEW
 
   constructor() {
     super(
@@ -66,10 +73,15 @@ class ScrollPriceScale extends Feature {
     if (this.matchesSubHotkey(e, 'hotkey2')) return this.queueScroll(-1, e);
   }
   onKeyDown(e: KeyboardEvent) {
-    if (this.matchesSubHotkey(e, 'hotkey1')) return this.queueScroll(+1, e);
-    if (this.matchesSubHotkey(e, 'hotkey2')) return this.queueScroll(-1, e);
+    const isWheelKey = e.key === 'WheelUp' || e.key === 'WheelDown';
+    if (this.matchesSubHotkey(e, 'hotkey1')) {
+      if (!isWheelKey) { this.queueScroll(+1, e); this.startKeyRepeat(+1); }
+    }
+    if (this.matchesSubHotkey(e, 'hotkey2')) {
+      if (!isWheelKey) { this.queueScroll(-1, e); this.startKeyRepeat(-1); }
+    }
   }
-  onKeyUp(_e: KeyboardEvent) {}
+  onKeyUp(_e: KeyboardEvent) { this.stopKeyRepeat(); }
   onMouseMove(_e: MouseEvent) {}
   onMouseDownCapture?(_e: MouseEvent) {}
   init() {
@@ -125,14 +137,55 @@ class ScrollPriceScale extends Feature {
   private queueScroll(direction: 1 | -1, e: Event, wheelAbsDelta?: number) {
     // Block native chart scroll so only the price scale moves
     if (e.cancelable) { e.preventDefault(); e.stopPropagation(); }
-    if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
 
-    // TradingView treats positive deltaY as “down”. Match wheel semantics.
-    const deltaY = (wheelAbsDelta ?? ScrollPriceScale.BASE_STEP)
-                 * ScrollPriceScale.MULTIPLIER
-                 * (direction > 0 ? -1 : +1);
-    this.scrollTimeout = window.setTimeout(() => { this.processScroll(deltaY); this.scrollTimeout = null; }, 50);
+    const delta = (wheelAbsDelta ?? ScrollPriceScale.BASE_STEP)
+                * ScrollPriceScale.MULTIPLIER
+                * (direction > 0 ? -1 : +1);
+
+    this.pendingDelta += delta;
+    this.ensureFlushLoop();
   }
+
+  private ensureFlushLoop() {
+    if (this.flushTimer !== null) return;
+    this.flushTimer = window.setInterval(() => {
+      if (this.pendingDelta !== 0) {
+        const d = this.pendingDelta;
+        this.pendingDelta = 0;
+        this.processScroll(d);
+      } else {
+        window.clearInterval(this.flushTimer!);
+        this.flushTimer = null;
+      }
+    }, 16);
+  }
+
+  private startKeyRepeat(direction: 1 | -1) {
+    if (this.holdStartTimer !== null || this.holdInterval !== null) return;
+    this.holdStartTimer = window.setTimeout(() => {
+      this.holdStartTimer = null;
+      this.holdInterval = window.setInterval(() => {
+        const step = ScrollPriceScale.BASE_STEP * ScrollPriceScale.MULTIPLIER * (direction > 0 ? -1 : +1);
+        this.pendingDelta += step;
+        this.ensureFlushLoop();
+      }, 50);
+    }, 300);
+  }
+
+  private stopKeyRepeat() { // CHANGED
+    if (this.holdStartTimer !== null) { window.clearTimeout(this.holdStartTimer); this.holdStartTimer = null; }
+    if (this.holdInterval   !== null) { window.clearInterval(this.holdInterval); this.holdInterval = null; }
+    if (this.wheelQuietTimer!== null) { window.clearTimeout(this.wheelQuietTimer); this.wheelQuietTimer = null; }
+    this.pendingDelta = 0;
+    if (this.flushTimer     !== null) { window.clearInterval(this.flushTimer); this.flushTimer = null; }
+  }
+
+  private bumpWheelQuiet() { // NEW
+    if (this.wheelQuietTimer !== null) window.clearTimeout(this.wheelQuietTimer);
+    this.wheelQuietTimer = window.setTimeout(() => this.stopKeyRepeat(), 80);
+  }
+
+
   private processScroll(deltaY: number) {
     const axis = document.querySelector('.price-axis') as HTMLElement | null; // was [class="price-axis"]
     if (!axis) return;
