@@ -14,12 +14,12 @@ class TimeframeScroll extends Feature {
     );
 
     if (!this.getConfigValue('hotkey1'))
-      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:true,  meta:false }); // next
+      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:true,  meta:false }); // previous
     if (!this.getConfigValue('hotkey2'))
-      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:true,  meta:false }); // previous
+      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:true,  meta:false }); // next
 
     this.addContextMenuOptions([
-      new ContextMenuListItem('Change Hotkey 1', () => {
+      new ContextMenuListItem('Change Hotkey 1 (Ltf)', () => {
         const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
         captureHotkey((res) => {
           const rerender = () => (document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null)
@@ -37,7 +37,7 @@ class TimeframeScroll extends Feature {
           rerender();
         });
       }),
-      new ContextMenuListItem('Change Hotkey 2', () => {
+      new ContextMenuListItem('Change Hotkey 2 (Htf)', () => {
         const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
         captureHotkey((res) => {
           const rerender = () => (document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null)
