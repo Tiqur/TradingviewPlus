@@ -1,5 +1,6 @@
 // hmmmm
 declare const chrome: any;
+declare const DOMPurify: any;
 
 const VERSION = "v5.0.4";
 
@@ -111,6 +112,22 @@ const anyMouseHotkeys = () => {
 // Disable default TV hotkeys
 document.addEventListener("keypress", (event) => event.stopPropagation(), true);
 
+const mapBtn = (b:number)=> b===0?'MouseLeft':b===1?'MouseMiddle':b===2?'MouseRight':b===3?'Mouse4':b===4?'Mouse5':null;
+
+function eventMatchesAssignedMouseHotkey(e: MouseEvent): boolean {
+  const key = mapBtn(e.button); if (!key) return false;
+  for (const [, f] of features) {
+    const mods = (hk:any)=> hk && hk.key && hk.key.toLowerCase()===key.toLowerCase()
+      && !!hk.ctrl===!!e.ctrlKey && !!hk.shift===!!e.shiftKey && !!hk.alt===!!e.altKey && !!hk.meta===!!(e as any).metaKey;
+    const hk = (f as any).getHotkey?.();
+    if (mods(hk)) return true;
+    const h1 = (f as any).getConfigValue?.('hotkey1');
+    const h2 = (f as any).getConfigValue?.('hotkey2');
+    if (mods(h1) || mods(h2)) return true;
+  }
+  return false;
+}
+
 // Register Events
 document.addEventListener('keydown', (event: KeyboardEvent) => {
   if (tvp_suppressHotkeysNow()) return;
@@ -144,12 +161,15 @@ document.addEventListener('mousedown', (e) => {
 
 document.addEventListener('mouseup', (e) => {
   if (tvp_suppressHotkeysNow()) return;
-  if (!anyMouseHotkeys()) return;
-  const mapBtn = (b: number) => b === 0 ? 'MouseLeft' : b === 1 ? 'MouseMiddle' : b === 2 ? 'MouseRight' : b === 3 ? 'Mouse4' : b === 4 ? 'Mouse5' : null;
-  const key = mapBtn(e.button);
-  if (!key) return;
-  const synthetic = { key, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: (e as any).metaKey } as KeyboardEvent;
+  if (eventMatchesAssignedMouseHotkey(e)) { e.preventDefault(); e.stopPropagation(); }
+  const key = mapBtn(e.button); if (!key) return;
+  const synthetic = { key, ctrlKey:e.ctrlKey, shiftKey:e.shiftKey, altKey:e.altKey, metaKey:(e as any).metaKey } as KeyboardEvent;
   for (const [, feature] of features) feature.onKeyUp?.(synthetic);
+}, { capture: true });
+
+document.addEventListener('auxclick', (e) => {
+  if (tvp_suppressHotkeysNow()) return;
+  if (eventMatchesAssignedMouseHotkey(e)) { e.preventDefault(); e.stopPropagation(); }
 }, { capture: true });
 
 // Forward real wheel events to features (needed for TimeframeScroll, etc.)

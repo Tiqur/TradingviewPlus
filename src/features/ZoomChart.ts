@@ -15,12 +15,6 @@ class ZoomChart extends Feature {
       ['Ctrl', 'Shift', 'Scroll']
     );
 
-    // Defaults mirror old Ctrl+Shift+Wheel behavior
-    if (!this.getConfigValue('hotkey1'))
-      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:true, shift:true, alt:false, meta:false });   // zoom in
-    if (!this.getConfigValue('hotkey2'))
-      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:true, shift:true, alt:false, meta:false });   // zoom out
-
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey 1 (Zoom In)', () => {
         const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
@@ -78,7 +72,13 @@ class ZoomChart extends Feature {
   onKeyUp(_e: KeyboardEvent) {}
   onMouseMove(_e: MouseEvent) {}
   onMouseDownCapture?(_e: MouseEvent) {}
-  init() {}
+  init() {
+    // Defaults mirror old Ctrl+Shift+Wheel behavior
+    if (!this.getConfigValue('hotkey1'))
+      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:true, shift:true, alt:false, meta:false });   // zoom in
+    if (!this.getConfigValue('hotkey2'))
+      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:true, shift:true, alt:false, meta:false });   // zoom out
+  }
 
   private isSubDuplicate(features: Map<string, Feature>, hk: Hotkey, selfSlot: 'hotkey1'|'hotkey2'): boolean {
     const same = (a?: Hotkey | null, b?: Hotkey | null) =>

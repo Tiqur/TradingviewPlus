@@ -15,12 +15,6 @@ class ScrollPriceScale extends Feature {
       ['Shift', 'Scroll']
     );
 
-    // Defaults: Shift + WheelUp/Down
-    if (!this.getConfigValue('hotkey1'))
-      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:false, meta:false }); // up the scale
-    if (!this.getConfigValue('hotkey2'))
-      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:false, meta:false }); // down the scale
-
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey 1 (Up)', () => {
         const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
@@ -78,7 +72,13 @@ class ScrollPriceScale extends Feature {
   onKeyUp(_e: KeyboardEvent) {}
   onMouseMove(_e: MouseEvent) {}
   onMouseDownCapture?(_e: MouseEvent) {}
-  init() {}
+  init() {
+    // Defaults: Shift + WheelUp/Down
+    if (!this.getConfigValue('hotkey1'))
+      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:false, meta:false }); // up the scale
+    if (!this.getConfigValue('hotkey2'))
+      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:false, meta:false }); // down the scale
+  }
 
   private isSubDuplicate(features: Map<string, Feature>, hk: Hotkey, selfSlot: 'hotkey1'|'hotkey2'): boolean {
     const same = (a?: Hotkey | null, b?: Hotkey | null) =>

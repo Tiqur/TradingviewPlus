@@ -13,11 +13,6 @@ class TimeframeScroll extends Feature {
       ['Alt', 'Shift', 'Scroll']
     );
 
-    if (!this.getConfigValue('hotkey1'))
-      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:true,  meta:false }); // previous
-    if (!this.getConfigValue('hotkey2'))
-      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:true,  meta:false }); // next
-
     this.addContextMenuOptions([
       new ContextMenuListItem('Change Hotkey 1 (Ltf)', () => {
         const lbl = document.getElementById(`${this.getName()}-hotkey-label`); if (lbl) lbl.textContent = '...';
@@ -79,7 +74,12 @@ class TimeframeScroll extends Feature {
   onKeyUp(_e: KeyboardEvent) {}
   onMouseMove(_e: MouseEvent) {}
   onMouseDownCapture?(_e: MouseEvent) {} // ignore if your base class doesn’t declare
-  init() {}
+  init() {
+    if (!this.getConfigValue('hotkey1'))
+      this.setConfigValue('hotkey1', { key: 'WheelUp',   ctrl:false, shift:true, alt:true,  meta:false }); // previous
+    if (!this.getConfigValue('hotkey2'))
+      this.setConfigValue('hotkey2', { key: 'WheelDown', ctrl:false, shift:true, alt:true,  meta:false }); // next
+  }
 
   private isSubDuplicate(features: Map<string, Feature>, hk: Hotkey, selfSlot: 'hotkey1'|'hotkey2'): boolean {
     const same = (a?: Hotkey | null, b?: Hotkey | null) =>
