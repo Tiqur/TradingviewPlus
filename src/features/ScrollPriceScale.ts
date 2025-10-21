@@ -134,9 +134,14 @@ class ScrollPriceScale extends Feature {
     this.scrollTimeout = window.setTimeout(() => { this.processScroll(deltaY); this.scrollTimeout = null; }, 50);
   }
   private processScroll(deltaY: number) {
-    const priceAxis = document.querySelector('[class="price-axis"]');
-    if (!priceAxis) return;
-    const evt = new WheelEvent('wheel', { deltaY, bubbles: true, cancelable: true, clientX: 1, clientY: 1 });
-    priceAxis.dispatchEvent(evt);
+    const axis = document.querySelector('.price-axis') as HTMLElement | null; // was [class="price-axis"]
+    if (!axis) return;
+    const r = axis.getBoundingClientRect();
+    const evt = new WheelEvent('wheel', {
+      deltaY, bubbles: true, cancelable: true,
+      clientX: Math.floor(r.left + 4),
+      clientY: Math.floor(r.top + 4)
+    });
+    axis.dispatchEvent(evt);
   }
 }

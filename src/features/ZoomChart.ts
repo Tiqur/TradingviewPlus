@@ -123,15 +123,26 @@ class ZoomChart extends Feature {
 
   // ===== action =====
   private queueZoom(direction: 1 | -1, e: Event, wheelAbsDelta?: number) {
-    if (e.cancelable) { e.preventDefault(); e.stopPropagation(); }
+    // Let native Ctrl+Shift+Wheel zoom the time axis; only suppress for non-wheel triggers
+    if (wheelAbsDelta === undefined && (e as Event).cancelable) {
+      e.preventDefault(); e.stopPropagation();
+    }
     if (this.zoomTimeout) window.clearTimeout(this.zoomTimeout);
-    const deltaY = (wheelAbsDelta ?? ZoomChart.BASE_STEP) * ZoomChart.MULTIPLIER * (direction > 0 ? -1 : +1);
+    const deltaY = (wheelAbsDelta ?? ZoomChart.BASE_STEP)
+                 * ZoomChart.MULTIPLIER
+                 * (direction > 0 ? -1 : +1);
     this.zoomTimeout = window.setTimeout(() => { this.processZoom(deltaY); this.zoomTimeout = null; }, 50);
   }
+
   private processZoom(deltaY: number) {
-    const priceAxis = document.querySelector('[class="price-axis"]');
-    if (!priceAxis) return;
-    const evt = new WheelEvent('wheel', { deltaY, bubbles: true, cancelable: true, clientX: 1, clientY: 1 });
-    priceAxis.dispatchEvent(evt);
+    const axis = document.querySelector('.price-axis') as HTMLElement | null; // was [class="price-axis"]
+    if (!axis) return;
+    const r = axis.getBoundingClientRect();
+    const evt = new WheelEvent('wheel', {
+      deltaY, bubbles: true, cancelable: true,
+      clientX: Math.floor(r.left + 4),
+      clientY: Math.floor(r.top + 4)
+    });
+    axis.dispatchEvent(evt);
   }
 }

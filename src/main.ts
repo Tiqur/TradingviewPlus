@@ -183,6 +183,17 @@ document.addEventListener(
   { capture: true, passive: false }  // <- passive: false is required
 );
 
+// Forward real mouse events to features
+document.addEventListener('mousedown', (event: MouseEvent) => {
+  if (tvp_suppressHotkeysNow()) return;
+  for (const [, feature] of features) feature.onMouseDown(event);
+}, { capture: true });
+
+document.addEventListener('mousemove', (event: MouseEvent) => {
+  if (tvp_suppressHotkeysNow()) return;
+  for (const [, feature] of features) feature.onMouseMove(event);
+}, { capture: true });
+
 // Register features
 features.set('Auto Scale', new ToggleAutoScale());
 features.set('Log Scale', new ToggleLogScale());
