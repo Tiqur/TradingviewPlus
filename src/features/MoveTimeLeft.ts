@@ -1,6 +1,8 @@
 class MoveTimeLeft extends Feature {
   private wheelReleaseTimer: number | null = null;
   private wheelActive = false;
+  private wheelRepeatDelayTimer: number | null = null;
+  private wheelRepeatInterval: number | null = null;
   
   constructor() {
     super(
@@ -66,11 +68,8 @@ class MoveTimeLeft extends Feature {
         this.dispatch('keydown');
         this.wheelActive = true;
       }
-      if (this.wheelReleaseTimer !== null) {
-        window.clearTimeout(this.wheelReleaseTimer);
-        this.wheelReleaseTimer = null;
-      }
-      this.wheelReleaseTimer = window.setTimeout(() => this.releaseWheel(), 160);
+      this.bumpWheelRelease();
+      this.ensureWheelRepeat();
     } else {
       this.releaseWheel();
     }
@@ -80,13 +79,49 @@ class MoveTimeLeft extends Feature {
     if (!this.wheelActive) return;
     this.dispatch('keyup');
     this.wheelActive = false;
+    this.clearWheelRelease();
+    this.clearWheelRepeat();
+  }
+
+  private isWheelKey(key?: string | null): boolean {
+    return !!key && key.startsWith('Wheel');
+  }
+
+  private ensureWheelRepeat() {
+    if (this.wheelRepeatInterval !== null) return;
+    if (this.wheelRepeatDelayTimer === null) {
+      this.wheelRepeatDelayTimer = window.setTimeout(() => {
+        this.wheelRepeatDelayTimer = null;
+        if (!this.wheelActive) return;
+        this.dispatch('keydown');
+        this.wheelRepeatInterval = window.setInterval(() => {
+          if (!this.wheelActive) { this.clearWheelRepeat(); return; }
+          this.dispatch('keydown');
+        }, 80);
+      }, 330);
+    }
+  }
+
+  private bumpWheelRelease() {
+    this.clearWheelRelease();
+    this.wheelReleaseTimer = window.setTimeout(() => this.releaseWheel(), 200);
+  }
+
+  private clearWheelRelease() {
     if (this.wheelReleaseTimer !== null) {
       window.clearTimeout(this.wheelReleaseTimer);
       this.wheelReleaseTimer = null;
     }
   }
 
-  private isWheelKey(key?: string | null): boolean {
-    return !!key && key.startsWith('Wheel');
+  private clearWheelRepeat() {
+    if (this.wheelRepeatDelayTimer !== null) {
+      window.clearTimeout(this.wheelRepeatDelayTimer);
+      this.wheelRepeatDelayTimer = null;
+    }
+    if (this.wheelRepeatInterval !== null) {
+      window.clearInterval(this.wheelRepeatInterval);
+      this.wheelRepeatInterval = null;
+    }
   }
 }
