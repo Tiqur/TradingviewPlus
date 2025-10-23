@@ -64,9 +64,11 @@ class ScrollPriceScale extends Feature {
 
   // ===== event entry points =====
   onMouseWheel(e: WheelEvent) {
-    const dir = e.deltaY < 0 ? +1 : -1;
-    if (this.matchesSubHotkey(e, 'hotkey1') && dir === +1) return this.queueScroll(+1, e, Math.abs(e.deltaY));
-    if (this.matchesSubHotkey(e, 'hotkey2') && dir === -1) return this.queueScroll(-1, e, Math.abs(e.deltaY));
+    const info = Feature.wheelInfoFromEvent(e);
+    const dir = info.delta < 0 ? +1 : -1;
+    const absDelta = info.absDelta;
+    if (this.matchesSubHotkey(e, 'hotkey1') && dir === +1) { this.bumpWheelQuiet(); return this.queueScroll(+1, e, absDelta); }
+    if (this.matchesSubHotkey(e, 'hotkey2') && dir === -1) { this.bumpWheelQuiet(); return this.queueScroll(-1, e, absDelta); }
   }
   onMouseDown(e: MouseEvent) {
     if (this.matchesSubHotkey(e, 'hotkey1')) return this.queueScroll(+1, e);
@@ -114,13 +116,7 @@ class ScrollPriceScale extends Feature {
     return this.matches(hk, ev);
   }
   private normalizeEventKey(ev: KeyboardEvent | MouseEvent | WheelEvent): string | null {
-    if ('key' in ev) return ev.key;
-    if ('deltaY' in ev) return ev.deltaY < 0 ? 'WheelUp' : 'WheelDown';
-    if ('button' in ev) {
-      const b = ev.button;
-      return b === 0 ? 'MouseLeft' : b === 1 ? 'MouseMiddle' : b === 2 ? 'MouseRight' : b === 3 ? 'Mouse4' : b === 4 ? 'Mouse5' : null;
-    }
-    return null;
+    return Feature.normalizeEventKey(ev);
   }
   private matches(hk: Hotkey | undefined, ev: KeyboardEvent | MouseEvent | WheelEvent): boolean {
     if (!hk || !hk.key) return false;

@@ -95,7 +95,7 @@ function tvp_suppressHotkeysNow(): boolean {
 ;(window as any).tvp_suppressHotkeysNow = tvp_suppressHotkeysNow;
 
 // ===== Mouse-hotkey detection (unchanged) =====
-const mouseTokens = new Set(['WheelUp','WheelDown','MouseLeft','MouseMiddle','MouseRight','Mouse4','Mouse5']);
+const mouseTokens = new Set(['WheelUp','WheelDown','WheelLeft','WheelRight','MouseLeft','MouseMiddle','MouseRight','Mouse4','Mouse5']);
 const anyMouseHotkeys = () => {
   for (const [, f] of features) {
     const hk = (f as any).getHotkey?.() || (f as any).hotkey;
@@ -128,6 +128,20 @@ function eventMatchesAssignedMouseHotkey(e: MouseEvent): boolean {
   return false;
 }
 
+function eventMatchesAssignedWheelHotkey(e: WheelEvent, key: string): boolean {
+  if (!key || !key.startsWith('Wheel')) return false;
+  for (const [, f] of features) {
+    const mods = (hk:any)=> hk && hk.key && hk.key.toLowerCase()===key.toLowerCase()
+      && !!hk.ctrl===!!e.ctrlKey && !!hk.shift===!!e.shiftKey && !!hk.alt===!!e.altKey && !!hk.meta===!!(e as any).metaKey;
+    const hk = (f as any).getHotkey?.();
+    if (mods(hk)) return true;
+    const h1 = (f as any).getConfigValue?.('hotkey1');
+    const h2 = (f as any).getConfigValue?.('hotkey2');
+    if (mods(h1) || mods(h2)) return true;
+  }
+  return false;
+}
+
 // Register Events
 document.addEventListener('keydown', (event: KeyboardEvent) => {
   if (tvp_suppressHotkeysNow()) return;
@@ -143,7 +157,8 @@ document.addEventListener('keyup', (event: KeyboardEvent) => {
 document.addEventListener('wheel', (e) => {
   if (tvp_suppressHotkeysNow()) return;
   if (!anyMouseHotkeys()) return;
-  const key = e.deltaY < 0 ? 'WheelUp' : 'WheelDown';
+  const key = Feature.normalizeEventKey(e) || (e.deltaY < 0 ? 'WheelUp' : 'WheelDown');
+  if (key && e.cancelable && eventMatchesAssignedWheelHotkey(e, key)) e.preventDefault();
   const synthetic = { key, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: (e as any).metaKey } as KeyboardEvent;
   for (const [, feature] of features) feature.onKeyDown?.(synthetic);
 }, { capture: true });
@@ -177,8 +192,14 @@ document.addEventListener(
   'wheel',
   (event: WheelEvent) => {
     if (tvp_suppressHotkeysNow()) return; // additive guard
+    const key = Feature.normalizeEventKey(event) || (event.deltaY < 0 ? 'WheelUp' : 'WheelDown');
+    const suppress = key ? eventMatchesAssignedWheelHotkey(event, key) : false;
     // let features call preventDefault on wheel
     for (const [, feature] of features) feature.onMouseWheel(event);
+    if (suppress) {
+      if (event.cancelable) event.preventDefault();
+      event.stopImmediatePropagation();
+    }
   },
   { capture: true, passive: false }  // <- passive: false is required
 );
