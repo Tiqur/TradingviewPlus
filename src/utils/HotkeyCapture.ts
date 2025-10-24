@@ -1,3 +1,83 @@
+interface TVPWheelInfo {
+  axis: 'x' | 'y';
+  delta: number;
+  absDelta: number;
+  key: 'WheelUp' | 'WheelDown' | 'WheelLeft' | 'WheelRight';
+}
+
+interface Window {
+  tvpClassifyWheelEvent?: (e: WheelEvent) => TVPWheelInfo | null;
+}
+
+const WHEEL_AXIS_NOISE = 100; // tolerate small cross-axis deltas from tilt wheels
+const WHEEL_MIN_PRIMARY = 40; // pixels/lines; below this treat as noise
+
+function tvpClassifyWheelEvent(e: WheelEvent): TVPWheelInfo | null {
+  const absX = Math.abs(e.deltaX);
+  const absY = Math.abs(e.deltaY);
+  const absZ = Math.abs(e.deltaZ);
+
+  let axis: 'x' | 'y' | 'z';
+  let primary = 0;
+
+  if (absX >= absY + WHEEL_AXIS_NOISE && absX >= absZ + WHEEL_AXIS_NOISE) {
+    axis = 'x';
+    primary = e.deltaX;
+  } else if (absY >= absX + WHEEL_AXIS_NOISE && absY >= absZ + WHEEL_AXIS_NOISE) {
+    axis = 'y';
+    primary = e.deltaY;
+  } else if (absZ >= absX + WHEEL_AXIS_NOISE && absZ >= absY + WHEEL_AXIS_NOISE) {
+    axis = 'z';
+    primary = e.deltaZ;
+  } else {
+    // ambiguous: fall back to the dominant axis, preferring vertical
+    if (absY >= absX && absY >= absZ) {
+      axis = 'y';
+      primary = e.deltaY;
+    } else if (absX >= absY && absX >= absZ) {
+      axis = 'x';
+      primary = e.deltaX;
+    } else {
+      axis = 'z';
+      primary = e.deltaZ;
+    }
+  }
+
+  if (axis === 'z') {
+    axis = absY >= absX ? 'y' : 'x';
+    primary = axis === 'y' ? e.deltaY : e.deltaX;
+  }
+
+  if (Math.abs(primary) < WHEEL_MIN_PRIMARY) {
+    // swap axis if the dominant axis was noise but the other axis has signal
+    if (axis === 'x' && absY >= WHEEL_MIN_PRIMARY) {
+      axis = 'y';
+      primary = e.deltaY;
+    } else if (axis === 'y' && absX >= WHEEL_MIN_PRIMARY) {
+      axis = 'x';
+      primary = e.deltaX;
+    }
+  }
+
+  if (Math.abs(primary) < WHEEL_MIN_PRIMARY) return null;
+
+  const key =
+    axis === 'x'
+      ? primary < 0 ? 'WheelLeft' : 'WheelRight'
+      : primary < 0 ? 'WheelUp' : 'WheelDown';
+
+  return {
+    axis: axis === 'x' ? 'x' : 'y',
+    delta: primary,
+    absDelta: Math.abs(primary),
+    key,
+  };
+}
+
+if (typeof window !== 'undefined') {
+  window.tvpClassifyWheelEvent = tvpClassifyWheelEvent;
+}
+
 function captureHotkey(cb: (result: Hotkey | 'cancel' | 'clear') => void) {
   let capturing = true;
   const CAPTURE = true;
@@ -24,7 +104,9 @@ function captureHotkey(cb: (result: Hotkey | 'cancel' | 'clear') => void) {
 
   const onWheel = (e: WheelEvent) => {
     e.preventDefault(); e.stopPropagation();
-    hk.key = e.deltaY < 0 ? 'WheelUp' : 'WheelDown';
+    const info = (window.tvpClassifyWheelEvent?.(e) ?? tvpClassifyWheelEvent(e))
+      || { key: e.deltaY < 0 ? 'WheelUp' : 'WheelDown' };
+    hk.key = info.key;
     hk.ctrl = e.ctrlKey; hk.shift = e.shiftKey; hk.alt = e.altKey; hk.meta = (e as any).metaKey;
     finish(hk);
   };

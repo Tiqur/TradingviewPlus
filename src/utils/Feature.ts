@@ -1,3 +1,62 @@
+interface TVPWheelInfo {
+  axis: 'x' | 'y';
+  delta: number;
+  absDelta: number;
+  key: 'WheelUp' | 'WheelDown' | 'WheelLeft' | 'WheelRight';
+}
+
+interface Window {
+  tvpClassifyWheelEvent?: (e: WheelEvent) => TVPWheelInfo | null;
+}
+
+function tvpResolveWheelInfo(e: WheelEvent): TVPWheelInfo {
+  const info = window?.tvpClassifyWheelEvent?.(e);
+  if (info) return info;
+
+  const absX = Math.abs(e.deltaX);
+  const absY = Math.abs(e.deltaY);
+  const axisNoise = 100;
+  const minPrimary = 40;
+
+  let axis: 'x' | 'y';
+  if (absX >= absY + axisNoise) axis = 'x';
+  else if (absY >= absX + axisNoise) axis = 'y';
+  else axis = absY >= absX ? 'y' : 'x';
+
+  let delta = axis === 'x' ? e.deltaX : e.deltaY;
+
+  if (delta === 0) {
+    const altDelta = axis === 'x' ? e.deltaY : e.deltaX;
+    if (altDelta !== 0) {
+      axis = axis === 'x' ? 'y' : 'x';
+      delta = altDelta;
+    } else {
+      delta = axis === 'x'
+        ? (e.deltaX < 0 ? -1 : 1)
+        : (e.deltaY < 0 ? -1 : 1);
+    }
+  }
+
+  if (Math.abs(delta) < minPrimary) {
+    const altDelta = axis === 'x' ? e.deltaY : e.deltaX;
+    if (Math.abs(altDelta) >= minPrimary) {
+      axis = axis === 'x' ? 'y' : 'x';
+      delta = altDelta;
+    }
+  }
+
+  if (Math.abs(delta) < minPrimary) {
+    delta = delta < 0 ? -minPrimary : minPrimary;
+  }
+
+  const key =
+    axis === 'x'
+      ? delta < 0 ? 'WheelLeft' : 'WheelRight'
+      : delta < 0 ? 'WheelUp' : 'WheelDown';
+
+  return { axis, delta, absDelta: Math.max(1, Math.abs(delta)), key };
+}
+
 enum Category { 'TV', 'TVP' };
 
 abstract class Feature {
@@ -173,21 +232,7 @@ abstract class Feature {
   public checkTrigger(e: KeyboardEvent | MouseEvent | WheelEvent): boolean {
     if (!this.hotkey || !this.hotkey.key) return false;
 
-    // normalize event → token
-    let eventKey: string | null = null;
-    if ('key' in e) {
-      eventKey = e.key;
-    } else if ('deltaY' in e) {
-      eventKey = e.deltaY < 0 ? 'WheelUp' : 'WheelDown';
-    } else if ('button' in e) {
-      eventKey = e.button === 0 ? 'MouseLeft'
-        : e.button === 1 ? 'MouseMiddle'
-        : e.button === 2 ? 'MouseRight'
-        : e.button === 3 ? 'Mouse4'
-        : e.button === 4 ? 'Mouse5'
-        : null;
-    }
-
+    const eventKey = Feature.normalizeEventKey(e);
     if (!eventKey) return false;
 
     return this.hotkey.key.toLowerCase() === eventKey.toLowerCase()
@@ -197,6 +242,24 @@ abstract class Feature {
       && this.hotkey.shift === !!(e as any).shiftKey;
   }
 
+  public static normalizeEventKey(ev: KeyboardEvent | MouseEvent | WheelEvent): string | null {
+    if ('key' in ev) return ev.key;
+    if ('deltaY' in ev) return tvpResolveWheelInfo(ev as WheelEvent).key;
+    if ('button' in ev) {
+      const b = (ev as MouseEvent).button;
+      return b === 0 ? 'MouseLeft'
+        : b === 1 ? 'MouseMiddle'
+        : b === 2 ? 'MouseRight'
+        : b === 3 ? 'Mouse4'
+        : b === 4 ? 'Mouse5'
+        : null;
+    }
+    return null;
+  }
+
+  protected static wheelInfoFromEvent(ev: WheelEvent): TVPWheelInfo {
+    return tvpResolveWheelInfo(ev);
+  }
 
   public isEnabled(): boolean {
     return this.enabled;

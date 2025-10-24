@@ -56,7 +56,8 @@ class TimeframeScroll extends Feature {
   // ===== event entry points =====
   onMouseWheel(e: WheelEvent) {
     // direction from wheel
-    const dir = e.deltaY < 0 ? +1 : -1;
+    const info = Feature.wheelInfoFromEvent(e);
+    const dir = info.delta < 0 ? +1 : -1;
     // allow wheel-only path if mods match either bind
     if (this.matchesSubHotkey(e, 'hotkey1') && dir === +1) return this.queueStep(-1, e);
     if (this.matchesSubHotkey(e, 'hotkey2') && dir === -1) return this.queueStep(+1, e);
@@ -103,13 +104,7 @@ class TimeframeScroll extends Feature {
     return this.matches(hk, ev);
   }
   private normalizeEventKey(ev: KeyboardEvent | MouseEvent | WheelEvent): string | null {
-    if ('key' in ev) return ev.key;
-    if ('deltaY' in ev) return ev.deltaY < 0 ? 'WheelUp' : 'WheelDown';
-    if ('button' in ev) {
-      const b = ev.button;
-      return b === 0 ? 'MouseLeft' : b === 1 ? 'MouseMiddle' : b === 2 ? 'MouseRight' : b === 3 ? 'Mouse4' : b === 4 ? 'Mouse5' : null;
-    }
-    return null;
+    return Feature.normalizeEventKey(ev);
   }
   private matches(hk: Hotkey | undefined, ev: KeyboardEvent | MouseEvent | WheelEvent): boolean {
     if (!hk || !hk.key) return false;

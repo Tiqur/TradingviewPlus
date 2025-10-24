@@ -112,6 +112,8 @@ class TVPMenu {
     const pretty = (k: string) => ({
       WheelUp: 'Wheel Up',
       WheelDown: 'Wheel Down',
+      WheelLeft: 'Wheel Left',
+      WheelRight: 'Wheel Right',
       MouseLeft: 'Mouse Left',
       MouseMiddle: 'MMB',
       MouseRight: 'Mouse Right',
@@ -147,16 +149,21 @@ class TVPMenu {
       if (k1 === null && k2 === null) {
         hotkeyLabel.innerHTML = DOMPurify.sanitize(wrap('N/A'));
       } else {
-        const isUpDown = (k: string | null) => k === 'WheelUp' || k === 'WheelDown';
-        const bothWheels = isUpDown(k1) && isUpDown(k2);
+        const orient = (k: string | null) =>
+          k === 'WheelUp' || k === 'WheelDown' ? 'vertical'
+          : k === 'WheelLeft' || k === 'WheelRight' ? 'horizontal'
+          : null;
+        const k1Orient = orient(k1);
+        const k2Orient = orient(k2);
+        const bothWheels = !!k1Orient && !!k2Orient;
 
-        if (bothWheels && sameMods(hk1, hk2)) {
+        if (bothWheels && sameMods(hk1, hk2) && k1Orient === k2Orient) {
           const modsParts: string[] = [];
           if (hk1!.alt)  modsParts.push(wrap('Alt'));
           if (hk1!.ctrl) modsParts.push(wrap('Ctrl'));
           if (hk1!.shift)modsParts.push(wrap('Shift'));
           if (hk1!.meta) modsParts.push(wrap('Meta'));
-          modsParts.push(wrap('Scroll'));
+          modsParts.push(wrap(k1Orient === 'horizontal' ? 'Scroll Horizontal' : 'Scroll'));
           hotkeyLabel.innerHTML = DOMPurify.sanitize(modsParts.join(' + '));
         } else {
           const left  = k1 !== null ? fmt(hk1) : wrap('N/A');
@@ -208,6 +215,8 @@ class TVPMenu {
     const pretty = (k: string) => ({
       WheelUp: 'Wheel Up',
       WheelDown: 'Wheel Down',
+      WheelLeft: 'Wheel Left',
+      WheelRight: 'Wheel Right',
       MouseLeft: 'Mouse Left',
       MouseMiddle: 'MMB',
       MouseRight: 'Mouse Right',
