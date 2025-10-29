@@ -200,6 +200,7 @@ class AutoTimeframeColors extends Feature {
   // On canvas click
   onMouseDown(e: Event) {
     if (!this.isEnabled() || !this.canvas) return;
+    if (e.target !== this.canvas && !this.canvas.contains(e.target as Node)) return;
 
     // Get current timeframe with multiple fallback methods
     const currentTimeframe: string | null = (

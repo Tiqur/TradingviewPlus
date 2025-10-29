@@ -1,3 +1,62 @@
+interface TVPWheelInfo {
+  axis: 'x' | 'y';
+  delta: number;
+  absDelta: number;
+  key: 'WheelUp' | 'WheelDown' | 'WheelLeft' | 'WheelRight';
+}
+
+interface Window {
+  tvpClassifyWheelEvent?: (e: WheelEvent) => TVPWheelInfo | null;
+}
+
+function tvpResolveWheelInfo(e: WheelEvent): TVPWheelInfo {
+  const info = window?.tvpClassifyWheelEvent?.(e);
+  if (info) return info;
+
+  const absX = Math.abs(e.deltaX);
+  const absY = Math.abs(e.deltaY);
+  const axisNoise = 100;
+  const minPrimary = 40;
+
+  let axis: 'x' | 'y';
+  if (absX >= absY + axisNoise) axis = 'x';
+  else if (absY >= absX + axisNoise) axis = 'y';
+  else axis = absY >= absX ? 'y' : 'x';
+
+  let delta = axis === 'x' ? e.deltaX : e.deltaY;
+
+  if (delta === 0) {
+    const altDelta = axis === 'x' ? e.deltaY : e.deltaX;
+    if (altDelta !== 0) {
+      axis = axis === 'x' ? 'y' : 'x';
+      delta = altDelta;
+    } else {
+      delta = axis === 'x'
+        ? (e.deltaX < 0 ? -1 : 1)
+        : (e.deltaY < 0 ? -1 : 1);
+    }
+  }
+
+  if (Math.abs(delta) < minPrimary) {
+    const altDelta = axis === 'x' ? e.deltaY : e.deltaX;
+    if (Math.abs(altDelta) >= minPrimary) {
+      axis = axis === 'x' ? 'y' : 'x';
+      delta = altDelta;
+    }
+  }
+
+  if (Math.abs(delta) < minPrimary) {
+    delta = delta < 0 ? -minPrimary : minPrimary;
+  }
+
+  const key =
+    axis === 'x'
+      ? delta < 0 ? 'WheelLeft' : 'WheelRight'
+      : delta < 0 ? 'WheelUp' : 'WheelDown';
+
+  return { axis, delta, absDelta: Math.max(1, Math.abs(delta)), key };
+}
+
 enum Category { 'TV', 'TVP' };
 
 abstract class Feature {
@@ -36,58 +95,48 @@ abstract class Feature {
   }
 
   private addHotkeyEditContextMenuItem() {
-      const cmli = new ContextMenuListItem('Change Hotkey', () => {
-       let hotkey = {
-          key: '',
-          ctrl: false,
-          shift: false,
-          alt: false,
-          meta: false,
+    const cmli = new ContextMenuListItem('Change Hotkey', () => {
+      const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
+      if (hotkeyLabel) hotkeyLabel.textContent = '...';
+
+      captureHotkey((res) => {
+        const rerender = () => {
+          const tb = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement | null;
+          tb?.dispatchEvent(new InputEvent('input'));
         };
 
-        // Get label element
-        const hotkeyLabel = document.getElementById(`${this.getName()}-hotkey-label`);
-        if (!hotkeyLabel) return;
-
-        // Wait for key to be pressed
-        hotkeyLabel.innerText = '...';
-
-        const keydownListener = (event: KeyboardEvent) => {
-          if (event.key !== 'Meta' && event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
-            hotkey.key = event.key;
-            hotkey.ctrl = event.ctrlKey;
-            hotkey.shift = event.shiftKey;
-            hotkey.alt = event.altKey;
-            hotkey.meta = event.metaKey;
-
-            event.preventDefault();
-          }
+        if (res === 'cancel') {
+          snackBar('Keybind assignment canceled');
+          rerender();
+          return;
         }
 
-        const keyupListener = () => {
+        if (res === 'clear') {
+          const cleared: Hotkey = { key: null, ctrl:false, shift:false, alt:false, meta:false };
+          this.setConfigValue('hotkey', cleared);
+          this.setHotkey(cleared);
+          this.saveToLocalStorage();
+          snackBar('Keybind cleared');
+          rerender();
+          return;
+        }
 
-          if (!checkDuplicateHotkeys(features, hotkey)) {
-            // Update 'this.hotkey' with the newly selected hotkey
-            this.setHotkey(hotkey)
-          } else {
+        const result = checkDuplicateHotkeys(features, res);
+        if (!result) {
+          this.setHotkey(res);
+        } else {
+          if (result.reason === 'modifier_only')
+            snackBar('Error: Modifier-only keybinds (Ctrl, Shift, Alt) are not supported');
+          else if (result.reason === 'unmappable')
+            snackBar('Error: This key cannot be assigned as a hotkey (Enter, Space, etc.)');
+          else
             snackBar('Error: Duplicate Keybind');
-          }
-        
-          // Re-render menu while maintaining fuzzy search results
-          // This is kinda hacky
-          const textBox: HTMLInputElement = document.querySelector('[id="tvp-menu"] input') as HTMLInputElement;
-          textBox.dispatchEvent(new InputEvent('input'));
-
-          // Remove event listeners to stop listening for hotkey input
-          document.removeEventListener('keydown', keydownListener);
-          document.removeEventListener('keyup', keyupListener);
         }
-
-        document.addEventListener('keyup', keyupListener);
-        document.addEventListener('keydown', keydownListener);
+        rerender();
       });
+    });
 
-      this.contextMenuOptions.push(cmli);
+    this.contextMenuOptions.push(cmli);
   }
 
   public getConfig() {
@@ -180,12 +229,36 @@ abstract class Feature {
     await browser.storage.local.set({[this.getName()]: this.getJson()});
   }
 
-  public checkTrigger(e: KeyboardEvent): boolean {
-    return (this.hotkey.key == null || this.hotkey.key?.toLowerCase() == e.key.toLowerCase())
-      && this.hotkey.alt == e.altKey
-      && this.hotkey.ctrl == e.ctrlKey
-      && this.hotkey.meta == e.metaKey
-      && this.hotkey.shift == e.shiftKey;
+  public checkTrigger(e: KeyboardEvent | MouseEvent | WheelEvent): boolean {
+    if (!this.hotkey || !this.hotkey.key) return false;
+
+    const eventKey = Feature.normalizeEventKey(e);
+    if (!eventKey) return false;
+
+    return this.hotkey.key.toLowerCase() === eventKey.toLowerCase()
+      && this.hotkey.alt === !!(e as any).altKey
+      && this.hotkey.ctrl === !!(e as any).ctrlKey
+      && this.hotkey.meta === !!(e as any).metaKey
+      && this.hotkey.shift === !!(e as any).shiftKey;
+  }
+
+  public static normalizeEventKey(ev: KeyboardEvent | MouseEvent | WheelEvent): string | null {
+    if ('key' in ev) return ev.key;
+    if ('deltaY' in ev) return tvpResolveWheelInfo(ev as WheelEvent).key;
+    if ('button' in ev) {
+      const b = (ev as MouseEvent).button;
+      return b === 0 ? 'MouseLeft'
+        : b === 1 ? 'MouseMiddle'
+        : b === 2 ? 'MouseRight'
+        : b === 3 ? 'Mouse4'
+        : b === 4 ? 'Mouse5'
+        : null;
+    }
+    return null;
+  }
+
+  protected static wheelInfoFromEvent(ev: WheelEvent): TVPWheelInfo {
+    return tvpResolveWheelInfo(ev);
   }
 
   public isEnabled(): boolean {
