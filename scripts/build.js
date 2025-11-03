@@ -3,6 +3,7 @@
 import { execSync } from "child_process";
 import { existsSync, mkdirSync, rmSync, cpSync } from "fs";
 import path from "path";
+import AdmZip from "adm-zip";
 
 const args = process.argv.slice(2);
 const rootDir = process.cwd();
@@ -15,13 +16,18 @@ const configs = {
   opera: { manifest: "platform/opera/manifest.json", output: "tvp-opera.zip" },
 };
 
-// --- Utility to run shell commands ---
+// --- Utility to run shell commands safely ---
 function run(cmd, silent = false) {
   console.log(silent ? "" : `> ${cmd}`);
-  execSync(cmd, { stdio: silent ? "ignore" : "inherit", shell: true });
+  try {
+    execSync(cmd, { stdio: silent ? "ignore" : "inherit", shell: true });
+  } catch (e) {
+    console.error(`❌ Command failed: ${cmd}\n${e.message}`);
+    process.exit(1);
+  }
 }
 
-// --- Ensure required dev dependencies are present ---
+// --- Ensure required dev dependencies are installed ---
 function ensureDependencies() {
   const required = ["typescript", "sass"];
   const missing = required.filter((pkg) => {
@@ -39,7 +45,7 @@ function ensureDependencies() {
   }
 }
 
-// --- Copy lib → dist/lib with safeguard for purify.min.js ---
+// --- Copy lib → dist/lib and ensure purify.min.js presence ---
 function copyLibToDist() {
   console.log("📁 Copying lib → dist/lib...");
   const libDir = path.join(rootDir, "lib");
@@ -73,31 +79,47 @@ function copyLibToDist() {
 async function build(browser, config) {
   console.log(`\n🚀 Building for ${browser.toUpperCase()}...`);
 
-  if (existsSync(tempDir)) rmSync(tempDir, { recursive: true, force: true });
+  if (existsSync(tempDir)) {
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {}
+  }
   mkdirSync(tempDir);
 
   cpSync("public", path.join(tempDir, "public"), { recursive: true });
   cpSync("dist", path.join(tempDir, "dist"), { recursive: true });
   cpSync(config.manifest, path.join(tempDir, "manifest.json"));
 
-  const zipCmd = `cd "${tempDir}" && zip -r "../${config.output}" * -x "*.map" -x "*.scss"`;
-  run(zipCmd);
+  console.log("🗜️ Creating zip archive...");
 
-  rmSync(tempDir, { recursive: true, force: true });
+  const zip = new AdmZip();
+  zip.addLocalFolder(tempDir);
+  zip.getEntries().forEach((entry) => {
+    if (entry.entryName.endsWith(".map") || entry.entryName.endsWith(".scss")) {
+      zip.deleteFile(entry.entryName);
+    }
+  });
+
+  zip.writeZip(path.join(rootDir, config.output));
+  console.log(`✅ Created ${config.output}`);
+
+  try {
+    rmSync(tempDir, { recursive: true, force: true });
+  } catch {}
   console.log(`✅ ${browser} build complete → ${config.output}`);
 }
 
 try {
-  // Step 0: Ensure dependencies
+  // Step 0: Ensure required dependencies
   ensureDependencies();
 
-  // Step 1: No args → build all
+  // Step 1: No args → build all targets
   if (args.length === 0) {
     console.log("⚙️ Compiling TypeScript...");
     run("npx tsc");
 
     console.log("🎨 Compiling SCSS...");
-    run("npx sass public/:dist/");
+    run('npx sass "public/:dist/"');
 
     copyLibToDist();
 
@@ -109,11 +131,11 @@ try {
     process.exit(0);
   }
 
-  // Step 2: Build for specific browser
+  // Step 2: Single browser target
   const browser = args[0];
   const config = configs[browser];
   if (!config) {
-    console.error("❌ Invalid argument. Supported values: firefox | chrome | opera");
+    console.error("❌ Invalid argument. Supported: firefox | chrome | opera");
     process.exit(1);
   }
 
@@ -122,7 +144,7 @@ try {
   run("npx tsc");
 
   console.log("🎨 Compiling SCSS...");
-  run("npx sass public/:dist/");
+  run('npx sass "public/:dist/"');
 
   copyLibToDist();
 
