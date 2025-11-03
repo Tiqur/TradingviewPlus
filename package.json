@@ -9,10 +9,10 @@
     "dev-firefox": "node scripts/dev.js firefox",
     "dev-chrome": "node scripts/dev.js chrome",
     "dev-opera": "node scripts/dev.js opera",
-    "build": "node scripts/build.js",
-    "build-firefox": "node scripts/build.js firefox",
-    "build-chrome": "node scripts/build.js chrome",
-    "build-opera": "node scripts/build.js opera"
+    "build": "npm install && node scripts/build.js",
+    "build-firefox": "npm install && node scripts/build.js firefox",
+    "build-chrome": "npm install && node scripts/build.js chrome",
+    "build-opera": "npm install && node scripts/build.js opera"
   },
   "keywords": [
     "tradingview",
