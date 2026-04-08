@@ -197,32 +197,56 @@ class AutoTimeframeColors extends Feature {
     return colorPickerContainer;
   }
 
-  // On canvas click
-  onMouseDown(e: Event) {
-    if (!this.isEnabled() || !this.canvas) return;
-    if (e.target !== this.canvas && !this.canvas.contains(e.target as Node)) return;
+  private applyColorTimeout: number | null = null;
+  private isApplying = false;
 
-    // Get current timeframe — space-padded class check avoids false match on isInteractive-xxx
-    const currentTimeframe: string | null = (
-      (() => {
-        const buttons = Array.from(document.querySelectorAll('#header-toolbar-intervals div button'));
-        const activeBtn = buttons.find(b => {
-          const cn = ' ' + (b as HTMLElement).className + ' ';
-          return cn.includes(' isActive') || cn.includes(' active-');
-        });
-        return activeBtn ? (activeBtn as HTMLElement).textContent : null;
-      })() ||
-      (document.querySelector('#header-toolbar-intervals div button[aria-selected="true"]') as HTMLElement)?.textContent ||
-      (document.querySelector('#header-toolbar-intervals div button[aria-pressed="true"]') as HTMLElement)?.textContent ||
-      null
-    );
+  triggerColorChange() {
+    if (!this.isEnabled()) return;
+    if (this.applyColorTimeout) clearTimeout(this.applyColorTimeout);
+    
+    this.applyColorTimeout = window.setTimeout(() => {
+      this.applyColorTimeout = null;
+      if (this.isApplying) return; // Prevent concurrent executions
+      
+      const currentTimeframe: string | null = (
+        (() => {
+          const buttons = Array.from(document.querySelectorAll('#header-toolbar-intervals div button'));
+          const activeBtn = buttons.find(b => {
+            const cn = ' ' + (b as HTMLElement).className + ' ';
+            return cn.includes(' isActive') || cn.includes(' active-');
+          });
+          return activeBtn ? (activeBtn as HTMLElement).textContent : null;
+        })() ||
+        (document.querySelector('#header-toolbar-intervals div button[aria-selected="true"]') as HTMLElement)?.textContent ||
+        (document.querySelector('#header-toolbar-intervals div button[aria-pressed="true"]') as HTMLElement)?.textContent ||
+        null
+      );
 
-    if (currentTimeframe == null) return;
+      if (currentTimeframe == null) return;
 
-    // Wait for toolbar
-    waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
-      waitForElm('[data-name="line-tool-color"]').then((colorElement) => {
-        if (!colorElement) return;
+      // We need to wait for the element since the observer might trigger before React mounts children
+      // We don't want to use waitForElm here if it might hang forever, but we can do a simple retry or rely on it if we know it should appear.
+      // Alternatively, let's keep it simple: wait for floating toolbar OR color element.
+      // Since TV is fast, let's just use a short interval.
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if (attempts > 10) { clearInterval(interval); return; } // Max 500ms
+
+        const colorElement = document.querySelector('[data-name="line-tool-color"]');
+        if (!colorElement) return; // keep trying
+
+        clearInterval(interval);
+
+        // Ensure color menu isn't already open manually
+        const menuExists = document.querySelector('[data-qa-id="line-tool-color-menu"]');
+        if (menuExists) return;
+
+        this.isApplying = true;
+        
+        // Failsafe unlock after 800ms
+        const failsafe = setTimeout(() => { this.isApplying = false; }, 800);
+
         (colorElement as HTMLElement).click();
 
         // Wait for color swatches to render after clicking color button
@@ -233,12 +257,61 @@ class AutoTimeframeColors extends Feature {
           }
           const local_colors = this.getConfigValue('colors');
           const colorIdx = local_colors[currentTimeframe];
+
           if (allColors.length > 0 && colorIdx !== undefined && allColors[colorIdx]) {
             (allColors[colorIdx] as HTMLElement).click();
+          } else {
+            document.body.click(); // close menu if not found
           }
+
+          clearTimeout(failsafe);
+          setTimeout(() => { this.isApplying = false; }, 50);
         });
+      }, 50);
+    }, 100);
+  }
+
+  // Handle generic tool or timeframe modifications
+  setupObservers() {
+    // 1. Observe timeframe changes
+    waitForElm('#header-toolbar-intervals').then((intervalsContainer) => {
+      if (!intervalsContainer) return;
+      new MutationObserver(() => this.triggerColorChange()).observe(intervalsContainer as Node, { 
+        attributes: true, 
+        subtree: true, 
+        attributeFilter: ['class', 'aria-selected', 'aria-pressed'] 
       });
-    })
+    });
+
+    // 2. Observe floating toolbar appearance
+    new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.addedNodes.length) {
+          for (let i = 0; i < m.addedNodes.length; i++) {
+            const node = m.addedNodes[i] as HTMLElement;
+            if (node.nodeType === 1 && (node.matches?.('.floating-toolbar-react-widgets__button') || node.querySelector?.('.floating-toolbar-react-widgets__button'))) {
+              this.triggerColorChange();
+              return;
+            }
+          }
+        }
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+
+    // 3. Listen to tool selection from the left side drawing toolbar
+    window.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-name="drawing-toolbar"]') || target.closest('.drawing-toolbar')) {
+        this.triggerColorChange();
+      }
+    });
+  }
+
+  // On canvas click (fallback for some situations)
+  onMouseDown(e: Event) {
+    if (!this.isEnabled() || !this.canvas) return;
+    if (e.target !== this.canvas && !this.canvas.contains(e.target as Node)) return;
+    this.triggerColorChange();
   }
 
 
@@ -251,5 +324,7 @@ class AutoTimeframeColors extends Feature {
     waitForElm('.chart-gui-wrapper').then(async (e) => {
       this.canvas = document.querySelectorAll('.chart-gui-wrapper canvas')[1] as HTMLCanvasElement;
     })
+    
+    this.setupObservers();
   }
 }
