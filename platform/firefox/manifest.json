@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "TradingviewPlus",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
@@ -10,7 +10,13 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.tradingview.com/chart/*"],
+      "matches": [
+        "*://*.tradingview.com/*",
+        "*://*.dhan.co/*"
+      ],
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true,
       "js": [
         "dist/lib/purify.min.js",
         "dist/utils/isLightMode.js",
@@ -46,6 +52,11 @@
         "dist/features/TimeframeScroll.js",
         "dist/features/ZoomChart.js",
         "dist/features/LimitOrderOnly.js",
+        "dist/platforms/PlatformAdapter.js",
+        "dist/platforms/TradingViewPlatform.js",
+        "dist/platforms/DhanPlatform.js",
+        "dist/platforms/BinancePlatform.js",
+        "dist/platforms/TopstepXPlatform.js",
         "dist/main.js"
       ],
       "css": [

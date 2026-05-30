@@ -2,21 +2,25 @@
 declare const chrome: any;
 declare const DOMPurify: any;
 
-const VERSION = "v5.0.5";
+const VERSION = "v5.0.6";
 
 // For chrome extension
 if (typeof browser === "undefined") {
     var browser = chrome;
 }
 
-console.log('Starting TradingViewPlus...');
-
-// Holds all features
 const features = new Map<string, Feature>;
 
 // Init menu
 const menu = new TVPMenu();
-menu.initEventSuppression();
+
+let isInitialized = false;
+function initTradingViewPlus() {
+  if (isInitialized) return;
+  isInitialized = true;
+  console.log('Starting TradingViewPlus...');
+  
+  menu.initEventSuppression();
 
 // ===== Additive: central suppression gate (visibility-safe) =====
 function tvp_isVisible(el: Element): boolean {
@@ -302,3 +306,25 @@ fetch(browser.runtime.getURL('public/menu.html')).then(r => r.text()).then(async
     menu.init();
   }
 });
+}
+
+// ─── Platform Detection ──────────────────────────────────────────────────────
+
+function detectPlatform(): PlatformAdapter | null {
+  const url = window.location.href;
+  const inIframe = window !== window.top;
+
+  if (url.includes('tradingview.com/chart')) return new TradingViewPlatform();
+  if (url.includes('dhan.co') && inIframe)   return new DhanPlatform();
+  // Uncomment as each platform is verified and manifest patterns are added:
+  // if (url.includes('binance.com') && inIframe)   return new BinancePlatform();
+  // if (url.includes('topstepx.com') && inIframe)  return new TopstepXPlatform();
+
+  return null;
+}
+
+const activePlatform = detectPlatform();
+if (activePlatform) {
+  (window as any).TVP_Platform = activePlatform;
+  initTradingViewPlus();
+}

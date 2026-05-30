@@ -216,59 +216,374 @@ class AutoTimeframeColors extends Feature {
     return colorPickerContainer;
   }
 
-  // On canvas click
-  onMouseDown(e: Event) {
-    if (!this.isEnabled() || !this.canvas) return;
-    if (e.target !== this.canvas && !this.canvas.contains(e.target as Node)) return;
+  private isApplying = false;
+  private isMouseDown = false;
+  private lastSyncedTF: string | null = null;
 
-    // Get current timeframe — space-padded class check avoids false match on isInteractive-xxx
-    const currentTimeframe: string | null = (
-      (() => {
-        const buttons = Array.from(document.querySelectorAll('#header-toolbar-intervals div button'));
-        const activeBtn = buttons.find(b => {
-          const cn = ' ' + (b as HTMLElement).className + ' ';
-          return cn.includes(' isActive') || cn.includes(' active-');
-        });
-        return activeBtn ? (activeBtn as HTMLElement).textContent : null;
-      })() ||
-      (document.querySelector('#header-toolbar-intervals div button[aria-selected="true"]') as HTMLElement)?.textContent ||
-      (document.querySelector('#header-toolbar-intervals div button[aria-pressed="true"]') as HTMLElement)?.textContent ||
-      null
-    );
-
-    if (currentTimeframe == null) return;
-
-    // Wait for toolbar
-    waitForElm('.floating-toolbar-react-widgets__button').then((e) => {
-      waitForElm('[data-name="line-tool-color"]').then((colorElement) => {
-        if (!colorElement) return;
-        (colorElement as HTMLElement).click();
-
-        // Wait for color swatches to render after clicking color button
-        waitForElm('[data-qa-id="line-tool-color-menu"] [data-role="swatch"]').then(() => {
-          let allColors = document.querySelectorAll('[data-qa-id="line-tool-color-menu"] [data-role="swatch"]');
-          if (!allColors.length) {
-            allColors = document.querySelectorAll('[data-name="line-tool-color-menu"] div:not([class]) button');
-          }
-          const local_colors = this.getConfigValue('colors');
-          const colorIdx = local_colors[currentTimeframe];
-          if (allColors.length > 0 && colorIdx !== undefined && allColors[colorIdx]) {
-            (allColors[colorIdx] as HTMLElement).click();
-          }
-        });
-      });
-    })
+  // Resolves the current active timeframe label via the platform adapter.
+  private getCurrentTimeframe(): string | null {
+    return window.TVP_Platform?.getCurrentTimeframe() ?? null;
   }
 
+  // Dispatches a high-fidelity sequence of events to simulate a perfect human click.
+  // This is much more reliable than el.click() because it triggers React listeners
+  // that might be specifically watching for pointerdown or mouseup.
+  private dispatchSequentialClick(el: HTMLElement) {
+    const events = ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'];
+    events.forEach(type => {
+      const MouseEventClass = type.startsWith('pointer') ? window.PointerEvent || window.MouseEvent : window.MouseEvent;
+      const event = new MouseEventClass(type, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        detail: 1,
+        button: 0,
+        buttons: 1,
+        clientX: el.getBoundingClientRect().left + el.offsetWidth / 2,
+        clientY: el.getBoundingClientRect().top + el.offsetHeight / 2,
+        // @ts-ignore - pointerType is valid for PointerEvent
+        pointerType: 'mouse',
+        isPrimary: true
+      });
+      el.dispatchEvent(event);
+    });
+  }
 
+  // Uses requestAnimationFrame to wait until the toolbar's position has stabilized.
+  // TV often animates the toolbar into position; clicking too early fails.
+  private waitForStability(el: HTMLElement, callback: () => void, maxFrames = 60) {
+    let lastRect = el.getBoundingClientRect();
+    let frameCount = 0;
+    let stableFrames = 0;
 
+    const check = () => {
+      const currentRect = el.getBoundingClientRect();
+      const isPositionSame = 
+        Math.abs(currentRect.left - lastRect.left) < 0.1 && 
+        Math.abs(currentRect.top - lastRect.top) < 0.1;
+
+      if (isPositionSame) {
+        stableFrames++;
+      } else {
+        stableFrames = 0;
+      }
+
+      lastRect = currentRect;
+      frameCount++;
+
+      // Minimal stability: 1 frame is enough for "instant" feel.
+      if (stableFrames >= 1) {
+        callback();
+      } else if (frameCount < maxFrames) {
+        requestAnimationFrame(check);
+      } else {
+        callback();
+      }
+    };
+
+    requestAnimationFrame(check);
+  }
+
+  // Frame-Locked Polling: Uses requestAnimationFrame to check for TF changes
+  // at the monitor's refresh rate. This is much faster than setInterval.
+  private waitForTimeframeChange(callback: (newTF: string) => void, maxFrames = 180) {
+    let frames = 0;
+    const check = () => {
+      const currentTF = this.getCurrentTimeframe();
+      if (currentTF && currentTF !== this.lastSyncedTF) {
+        callback(currentTF);
+      } else if (frames < maxFrames) {
+        frames++;
+        requestAnimationFrame(check);
+      } else if (currentTF) {
+        callback(currentTF);
+      }
+    };
+    requestAnimationFrame(check);
+  }
+
+  // Applies the current TF's configured color to the open color picker menu.
+  private processColorMenu(menu: HTMLElement, currentTimeframe: string) {
+    try {
+      const local_colors = this.getConfigValue('colors');
+      const colorIdx = local_colors[currentTimeframe];
+
+      if (colorIdx === undefined) {
+        document.body.click();
+        return;
+      }
+
+      // Use platform adapter to get swatches — handles Dhan hash classes, Binance custom menus etc.
+      const allColors = window.TVP_Platform?.getColorSwatches() ?? [];
+
+      if (allColors.length === 0) {
+        document.body.click();
+        return;
+      }
+
+      const targetRgb = defaultColors[colorIdx];
+      if (!targetRgb) {
+        document.body.click();
+        return;
+      }
+      const norm = (s: string) => (s || '').toLowerCase().replace(/\s+/g, '');
+      const targetNorm = norm(targetRgb);
+
+      const exactSwatch = allColors.find(el => {
+        if (!el) return false;
+        if (norm(el.style.backgroundColor) === targetNorm) return true;
+        if (norm(el.style.color) === targetNorm) return true;
+        if (norm(el.style.background) === targetNorm) return true;
+        const child = el.querySelector<HTMLElement>('[style*="rgb"]');
+        if (child) {
+          return norm(child.style.backgroundColor) === targetNorm ||
+                 norm(child.style.color) === targetNorm ||
+                 norm(child.style.background) === targetNorm;
+        }
+        return false;
+      });
+
+      if (exactSwatch) {
+        exactSwatch.click();
+      } else if (allColors[colorIdx]) {
+        allColors[colorIdx].click();
+      } else {
+        document.body.click();
+      }
+    } catch (err) {
+      console.error('[AutoTimeframeColors] Error in processColorMenu:', err);
+      try { document.body.click(); } catch {}
+    } finally {
+      // Unlock almost immediately to allow rapid-fire changes (e.g. multi-selection).
+      setTimeout(() => {
+        this.isApplying = false;
+      }, 50);
+    }
+  }
+
+  private applyColorToButton(colorButton: HTMLElement, currentTimeframe: string) {
+    if (this.isApplying) return;
+
+    try {
+      if (window.TVP_Platform?.isColorMenuOpen()) {
+        const existingMenu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
+        if (existingMenu) {
+          this.isApplying = true;
+          this.processColorMenu(existingMenu, currentTimeframe);
+          return;
+        }
+      }
+
+      this.isApplying = true;
+      this.lastSyncedTF = currentTimeframe;
+
+      let menuFound = false;
+      let hammerFrame: number;
+
+      // Watch for the color picker menu to appear in response to our interaction.
+      const menuObserver = new MutationObserver(() => {
+        try {
+          if (window.TVP_Platform?.isColorMenuOpen()) {
+            const menu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
+            if (menu) {
+              menuFound = true;
+              menuObserver.disconnect();
+              clearTimeout(failsafe);
+              this.processColorMenu(menu, currentTimeframe);
+            }
+          }
+        } catch (err) {
+          console.error('[AutoTimeframeColors] Error in menuObserver:', err);
+          menuObserver.disconnect();
+          clearTimeout(failsafe);
+          this.isApplying = false;
+          cancelAnimationFrame(hammerFrame);
+        }
+      });
+      menuObserver.observe(document.body, { childList: true, subtree: true });
+
+      // Failsafe: unlock after 2 seconds no matter what.
+      const failsafe = setTimeout(() => {
+        try {
+          if (!menuFound) {
+            console.warn('[AutoTimeframeColors] Failsafe hit, unlocking isApplying');
+            menuObserver.disconnect();
+            this.isApplying = false;
+            cancelAnimationFrame(hammerFrame);
+          }
+        } catch (err) {
+          console.error('[AutoTimeframeColors] Error in failsafe:', err);
+          this.isApplying = false;
+        }
+      }, 2000);
+
+      // Frame-Locked Hammer: Re-dispatch every frame until the menu opens.
+      // This is the fastest way to pierce the UI on slow systems.
+      const hammer = () => {
+        try {
+          if (menuFound || !this.isApplying) {
+            clearTimeout(failsafe);
+            return;
+          }
+
+          // Abort hammer entirely ONLY if the button is removed from the DOM
+          if (!colorButton.isConnected) {
+            this.isApplying = false;
+            menuObserver.disconnect();
+            clearTimeout(failsafe);
+            return;
+          }
+
+          this.dispatchSequentialClick(colorButton);
+          hammerFrame = requestAnimationFrame(hammer);
+        } catch (err) {
+          console.error('[AutoTimeframeColors] Error in hammer:', err);
+          this.isApplying = false;
+          menuObserver.disconnect();
+          clearTimeout(failsafe);
+        }
+      };
+      hammerFrame = requestAnimationFrame(hammer);
+    } catch (err) {
+      console.error('[AutoTimeframeColors] Error in applyColorToButton:', err);
+      this.isApplying = false;
+    }
+  }
+
+  // ─── Scenario 3: Timeframe change while a tool is already selected ───────────
+  // The floating toolbar is already fully stable. We can click the color button
+  // immediately with no timing concerns.
+  private handleTFChange() {
+    if (!this.isEnabled()) return;
+
+    const sync = (tf: string) => {
+      const colorButton = window.TVP_Platform?.getLineColorButton();
+      if (colorButton) {
+        this.applyColorToButton(colorButton, tf);
+      }
+    };
+
+    const immediateTF = this.getCurrentTimeframe();
+    // If we have a new TF already, sync instantly. Else, wait for up to 3s.
+    if (immediateTF && immediateTF !== this.lastSyncedTF) {
+      sync(immediateTF);
+    } else {
+      this.waitForTimeframeChange((newTF) => sync(newTF), 150);
+    }
+  }
+
+  // ─── Scenarios 1, 2, 4: floating toolbar was just mounted by TradingView ────
+  // The MutationObserver fires every time TV adds a [data-name="line-tool-color"]
+  // element to the DOM. We debounce so that multiple insertions (tool by tool)
+  // collapse into a single applyColor call.
+  private syncTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  private handleToolbarMounted() {
+    if (!this.isEnabled() || this.isApplying) return;
+
+    const executeSync = () => {
+      // Clear any pending sync to avoid double-firings
+      if (this.syncTimeout) {
+        clearTimeout(this.syncTimeout);
+        this.syncTimeout = null;
+      }
+
+      if (!this.isEnabled() || this.isApplying) return;
+
+      const currentTimeframe = this.getCurrentTimeframe();
+      if (!currentTimeframe) return;
+
+      const colorButton = window.TVP_Platform?.getLineColorButton();
+      if (!colorButton) return;
+
+      this.applyColorToButton(colorButton, currentTimeframe);
+    };
+
+    if (this.isMouseDown) {
+      const onMouseUp = () => {
+        document.removeEventListener('mouseup', onMouseUp, { capture: true });
+        
+        // Wait 50ms before executing. If TV destroys the toolbar and makes a new one 
+        // after a drag, the new toolbar's 'handleToolbarMounted' will fire and 
+        // cancel this timeout, applying color perfectly to the new UI.
+        this.syncTimeout = setTimeout(executeSync, 50);
+      };
+      document.addEventListener('mouseup', onMouseUp, { capture: true, once: true });
+    } else {
+      executeSync();
+    }
+  }
+
+  setupObservers() {
+    // ─── Scenario 3: Timeframe change ──────────────────────────────────────────
+    // Use platform adapter to get the container to observe.
+    waitForElm('#header-toolbar-intervals').then(() => {
+      const container = window.TVP_Platform?.getTimeframeContainer();
+      if (!container) return;
+      new MutationObserver(() => this.handleTFChange()).observe(container, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ['class', 'aria-selected', 'aria-pressed']
+      });
+    });
+
+    // ─── Scenarios 1, 2, 4: toolbar mounted ────────────────────────────────────
+    // Watch for any floating toolbar element being added to the DOM.
+    // Uses isFloatingToolbarNode() from the platform adapter so each platform
+    // can define what constitutes a "floating toolbar" in its own DOM structure.
+    const toolbarObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of Array.from(mutation.addedNodes)) {
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
+          const el = node as HTMLElement;
+          if (window.TVP_Platform?.isFloatingToolbarNode(el) ||
+              el.matches?.('[data-name="line-tool-color"]') ||
+              el.querySelector?.('[data-name="line-tool-color"]')) {
+            this.handleToolbarMounted();
+            return;
+          }
+        }
+      }
+    });
+    toolbarObserver.observe(document.body, { childList: true, subtree: true });
+
+    // ─── Selection Capture & Predictive Hunting ───────────────────────────────
+    // We use capturing listeners to track the mouse state globally. 
+    document.addEventListener('mousedown', (e: MouseEvent) => { 
+      this.isMouseDown = true;
+
+      // PREDICTIVE HUNT: If clicking on the left toolbar, a floating toolbar is coming.
+      // We start a high-speed rAF loop to 'catch' it the microsecond it exists.
+      const target = e.target as HTMLElement;
+      if (window.TVP_Platform?.isClickOnDrawingToolbar(target)) {
+        let frames = 0;
+        const hunt = () => {
+          const btn = window.TVP_Platform?.getLineColorButton();
+          if (btn) {
+            // Found it! Trigger the sync immediately while mouse is still down.
+            this.handleToolbarMounted();
+          } else if (frames < 30 && this.isMouseDown) {
+            frames++;
+            requestAnimationFrame(hunt);
+          }
+        };
+        requestAnimationFrame(hunt);
+      }
+    }, { capture: true });
+
+    document.addEventListener('mouseup', () => { 
+      this.isMouseDown = false;
+    }, { capture: true });
+  }
+
+  // Required by the Feature interface — canvas mousedown is no longer used for color triggering.
+  // Color triggering is now fully event-driven via the toolbar mount observer.
+  onMouseDown(e: Event) {
+    return;
+  }
 
   init() {
     this.initDefaultColors();
-
-    // Wait for chart to exist
-    waitForElm('.chart-gui-wrapper').then(async (e) => {
-      this.canvas = document.querySelectorAll('.chart-gui-wrapper canvas')[1] as HTMLCanvasElement;
-    })
+    this.setupObservers();
   }
 }

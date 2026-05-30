@@ -43,7 +43,6 @@ class LineStyle extends Feature {
         let activeIndex = findActiveMenuItem(styleButtons);
         if (activeIndex === -1) activeIndex = 0;
         const nextIndex = (activeIndex + 1) % styleButtons.length;
-        console.log(`[TVP LineStyle] active=${activeIndex} next=${nextIndex} total=${styleButtons.length}${usingFallback ? ' [fallback selector]' : ''}`);
         (styleButtons[nextIndex] as HTMLElement)?.click();
       });
     }

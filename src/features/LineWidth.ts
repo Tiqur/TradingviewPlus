@@ -46,7 +46,6 @@ class LineWidth extends Feature {
         let activeIndex = findActiveMenuItem(widthButtons);
         if (activeIndex === -1) activeIndex = 0;
         const nextIndex = (activeIndex + 1) % widthButtons.length;
-        console.log(`[TVP LineWidth] active=${activeIndex} next=${nextIndex} total=${widthButtons.length}${usingFallback ? ' [fallback selector]' : ''}`);
         (widthButtons[nextIndex] as HTMLElement)?.click();
       });
     }
