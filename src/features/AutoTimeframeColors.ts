@@ -304,114 +304,150 @@ class AutoTimeframeColors extends Feature {
 
   // Applies the current TF's configured color to the open color picker menu.
   private processColorMenu(menu: HTMLElement, currentTimeframe: string) {
-    const local_colors = this.getConfigValue('colors');
-    const colorIdx = local_colors[currentTimeframe];
+    try {
+      const local_colors = this.getConfigValue('colors');
+      const colorIdx = local_colors[currentTimeframe];
 
-    if (colorIdx === undefined) {
-      document.body.click();
-      this.isApplying = false;
-      return;
-    }
-
-    // Use platform adapter to get swatches — handles Dhan hash classes, Binance custom menus etc.
-    const allColors = window.TVP_Platform?.getColorSwatches() ?? [];
-
-    if (allColors.length === 0) {
-      document.body.click();
-      this.isApplying = false;
-      return;
-    }
-
-    const targetRgb = defaultColors[colorIdx];
-    const norm = (s: string) => s.toLowerCase().replace(/\s+/g, '');
-    const targetNorm = norm(targetRgb);
-
-    const exactSwatch = allColors.find(el => {
-      if (norm(el.style.backgroundColor) === targetNorm) return true;
-      if (norm(el.style.color) === targetNorm) return true;
-      if (norm(el.style.background) === targetNorm) return true;
-      const child = el.querySelector<HTMLElement>('[style*="rgb"]');
-      if (child) {
-        return norm(child.style.backgroundColor) === targetNorm ||
-               norm(child.style.color) === targetNorm ||
-               norm(child.style.background) === targetNorm;
+      if (colorIdx === undefined) {
+        document.body.click();
+        return;
       }
-      return false;
-    });
 
-    if (exactSwatch) {
-      exactSwatch.click();
-    } else if (allColors[colorIdx]) {
-      allColors[colorIdx].click();
-    } else {
-      document.body.click();
+      // Use platform adapter to get swatches — handles Dhan hash classes, Binance custom menus etc.
+      const allColors = window.TVP_Platform?.getColorSwatches() ?? [];
+
+      if (allColors.length === 0) {
+        document.body.click();
+        return;
+      }
+
+      const targetRgb = defaultColors[colorIdx];
+      if (!targetRgb) {
+        document.body.click();
+        return;
+      }
+      const norm = (s: string) => (s || '').toLowerCase().replace(/\s+/g, '');
+      const targetNorm = norm(targetRgb);
+
+      const exactSwatch = allColors.find(el => {
+        if (!el) return false;
+        if (norm(el.style.backgroundColor) === targetNorm) return true;
+        if (norm(el.style.color) === targetNorm) return true;
+        if (norm(el.style.background) === targetNorm) return true;
+        const child = el.querySelector<HTMLElement>('[style*="rgb"]');
+        if (child) {
+          return norm(child.style.backgroundColor) === targetNorm ||
+                 norm(child.style.color) === targetNorm ||
+                 norm(child.style.background) === targetNorm;
+        }
+        return false;
+      });
+
+      if (exactSwatch) {
+        exactSwatch.click();
+      } else if (allColors[colorIdx]) {
+        allColors[colorIdx].click();
+      } else {
+        document.body.click();
+      }
+    } catch (err) {
+      console.error('[AutoTimeframeColors] Error in processColorMenu:', err);
+      try { document.body.click(); } catch {}
+    } finally {
+      // Unlock almost immediately to allow rapid-fire changes (e.g. multi-selection).
+      setTimeout(() => {
+        this.isApplying = false;
+      }, 50);
     }
-    // Unlock almost immediately to allow rapid-fire changes (e.g. multi-selection).
-    setTimeout(() => {
-      this.isApplying = false;
-    }, 50);
   }
 
   private applyColorToButton(colorButton: HTMLElement, currentTimeframe: string) {
     if (this.isApplying) return;
 
-    if (window.TVP_Platform?.isColorMenuOpen()) {
-      const existingMenu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
-      if (existingMenu) {
-        this.isApplying = true;
-        this.processColorMenu(existingMenu, currentTimeframe);
-        return;
-      }
-    }
-
-    this.isApplying = true;
-    this.lastSyncedTF = currentTimeframe;
-
-    let menuFound = false;
-
-    // Watch for the color picker menu to appear in response to our interaction.
-    const menuObserver = new MutationObserver(() => {
+    try {
       if (window.TVP_Platform?.isColorMenuOpen()) {
-        const menu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
-        if (menu) {
-          menuFound = true;
-          menuObserver.disconnect();
-          this.processColorMenu(menu, currentTimeframe);
+        const existingMenu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
+        if (existingMenu) {
+          this.isApplying = true;
+          this.processColorMenu(existingMenu, currentTimeframe);
+          return;
         }
       }
-    });
-    menuObserver.observe(document.body, { childList: true, subtree: true });
 
-    // Failsafe: unlock after 5 seconds no matter what.
-    const failsafe = setTimeout(() => {
-      if (!menuFound) {
-        menuObserver.disconnect();
-        this.isApplying = false;
-        cancelAnimationFrame(hammerFrame);
-      }
-    }, 5000);
+      this.isApplying = true;
+      this.lastSyncedTF = currentTimeframe;
 
-    // Frame-Locked Hammer: Re-dispatch every frame until the menu opens.
-    // This is the fastest way to pierce the UI on slow systems.
-    let hammerFrame: number;
-    const hammer = () => {
-      if (menuFound || !this.isApplying) {
-        clearTimeout(failsafe);
-        return;
-      }
+      let menuFound = false;
+      let hammerFrame: number;
 
-      // Abort hammer entirely ONLY if the button is removed from the DOM
-      if (!colorButton.isConnected) {
-        this.isApplying = false;
-        menuObserver.disconnect();
-        clearTimeout(failsafe);
-        return;
-      }
+      // Watch for the color picker menu to appear in response to our interaction.
+      const menuObserver = new MutationObserver(() => {
+        try {
+          if (window.TVP_Platform?.isColorMenuOpen()) {
+            const menu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
+            if (menu) {
+              menuFound = true;
+              menuObserver.disconnect();
+              clearTimeout(failsafe);
+              this.processColorMenu(menu, currentTimeframe);
+            }
+          }
+        } catch (err) {
+          console.error('[AutoTimeframeColors] Error in menuObserver:', err);
+          menuObserver.disconnect();
+          clearTimeout(failsafe);
+          this.isApplying = false;
+          cancelAnimationFrame(hammerFrame);
+        }
+      });
+      menuObserver.observe(document.body, { childList: true, subtree: true });
 
-      this.dispatchSequentialClick(colorButton);
+      // Failsafe: unlock after 2 seconds no matter what.
+      const failsafe = setTimeout(() => {
+        try {
+          if (!menuFound) {
+            console.warn('[AutoTimeframeColors] Failsafe hit, unlocking isApplying');
+            menuObserver.disconnect();
+            this.isApplying = false;
+            cancelAnimationFrame(hammerFrame);
+          }
+        } catch (err) {
+          console.error('[AutoTimeframeColors] Error in failsafe:', err);
+          this.isApplying = false;
+        }
+      }, 2000);
+
+      // Frame-Locked Hammer: Re-dispatch every frame until the menu opens.
+      // This is the fastest way to pierce the UI on slow systems.
+      const hammer = () => {
+        try {
+          if (menuFound || !this.isApplying) {
+            clearTimeout(failsafe);
+            return;
+          }
+
+          // Abort hammer entirely ONLY if the button is removed from the DOM
+          if (!colorButton.isConnected) {
+            this.isApplying = false;
+            menuObserver.disconnect();
+            clearTimeout(failsafe);
+            return;
+          }
+
+          this.dispatchSequentialClick(colorButton);
+          hammerFrame = requestAnimationFrame(hammer);
+        } catch (err) {
+          console.error('[AutoTimeframeColors] Error in hammer:', err);
+          this.isApplying = false;
+          menuObserver.disconnect();
+          clearTimeout(failsafe);
+        }
+      };
       hammerFrame = requestAnimationFrame(hammer);
-    };
-    hammerFrame = requestAnimationFrame(hammer);
+    } catch (err) {
+      console.error('[AutoTimeframeColors] Error in applyColorToButton:', err);
+      this.isApplying = false;
+    }
   }
 
   // ─── Scenario 3: Timeframe change while a tool is already selected ───────────

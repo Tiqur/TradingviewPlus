@@ -198,9 +198,9 @@ try {
   console.log(`🚀 Launching in ${browser}...\n`);
 
   const webExtCmds = {
-    firefox: `npx web-ext run --firefox="${firefoxPath}" --source-dir="${rootDir}" -u "${webUrl}" --keep-profile-changes`,
-    chrome: `npx web-ext run --target=chromium --chromium-binary "${chromePath}" --source-dir="${rootDir}" -u "${webUrl}" --keep-profile-changes`,
-    opera: `npx web-ext run --target=chromium --chromium-binary "${operaPath}" --source-dir="${rootDir}" -u "${webUrl}" --keep-profile-changes`,
+    firefox: `npx web-ext run --firefox="${firefoxPath}" --source-dir="${rootDir}" -u "${webUrl}" --keep-profile-changes --ignore-files="tmp-dir/**" --watch-ignored="tmp-dir/**"`,
+    chrome: `npx web-ext run --target=chromium --chromium-binary "${chromePath}" --source-dir="${rootDir}" -u "${webUrl}" --keep-profile-changes --ignore-files="tmp-dir/**" --watch-ignored="tmp-dir/**"`,
+    opera: `npx web-ext run --target=chromium --chromium-binary "${operaPath}" --source-dir="${rootDir}" -u "${webUrl}" --keep-profile-changes --ignore-files="tmp-dir/**" --watch-ignored="tmp-dir/**"`,
   };
 
   const cmd = webExtCmds[browser];

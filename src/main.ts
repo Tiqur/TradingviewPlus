@@ -2,7 +2,7 @@
 declare const chrome: any;
 declare const DOMPurify: any;
 
-const VERSION = "v5.0.5";
+const VERSION = "v5.0.6";
 
 // For chrome extension
 if (typeof browser === "undefined") {
