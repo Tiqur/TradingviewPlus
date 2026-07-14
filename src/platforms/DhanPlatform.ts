@@ -14,11 +14,12 @@ class DhanPlatform implements PlatformAdapter {
     const buttons = Array.from(document.querySelectorAll('#header-toolbar-intervals div button'));
     const activeBtn = buttons.find(b => {
       const cn = ' ' + (b as HTMLElement).className + ' ';
-      return cn.includes(' isActive') || cn.includes(' active-');
+      return cn.includes(' isActive') || cn.includes(' active-') || cn.includes(' isActive-');
     });
     if (activeBtn) return (activeBtn as HTMLElement).textContent;
 
     return (
+      (document.querySelector('#header-toolbar-intervals div button[aria-checked="true"]') as HTMLElement)?.textContent ||
       (document.querySelector('#header-toolbar-intervals div button[aria-selected="true"]') as HTMLElement)?.textContent ||
       (document.querySelector('#header-toolbar-intervals div button[aria-pressed="true"]') as HTMLElement)?.textContent ||
       null

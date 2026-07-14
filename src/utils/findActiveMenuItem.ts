@@ -16,14 +16,15 @@ function findActiveMenuItem(items: Element[]): number {
   // Use space-prefix check to avoid false matches like "interactive-xxx" containing "active-"
   const byClass = items.findIndex(el => {
     const cn = ' ' + (el as HTMLElement).className + ' '; // pad with spaces for word-boundary matching
-    return cn.includes(' isActive') || cn.includes(' active-');
+    return cn.includes(' isActive') || cn.includes(' active-') || cn.includes(' isActive-');
   });
   if (byClass !== -1) return byClass;
 
-  // Method 2: aria-selected / aria-current attribute
+  // Method 2: aria-selected / aria-current / aria-checked attribute
   const byAria = items.findIndex(el =>
     el.getAttribute('aria-selected') === 'true' ||
     el.getAttribute('aria-current') === 'true' ||
+    el.getAttribute('aria-checked') === 'true' ||
     el.getAttribute('aria-pressed') === 'true'
   );
   if (byAria !== -1) return byAria;
@@ -50,7 +51,7 @@ function findActiveMenuItem(items: Element[]): number {
   const byChildClass = items.findIndex(el => {
     return Array.from(el.querySelectorAll('*')).some(child => {
       const cn = ' ' + (child as HTMLElement).className + ' ';
-      return cn.includes(' isActive') || cn.includes(' active-');
+      return cn.includes(' isActive') || cn.includes(' active-') || cn.includes(' isActive-');
     });
   });
   if (byChildClass !== -1) return byChildClass;
