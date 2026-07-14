@@ -124,13 +124,18 @@ class TimeframeScroll extends Feature {
     this.scrollTimeout = window.setTimeout(() => { this.processStep(direction); this.scrollTimeout = null; }, 50);
   }
   private processStep(direction: 1 | -1) {
-    const buttons = Array.from(document.querySelectorAll('#header-toolbar-intervals div[role="radiogroup"] button'));
+    const container = window.TVP_Platform ? window.TVP_Platform.getTimeframeContainer() : document.querySelector('#header-toolbar-intervals');
+    if (!container) return;
+
+    const buttons = Array.from(container.querySelectorAll('div[role="radiogroup"] button, button')).filter(btn => {
+      return !btn.hasAttribute('aria-haspopup') && btn.textContent?.trim();
+    });
     if (buttons.length === 0) return;
-    const active = document.querySelector('#header-toolbar-intervals div[role="radiogroup"] button.isActive-GwQQdU8S') as HTMLElement | null;
-    if (!active) return;
-    const idx = buttons.indexOf(active);
-    if (idx === -1) return;
-    const next = idx + direction;
+
+    const activeIndex = findActiveMenuItem(buttons);
+    if (activeIndex === -1) return;
+
+    const next = activeIndex + direction;
     if (next >= 0 && next < buttons.length) (buttons[next] as HTMLElement).click();
   }
 }
