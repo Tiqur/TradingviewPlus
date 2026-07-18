@@ -25,7 +25,7 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/node": "^24.7.2",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.6.0",
     "nodemon": "^3.0.1",
     "sass": "^1.101.0",
     "typescript": "^5.9.3",
