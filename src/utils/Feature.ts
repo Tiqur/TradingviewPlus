@@ -154,9 +154,11 @@ abstract class Feature {
 
   async loadConfigFromLocalStorage() {
     const configObject = (await browser.storage.local.get(this.getName())) as Record<string, string> | undefined;
+    const stored = configObject?.[this.getName()];
+    // Extension storage is empty after a reinstall: fall back to the site's backup copy
+    const configJSON = stored ?? Feature.readBackup()[this.getName()];
 
-    if (configObject != undefined && Object.keys(configObject).length > 0) {
-      const configJSON = configObject[this.getName()];
+    if (configJSON) {
       const configObj = JSON.parse(configJSON);
 
       this.name = 'name' in configObj ? configObj.name : this.name;
@@ -165,11 +167,35 @@ abstract class Feature {
       this.hotkey = 'hotkey' in configObj ? configObj.hotkey : this.hotkey;
       this.category = 'category' in configObj ? configObj.category : this.category;
       this.config = 'config' in configObj ? configObj.config : this.config;
-    } else {
-      // Handle the case where the data is not found in storage.
-      this.saveToLocalStorage();
     }
 
+    if (stored) {
+      Feature.writeBackup(this.getName(), stored);
+    } else {
+      // First run, or restored from the backup: save to extension storage (and the backup)
+      this.saveToLocalStorage();
+    }
+  }
+
+  // A copy of every feature's settings in the website's own localStorage. Extension
+  // storage is deleted when the extension is removed; site storage isn't, so a reinstall
+  // restores from this copy. Each site (tradingview.com, XM) keeps its own copy.
+  private static readonly BACKUP_KEY = 'tvp-settings-backup';
+
+  // Site storage can be blocked (e.g. tracking prevention); the backup is then skipped
+  private static readBackup(): Record<string, string> {
+    try { return JSON.parse(localStorage.getItem(Feature.BACKUP_KEY) || '{}'); }
+    catch { return {}; }
+  }
+
+  private static writeBackup(name: string, json: string) {
+    const backup = Feature.readBackup();
+    backup[name] = json;
+    try { localStorage.setItem(Feature.BACKUP_KEY, JSON.stringify(backup)); } catch {}
+  }
+
+  public static clearBackup() {
+    try { localStorage.removeItem(Feature.BACKUP_KEY); } catch {}
   }
 
 
@@ -225,6 +251,7 @@ abstract class Feature {
   }
 
   public async saveToLocalStorage() {
+    Feature.writeBackup(this.getName(), this.getJson());
     // Set to local storage
     await browser.storage.local.set({[this.getName()]: this.getJson()});
   }

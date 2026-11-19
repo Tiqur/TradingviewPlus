@@ -30,7 +30,8 @@ class LineWidth extends Feature {
     if (this.checkTrigger(e) && this.isEnabled()) {
       (document.querySelector('[data-name="line-tool-width"]') as HTMLElement)?.click();
 
-      waitForElm('[data-qa-id="line-tool-width-menu"] [data-qa-id="menu-inner"]').then((widthMenuContainer) => {
+      // Older chart versions (e.g. XM's) use data-name instead of data-qa-id
+      waitForElm('[data-qa-id="line-tool-width-menu"] [data-qa-id="menu-inner"], [data-name="line-tool-width-menu"] [data-name="menu-inner"]').then((widthMenuContainer) => {
         if (!widthMenuContainer) { console.warn('[TVP LineWidth] Menu container not found'); return; }
 
         // Primary: data-role="menuitem" (stable). Fallback: div with 'item' in class (React-generated)

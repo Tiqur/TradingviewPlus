@@ -34,9 +34,15 @@ class LimitOrderOnly extends Feature {
     });
 
     this.observer.observe(document.body, config);
+
+    // Some platforms (e.g. XM) keep their own order ticket outside the chart
+    const ticketRoot = window.TVP_Platform?.getOrderTicketRoot?.();
+    if (ticketRoot) this.observer.observe(ticketRoot, config);
   }
 
   private enforceLimitOnly() {
+    window.TVP_Platform?.enforceLimitOrderOnly?.(this.isEnabled());
+
     const tabs = ['Market', 'Stop', 'StopLimit'];
     if (this.isEnabled()) {
       tabs.forEach(tabId => {

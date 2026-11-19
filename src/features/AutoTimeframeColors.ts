@@ -366,7 +366,7 @@ class AutoTimeframeColors extends Feature {
 
     try {
       if (window.TVP_Platform?.isColorMenuOpen()) {
-        const existingMenu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
+        const existingMenu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"], [data-name="line-tool-color-menu"]');
         if (existingMenu) {
           this.isApplying = true;
           this.processColorMenu(existingMenu, currentTimeframe);
@@ -384,7 +384,7 @@ class AutoTimeframeColors extends Feature {
       const menuObserver = new MutationObserver(() => {
         try {
           if (window.TVP_Platform?.isColorMenuOpen()) {
-            const menu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"]');
+            const menu = document.querySelector<HTMLElement>('[data-qa-id="line-tool-color-menu"], [data-name="line-tool-color-menu"]');
             if (menu) {
               menuFound = true;
               menuObserver.disconnect();
@@ -523,7 +523,8 @@ class AutoTimeframeColors extends Feature {
       new MutationObserver(() => this.handleTFChange()).observe(container, {
         attributes: true,
         subtree: true,
-        attributeFilter: ['class', 'aria-selected', 'aria-pressed']
+        // aria-label: dropdown-only interval headers (e.g. XM) only change the button's label
+        attributeFilter: ['class', 'aria-selected', 'aria-pressed', 'aria-label']
       });
     });
 

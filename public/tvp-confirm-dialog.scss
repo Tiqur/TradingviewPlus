@@ -1,0 +1,19 @@
+#tvp-confirm-dialog {
+  border-radius: 8px;
+  max-width: 28rem;
+
+  p {
+    margin: 1rem 0;
+    line-height: 1.4;
+  }
+
+  .tvp-confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  button {
+    padding: 0.4rem 0.8rem;
+  }
+}
