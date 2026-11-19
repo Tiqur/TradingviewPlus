@@ -28,7 +28,7 @@ class LineWidth extends Feature {
 
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
-      (document.querySelector('div[data-name="line-tool-width"]') as HTMLElement)?.click();
+      (document.querySelector('[data-name="line-tool-width"]') as HTMLElement)?.click();
 
       waitForElm('[data-qa-id="line-tool-width-menu"] [data-qa-id="menu-inner"]').then((widthMenuContainer) => {
         if (!widthMenuContainer) { console.warn('[TVP LineWidth] Menu container not found'); return; }

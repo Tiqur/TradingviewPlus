@@ -29,7 +29,7 @@ class LineStyle extends Feature {
 
   onKeyDown(e: KeyboardEvent) {
     if (this.checkTrigger(e) && this.isEnabled()) {
-      (document.querySelector('div[data-name="style"]') as HTMLElement)?.click();
+      (document.querySelector('[data-name="drawing-toolbar"] [data-name="style"]') as HTMLElement)?.click();
 
       waitForElm('[data-qa-id="style-menu"] [data-qa-id="menu-inner"]').then((styleMenuContainer) => {
         if (!styleMenuContainer) { console.warn('[TVP LineStyle] Menu container not found'); return; }
