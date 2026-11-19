@@ -381,7 +381,10 @@ class TVPMenu {
 
     if (!container) return;
 
-    container.style.left = -container.getBoundingClientRect().width+'px';
+    // Off-screen by the menu's own width. Until it is resized by hand that width follows the
+    // window (45vw), so the stylesheet's left: -45vw is used rather than a fixed pixel offset,
+    // which would let the menu show when the window grows (bigger screen, F11)
+    container.style.left = container.style.width ? '-' + container.style.width : '';
     textBox.blur();
 
     // Ensure all submenus (context menu, color pickers, etc) close when the menu gets closed via Keyboard / Escape
@@ -408,11 +411,6 @@ class TVPMenu {
     const container = document.getElementById('tvp-menu');
     let mouseDown = false;
     let menuContainerWidth = container?.getBoundingClientRect().width;
-
-    // Hide menu by default
-    if (container && menuContainerWidth) {
-      container.style.left = -menuContainerWidth+'px';
-    }
 
     // Menu resize logic
     document.addEventListener('mousemove', e => {pos.x = e.clientX, pos.y = e.clientY});
