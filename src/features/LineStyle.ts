@@ -31,7 +31,8 @@ class LineStyle extends Feature {
     if (this.checkTrigger(e) && this.isEnabled()) {
       (document.querySelector('[data-name="drawing-toolbar"] [data-name="style"]') as HTMLElement)?.click();
 
-      waitForElm('[data-qa-id="style-menu"] [data-qa-id="menu-inner"]').then((styleMenuContainer) => {
+      // Older chart versions (e.g. XM's) use data-name instead of data-qa-id
+      waitForElm('[data-qa-id="style-menu"] [data-qa-id="menu-inner"], [data-name="style-menu"] [data-name="menu-inner"]').then((styleMenuContainer) => {
         if (!styleMenuContainer) { console.warn('[TVP LineStyle] Menu container not found'); return; }
 
         // Primary: tr[data-role="menuitem"] (stable semantic attribute)

@@ -12,7 +12,9 @@
     {
       "matches": [
         "*://*.tradingview.com/*",
-        "*://*.dhan.co/*"
+        "*://*.dhan.co/*",
+        "*://my.xmglobal.com/*",
+        "*://my.xm.com/*"
       ],
       "all_frames": true,
       "match_about_blank": true,
@@ -31,6 +33,7 @@
         "dist/utils/ContextMenu.js",
         "dist/utils/checkDuplicateHotkeys.js",
         "dist/utils/findActiveMenuItem.js",
+        "dist/utils/confirmDialog.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
@@ -52,11 +55,14 @@
         "dist/features/TimeframeScroll.js",
         "dist/features/ZoomChart.js",
         "dist/features/LimitOrderOnly.js",
+        "dist/features/SetupDefaults.js",
         "dist/platforms/PlatformAdapter.js",
+        "dist/platforms/ChartDefaults.js",
         "dist/platforms/TradingViewPlatform.js",
         "dist/platforms/DhanPlatform.js",
         "dist/platforms/BinancePlatform.js",
         "dist/platforms/TopstepXPlatform.js",
+        "dist/platforms/XmPlatform.js",
         "dist/main.js"
       ],
       "css": [
@@ -66,8 +72,24 @@
         "dist/tvp-context-menu.css",
         "dist/tvp-menu-handle.css",
         "dist/tvp-light.css",
-        "dist/tvp-changelog-popup.css"
+        "dist/tvp-changelog-popup.css",
+        "dist/tvp-confirm-dialog.css"
       ]
+    },
+    {
+      "matches": ["*://my.xmglobal.com/*", "*://my.xm.com/*"],
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true,
+      "run_at": "document_start",
+      "world": "MAIN",
+      "js": ["dist/platforms/PageBridge.js"]
+    },
+    {
+      "matches": ["*://*.tradingview.com/*"],
+      "run_at": "document_idle",
+      "world": "MAIN",
+      "js": ["dist/platforms/PageBridge.js"]
     }
   ],
   "web_accessible_resources": [

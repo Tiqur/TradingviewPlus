@@ -8,6 +8,10 @@
 class TradingViewPlatform implements PlatformAdapter {
   readonly platformName = 'TradingView';
 
+  setupDefaults(): boolean {
+    return ChartDefaults.apply();
+  }
+
   // ─── Timeframe ─────────────────────────────────────────────────────────────
 
   getCurrentTimeframe(): string | null {

@@ -49,6 +49,38 @@
         margin-bottom: 1rem;
       }
     }
+
+    .tvp-menu-header {
+      position: relative;
+    }
+  }
+
+  // Reset settings: plain like the 3-dot buttons, level with the heading;
+  // a grey square and red icon show on hover
+  #tvp-reset-button {
+    position: absolute;
+    top: 2rem;
+    right: 0;
+    width: 2.3rem;
+    height: 2.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: #C7C7C7;
+    cursor: pointer;
+
+    &:hover {
+      background: variables.$darkGrey;
+      color: #F23645;
+    }
+  }
+
+  &.tvp-light #tvp-reset-button:hover {
+    background: #F0F3FA;
   }
 
   .hotkeyLabel {

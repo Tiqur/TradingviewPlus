@@ -8,6 +8,22 @@ class TVPMenu {
     this.initFuzzySearch();
     this.initTvpBackgroundEvents();
     this.initInjectCurrentVersion();
+    this.initResetButton();
+  }
+
+  initResetButton() {
+    document.getElementById('tvp-reset-button')?.addEventListener('click', async () => {
+      const ok = await confirmDialog('Reset settings',
+        'This resets all TradingviewPlus settings (hotkeys, enabled features and timeframe colours) to their defaults ' +
+        'and reloads the page. Your chart itself is not changed.');
+      if (!ok) return;
+
+      const stored = await browser.storage.local.get(null);
+      await browser.storage.local.remove(Object.keys(stored).filter(key => key !== 'tvp_version'));
+      Feature.clearBackup();
+      // On XM the chart is an iframe of the page, so reload the whole page
+      try { window.top!.location.reload(); } catch { location.reload(); }
+    });
   }
 
   initInjectCurrentVersion() {

@@ -31,7 +31,8 @@ class QuickToolbar extends Feature {
     // Having the "key" property of this instance's hotkey as null isn't desirable
 
     if (this.isEnabled() && /^[0-9]$/i.test(e.key)) {
-      (document.querySelectorAll('[class*="tv-floating-toolbar__widget"] span')[(e.key as any) -1] as HTMLElement).click()
+      // Favourites toolbar items only; the selected-drawing toolbar shares its CSS classes
+      (document.querySelectorAll('[data-name^="FavoriteToolbar"]')[(e.key as any) -1] as HTMLElement)?.click()
     }
   }
 

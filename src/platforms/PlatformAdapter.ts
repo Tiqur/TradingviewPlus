@@ -11,6 +11,12 @@ interface PlatformAdapter {
   /** Human-readable name shown in logs / future debug UI */
   readonly platformName: string;
 
+  /**
+   * Optional: adds the default favourite intervals and drawing tools
+   * ("Setup Defaults" menu option). Returns false if it couldn't.
+   */
+  setupDefaults?(): boolean;
+
   // ─── Timeframe ────────────────────────────────────────────────────────────
 
   /**
@@ -58,6 +64,20 @@ interface PlatformAdapter {
    * floating toolbar that appears after the user selects a drawing tool.
    */
   isFloatingToolbarNode(node: HTMLElement): boolean;
+
+  // ─── Trading (optional) ───────────────────────────────────────────────────
+
+  /**
+   * For platforms whose own order ticket lives outside the chart (e.g. in
+   * the host page): the node Limit Order Only should watch for changes.
+   */
+  getOrderTicketRoot?(): Node | null;
+
+  /**
+   * Keeps the platform's own order ticket limit-only while `enabled`,
+   * and releases it when called with `false`.
+   */
+  enforceLimitOrderOnly?(enabled: boolean): void;
 }
 
 // Expose on window so features can access the active platform globally

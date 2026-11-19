@@ -241,6 +241,7 @@ features.set('Timeframe Scroll', new TimeframeScroll());
 features.set('Scroll Price Scale', new ScrollPriceScale());
 features.set('Zoom Chart', new ZoomChart());
 features.set('Limit Order Only', new LimitOrderOnly());
+features.set('Setup Defaults', new SetupDefaults());
 
 // Create TVP background
 const tvp_background = document.createElement('div');
@@ -316,6 +317,8 @@ function detectPlatform(): PlatformAdapter | null {
 
   if (url.includes('tradingview.com/chart')) return new TradingViewPlatform();
   if (url.includes('dhan.co') && inIframe)   return new DhanPlatform();
+  // XM (my.xmglobal.com / my.xm.com): the chart is the only blob: frame; its other iframes (popups, tracking) are regular pages
+  if (url.startsWith('blob:https://my.xmglobal.com/') || url.startsWith('blob:https://my.xm.com/')) return new XmPlatform();
   // Uncomment as each platform is verified and manifest patterns are added:
   // if (url.includes('binance.com') && inIframe)   return new BinancePlatform();
   // if (url.includes('topstepx.com') && inIframe)  return new TopstepXPlatform();
