@@ -242,6 +242,7 @@ features.set('Scroll Price Scale', new ScrollPriceScale());
 features.set('Zoom Chart', new ZoomChart());
 features.set('Limit Order Only', new LimitOrderOnly());
 features.set('Setup Defaults', new SetupDefaults());
+features.set('Minimal Fullscreen', new MinimalFullscreen());
 
 // Create TVP background
 const tvp_background = document.createElement('div');

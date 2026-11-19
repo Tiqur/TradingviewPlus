@@ -56,6 +56,7 @@
         "dist/features/ZoomChart.js",
         "dist/features/LimitOrderOnly.js",
         "dist/features/SetupDefaults.js",
+        "dist/features/MinimalFullscreen.js",
         "dist/platforms/PlatformAdapter.js",
         "dist/platforms/ChartDefaults.js",
         "dist/platforms/TradingViewPlatform.js",
@@ -73,7 +74,8 @@
         "dist/tvp-menu-handle.css",
         "dist/tvp-light.css",
         "dist/tvp-changelog-popup.css",
-        "dist/tvp-confirm-dialog.css"
+        "dist/tvp-confirm-dialog.css",
+        "dist/tvp-minimal-fullscreen.css"
       ],
       "web_accessible_resources": [
         "public/menu.html",

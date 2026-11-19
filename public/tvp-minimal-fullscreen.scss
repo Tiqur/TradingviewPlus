@@ -1,0 +1,88 @@
+// Minimal Fullscreen (TradingView). TradingView's own fullscreen (Shift + F) hides every
+// panel and gives the chart the whole window; while it is on (its top area gets js-hidden)
+// and the feature is enabled, a compact top bar is shown over the chart.
+html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
+
+  // Date-range bar under the chart: TradingView re-measures it, so the chart grows into its space
+  .chart-controls-bar {
+    display: none !important;
+  }
+
+  // Top bar: shrunk to the buttons it keeps; the rest of the row lets clicks through to the chart
+  .layout__area--top {
+    display: block !important;
+    left: 0 !important;
+    width: auto !important;
+    z-index: 10;
+    pointer-events: none;
+
+    [class*="overflowWrap-"] > [class*="inner-"]:not([class*="fake-"]) {
+      display: inline-flex !important;
+      width: auto !important;
+      pointer-events: auto;
+      background: var(--tv-color-pane-background, var(--color-pane-bg));
+      border-radius: 0 0 6px 0;
+    }
+
+    // Keeps the symbol search and timeframe groups, and the Trade button
+    [class*="innerWrap-"] > :not(:has(#header-toolbar-symbol-search, #header-toolbar-intervals)),
+    [class*="desktopUpgrade-"] {
+      display: none !important;
+    }
+  }
+
+  // Compare, Publish, the ticker's data-type button, and every timeframe but the active one
+  #header-toolbar-compare,
+  #header-toolbar-publish-desktop,
+  #header-toolbar-switch-data-type,
+  #header-toolbar-intervals [role="radio"][aria-checked="false"],
+  #header-toolbar-intervals [aria-haspopup="menu"] {
+    display: none !important;
+  }
+
+  // Ticker pill: closed right after the name, now that the data-type button is gone
+  .layout__area--top :has(> #header-toolbar-symbol-search),
+  #header-toolbar-symbol-search {
+    width: auto !important;
+  }
+
+  #header-toolbar-symbol-search {
+    padding-right: 12px !important;
+
+    // Sized to the ticker name, so TradingView's fade for long names isn't needed
+    [class*="value-"] {
+      width: auto !important;
+      min-width: 0 !important;
+
+      &::before {
+        display: none !important;
+      }
+    }
+  }
+
+  // Favourites toolbar: pinned at the end of the top bar, without its drag handle
+  .tv-floating-toolbar:has(.tv-favorited-drawings-toolbar__widget) {
+    left: var(--tvp-top-bar-width, 0px) !important;
+    top: 0 !important;
+
+    .tv-floating-toolbar__drag {
+      display: none !important;
+    }
+  }
+
+  // The top pane's legend starts below the bar
+  .chart-container:is(.top-full-width-chart, .top-left-chart) .chart-widget > .chart-markup-table > :first-child .chart-gui-wrapper__legend {
+    margin-top: 38px;
+  }
+
+  // Order panel (opened by Trade): TradingView leaves it out of its fullscreen layout,
+  // so it is shown over the right edge of the chart
+  .layout__area--tradingpanel:not([class*=" hidden-"]) {
+    display: block !important;
+    top: 0 !important;
+    right: 0 !important;
+    height: 100% !important;
+    min-width: 320px;
+    z-index: 10;
+  }
+}

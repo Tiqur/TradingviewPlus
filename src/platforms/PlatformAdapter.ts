@@ -78,6 +78,15 @@ interface PlatformAdapter {
    * and releases it when called with `false`.
    */
   enforceLimitOrderOnly?(enabled: boolean): void;
+
+  // ─── Fullscreen (optional) ────────────────────────────────────────────────
+
+  /**
+   * Turns Minimal Fullscreen on or off: while the platform's own fullscreen
+   * is active, a compact top bar is kept instead of hiding every panel, and
+   * browser fullscreen (F11) turns the platform's fullscreen on with it.
+   */
+  setMinimalFullscreen?(enabled: boolean): void;
 }
 
 // Expose on window so features can access the active platform globally
