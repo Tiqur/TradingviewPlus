@@ -53,6 +53,9 @@ Shown in the menu on XM only.
 - **Auto Save & Restore Layout**
 > When active, reopens your last chart layout (instrument, timeframe, drawings) after a browser restart and saves every change. XM's chart doesn't do either by itself. A chart with no saved layout is saved as "Save".
 
+- **Next Watchlist Ticker**
+> When active, Space / Shift + Space switch to the next / previous instrument in XM's watchlist, as on TradingView. Works in XM's maximized chart view too.
+
 
 ### Additional Editable Keybinds
 - **Toggle Auto Scale**

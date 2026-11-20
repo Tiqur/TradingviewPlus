@@ -244,6 +244,7 @@ features.set('Limit Order Only', new LimitOrderOnly());
 features.set('Setup Defaults', new SetupDefaults());
 features.set('Minimal Fullscreen', new MinimalFullscreen());
 features.set('Auto Save & Restore Layout', new AutoSave());
+features.set('Next Watchlist Ticker', new NextWatchlistTicker());
 
 // Create TVP background
 const tvp_background = document.createElement('div');
