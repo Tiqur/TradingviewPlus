@@ -45,7 +45,7 @@ Press "m" to open the menu
 > When active, allows you to scroll BOTH of the chart's scales at the same time using Ctrl + Shift + Scroll
 
 - **Minimal Fullscreen**
-> When active, browser fullscreen (F11) also turns on TradingView's fullscreen (Shift + F), which keeps a compact top bar (symbol, current timeframe, Trade) with the favourites toolbar pinned next to it. TradingView only for now.
+> When active, browser fullscreen (F11) also turns on TradingView's fullscreen (Shift + F), which keeps a compact top bar (symbol, current timeframe, Trade, Undo) with the favourites toolbar pinned next to it. TradingView only for now.
 
 ### XM Features
 Shown in the menu on XM only.

@@ -22,18 +22,31 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
       pointer-events: auto;
       background: var(--tv-color-pane-background, var(--color-pane-bg));
       border-radius: 0 0 6px 0;
+
+      // The kept groups sit in nested wrappers and Trade doesn't; flattening the wrappers
+      // puts them all in this one row, so Undo can come after Trade
+      [class*="wrapOverflow-"], :has(> [class*="scrollWrap-"]), [class*="scrollWrap-"],
+      :has(> [class*="innerWrap-"]), [class*="innerWrap-"] {
+        display: contents !important;
+      }
+
+      [class*="innerWrap-"] > :has(#header-toolbar-symbol-search) { order: 1; }
+      [class*="innerWrap-"] > :has(#header-toolbar-intervals) { order: 2; }
+      & > #header-toolbar-trade-desktop { order: 3; }
+      [class*="innerWrap-"] > :has(#header-toolbar-undo-redo) { order: 4; }
     }
 
-    // Keeps the symbol search and timeframe groups, and the Trade button
-    [class*="innerWrap-"] > :not(:has(#header-toolbar-symbol-search, #header-toolbar-intervals)),
+    // Keeps the symbol search, timeframe and undo groups, and the Trade button
+    [class*="innerWrap-"] > :not(:has(#header-toolbar-symbol-search, #header-toolbar-intervals, #header-toolbar-undo-redo)),
     [class*="desktopUpgrade-"] {
       display: none !important;
     }
   }
 
-  // Compare, Publish, the ticker's data-type button, and every timeframe but the active one
+  // Compare, Publish, Redo, the ticker's data-type button, and every timeframe but the active one
   #header-toolbar-compare,
   #header-toolbar-publish-desktop,
+  #header-toolbar-undo-redo button ~ button,
   #header-toolbar-switch-data-type,
   #header-toolbar-intervals [role="radio"][aria-checked="false"],
   #header-toolbar-intervals [aria-haspopup="menu"] {
