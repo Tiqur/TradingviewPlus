@@ -5,7 +5,7 @@ class TimeframeScroll extends Feature {
   constructor() {
     super(
       'Scroll Timeframes',
-      'Allows you to scroll through favourite timeframes',
+      'Steps through your favourite timeframes with the hotkey + mouse wheel',
       true,
       { key: null, ctrl: false, shift: false, alt: false, meta: false },
       Category.TVP,

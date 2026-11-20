@@ -3,7 +3,7 @@ class NextWatchlistTicker extends Feature {
   constructor() {
     super(
       'Next Watchlist Ticker',
-      'Space / Shift + Space switch to the next / previous instrument in XM\'s watchlist, as on TradingView',
+      'Space / Shift + Space: next / previous instrument in XM\'s watchlist',
       true,
       {
         key: ' ',

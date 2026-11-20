@@ -3,7 +3,7 @@ class ToggleLogScale extends Feature {
   constructor() {
     super(
       'Toggle Log Scale',
-      'Toggles the chart\'s "Log" scale',
+      '',
       true,
       {
         key: 'l',

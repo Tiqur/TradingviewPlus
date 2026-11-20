@@ -3,7 +3,7 @@ class ToggleAutoScale extends Feature {
   constructor() {
     super(
       'Toggle Auto Scale',
-      'Toggles the chart\'s "Auto" scale',
+      '',
       true,
       {
         key: 'a',

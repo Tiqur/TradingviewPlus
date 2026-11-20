@@ -26,6 +26,16 @@
   }
 }
 
+// Feature description on hover in the TVP menu, in the 3-dot menu's look (.contextMenu)
+#tvp-tooltip {
+  position: fixed;
+  max-width: 320px;
+  padding: 0.4rem 0.6rem;
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
 .auto-timeframe-colors-context-menu {
   display: flex;
   flex-direction: column;

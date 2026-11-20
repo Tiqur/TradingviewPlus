@@ -3,7 +3,7 @@ class SetupDefaults extends Feature {
   constructor() {
     super(
       'Setup Defaults',
-      'Applies the default favourites and chart appearance',
+      'Stars the default timeframes and drawing tools, and applies TVP\'s chart colours and settings. Asks first',
       false,
       {
         key: null,

@@ -7,7 +7,7 @@ class AutoTimeframeColors extends Feature {
   constructor() {
     super(
       'Auto Timeframe Colors',
-      'Automatically changes tool color on click',
+      'Colours new drawings by the active timeframe. Pick the colours in ⋮ → Colors',
       true,
       {
         key: null,

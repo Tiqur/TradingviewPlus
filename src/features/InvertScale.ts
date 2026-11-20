@@ -3,7 +3,7 @@ class InvertScale extends Feature {
   constructor() {
     super(
       'Invert Scale',
-      'Inverts the chart\'s scale (y-axis)',
+      '',
       true,
       {
         key: 'e',

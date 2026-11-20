@@ -3,7 +3,7 @@ class DeleteDrawing extends Feature {
   constructor() {
     super(
       'Delete Drawing',
-      'Deletes currently selected drawing',
+      '',
       true,
       {
         key: 'd',
