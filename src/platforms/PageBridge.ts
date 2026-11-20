@@ -1,5 +1,6 @@
 // Applies the chart appearance defaults sent by ChartDefaults (XM and TradingView),
-// and runs Auto Save Layout (XM).
+// adds Auto Timeframe Colors' custom colours to the colour picker, and runs Auto Save
+// Layout (XM).
 //
 // The chart's settings API lives in the page's own JavaScript, which content
 // scripts can't call. In Chrome/Opera this file is injected into the page itself
@@ -34,22 +35,50 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
     });
   }
 
-  // Colour picker "custom colours": add missing ones in order, keep the user's.
-  // The picker re-reads this each time it opens and keeps at most 29.
-  const settings = page.TVSettings;
-  const stored: string[] = JSON.parse(settings.getValue('pickerCustomColors') || '[]');
-  const missing = (defaults.customColors as string[]).filter(c => !stored.some(s => s.toLowerCase() === c.toLowerCase()));
-  settings.setValue('pickerCustomColors', JSON.stringify(stored.concat(missing).slice(-29)));
+  tvpAddCustomColors(page, defaults.customColors);
 
   // "Play sound for executions" is only read from settings when the chart loads,
   // so this takes effect from the next load.
   if (defaults.executionSound) {
+    const settings = page.TVSettings;
     const trading = JSON.parse(settings.getValue('trading.chart.proterty') || '{}'); // sic: TradingView's key
     const sound = JSON.parse(trading.orderExecutedSoundParams || '{}');
     sound.enabled = 1;
     trading.orderExecutedSoundParams = JSON.stringify(sound);
     settings.setValue('trading.chart.proterty', JSON.stringify(trading));
   }
+});
+
+// Colour picker "custom colours": add missing ones in order, keep the user's.
+// The picker re-reads this each time it opens and keeps at most 29.
+function tvpAddCustomColors(page: any, colors: string[]) {
+  const settings = page.TVSettings;
+  const stored: string[] = JSON.parse(settings.getValue('pickerCustomColors') || '[]');
+  const missing = colors.filter(c => !stored.some(s => s.toLowerCase() === c.toLowerCase()));
+  if (missing.length) settings.setValue('pickerCustomColors', JSON.stringify(stored.concat(missing).slice(-29)));
+}
+
+// Auto Timeframe Colors: a custom colour can only be picked from the chart's colour menu
+// while it is one of the picker's custom colours
+document.addEventListener('tvp-add-custom-colors', (e: Event) => {
+  const page = (window as any).wrappedJSObject || window;
+  if (page.TVSettings) tvpAddCustomColors(page, JSON.parse((e as CustomEvent).detail));
+});
+
+// Auto Timeframe Colors' picker shows the picker's custom colours (the reply is sent while
+// the request is still being dispatched) and removes them on right-click
+document.addEventListener('tvp-get-custom-colors', () => {
+  const page = (window as any).wrappedJSObject || window;
+  const colors = page.TVSettings ? page.TVSettings.getValue('pickerCustomColors') || '[]' : '[]';
+  document.dispatchEvent(new CustomEvent('tvp-custom-colors', { detail: String(colors) }));
+});
+
+document.addEventListener('tvp-remove-custom-color', (e: Event) => {
+  const page = (window as any).wrappedJSObject || window;
+  if (!page.TVSettings) return;
+  const color = String((e as CustomEvent).detail).toLowerCase();
+  const stored: string[] = JSON.parse(page.TVSettings.getValue('pickerCustomColors') || '[]');
+  page.TVSettings.setValue('pickerCustomColors', JSON.stringify(stored.filter(c => c.toLowerCase() !== color)));
 });
 
 // Auto Save Layout (XM). XM's chart doesn't save its layout by itself, and opens a fresh,

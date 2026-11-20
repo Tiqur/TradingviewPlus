@@ -18,7 +18,7 @@ Press "m" to open the menu
 
 ### Custom Features
 - **Auto Timeframe Colors:**
-> When active, automatically changes drawing colors depending on which timeframe is active.
+> When active, automatically changes drawing colors depending on which timeframe is active. Each timeframe's color is picked from the palette or from your custom colors, which are the same list as in TradingView's own color picker; + adds one by hex or from a hue / saturation area, and right-click removes one. Custom colors work on TradingView and XM.
 
 - **Ad Blocker**
 > When active, attempts to block all advertisements.

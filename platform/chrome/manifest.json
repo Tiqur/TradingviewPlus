@@ -34,6 +34,7 @@
         "dist/utils/checkDuplicateHotkeys.js",
         "dist/utils/findActiveMenuItem.js",
         "dist/utils/confirmDialog.js",
+        "dist/utils/ColorPicker.js",
         "dist/features/AutoScale.js",
         "dist/features/LogScale.js",
         "dist/features/AutoTimeframeColors.js",
