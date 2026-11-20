@@ -89,47 +89,16 @@ class TradingViewPlatform implements PlatformAdapter {
 
   private minimalFullscreenReady = false;
 
-  // The layout itself is in tvp-minimal-fullscreen.scss and only applies while
-  // TradingView's own fullscreen (Shift + F) is on
+  // Minimal Fullscreen applies while TradingView's own fullscreen (Shift + F) is on
   setMinimalFullscreen(enabled: boolean): void {
-    const root = document.documentElement;
-    root.classList.toggle('tvp-minimal-fullscreen', enabled);
-
     if (!this.minimalFullscreenReady) {
       this.minimalFullscreenReady = true;
-
-      waitForElm('.layout__area--top').then(elem => {
-        const top = elem as HTMLElement;
-
-        // The pinned favourites toolbar starts where the shrunk top bar ends
-        new ResizeObserver(() => {
-          root.style.setProperty('--tvp-top-bar-width', top.offsetWidth + 'px');
-        }).observe(top);
-
-        // TradingView re-places the favourites toolbar on every resize from where it is drawn,
-        // so resizes while it is pinned (entering/leaving browser fullscreen) would leave it in
-        // the wrong place afterwards: keep its own position and put it back when fullscreen ends
-        let wasFullscreen = top.classList.contains('js-hidden');
-        let toolbarPosition: { left: string, top: string } | null = null;
-        new MutationObserver(() => {
-          const isFullscreen = top.classList.contains('js-hidden');
-          const toolbar = document.querySelector<HTMLElement>('.tv-floating-toolbar:has(.tv-favorited-drawings-toolbar__widget)');
-          const minimal = root.classList.contains('tvp-minimal-fullscreen');
-          if (isFullscreen && !wasFullscreen) {
-            toolbarPosition = minimal && toolbar ? { left: toolbar.style.left, top: toolbar.style.top } : null;
-          } else if (!isFullscreen && wasFullscreen && minimal && toolbar && toolbarPosition) {
-            toolbar.style.left = toolbarPosition.left;
-            toolbar.style.top = toolbarPosition.top;
-          }
-          wasFullscreen = isFullscreen;
-        }).observe(top, { attributes: true, attributeFilter: ['class'] });
-      });
 
       // Browser fullscreen (F11) turns TradingView's fullscreen on and off with it
       const browserFullscreen = matchMedia('(display-mode: fullscreen)');
       browserFullscreen.addEventListener('change', () => {
         const tvFullscreen = !!document.querySelector('.layout__area--top.js-hidden');
-        if (root.classList.contains('tvp-minimal-fullscreen') && browserFullscreen.matches !== tvFullscreen) {
+        if (document.documentElement.classList.contains('tvp-minimal-fullscreen') && browserFullscreen.matches !== tvFullscreen) {
           document.getElementById('header-toolbar-fullscreen')?.click();
         }
       });

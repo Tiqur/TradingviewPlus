@@ -82,9 +82,9 @@ interface PlatformAdapter {
   // ─── Fullscreen (optional) ────────────────────────────────────────────────
 
   /**
-   * Turns Minimal Fullscreen on or off: while the platform's own fullscreen
-   * is active, a compact top bar is kept instead of hiding every panel, and
-   * browser fullscreen (F11) turns the platform's fullscreen on with it.
+   * Turns Minimal Fullscreen on or off: the platform switches the chart to
+   * its fullscreen layout (TradingView: with Shift + F / F11; XM: with XM's own
+   * fullscreen button), where a compact top bar is kept instead of every panel.
    */
   setMinimalFullscreen?(enabled: boolean): void;
 

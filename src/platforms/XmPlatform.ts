@@ -28,6 +28,71 @@ class XmPlatform implements PlatformAdapter {
     document.dispatchEvent(new CustomEvent('tvp-auto-save', { detail: JSON.stringify(enabled) }));
   }
 
+  // ─── Fullscreen ────────────────────────────────────────────────────────────
+
+  // Minimal Fullscreen on XM follows XM's own fullscreen button (⛶) rather than F11, so XM's
+  // trade panel stays: XM's bar floats over the chart's top-left (styles in
+  // tvp-minimal-fullscreen.scss) and the chart switches to TradingView's fullscreen layout
+  // without the browser going fullscreen.
+  private fullscreenObserver: MutationObserver | null = null;
+
+  setMinimalFullscreen(enabled: boolean): void {
+    window.parent.document.documentElement.classList.toggle('tvp-minimal-fullscreen', enabled);
+    // Tells PageBridge to route Shift + F to XM's fullscreen
+    document.documentElement.toggleAttribute('data-tvp-xm-fullscreen-key', enabled);
+    // XM toggles chart-fullscreen-mode on this wrapper around the chart
+    const wrapper = window.frameElement?.closest('.chart-wrapper');
+    if (!wrapper) return;
+
+    if (!this.fullscreenObserver) {
+      this.fullscreenObserver = new MutationObserver(() => this.syncChartFullscreen(wrapper));
+      this.fullscreenObserver.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+
+      // Shift + F (caught by PageBridge) works XM's own fullscreen: ⛶ to open, its ✕ to leave
+      document.addEventListener('tvp-xm-fullscreen-key', () => {
+        const xmButton = wrapper.classList.contains('chart-fullscreen-mode')
+          ? wrapper.querySelector<HTMLElement>('app-advanced-chart-header-mobile > button')
+          : window.parent.document.querySelector<HTMLElement>('ion-button.maximize-btn');
+        xmButton?.click();
+      });
+
+      // The chart resizes when XM's trade panel opens or closes, and with the window
+      window.addEventListener('resize', () => this.placePanelToggle(wrapper));
+    }
+    this.syncChartFullscreen(wrapper);
+  }
+
+  // XM's trade-panel toggle is shown at the start of the panel's "One Click Order" row
+  // (see tvp-minimal-fullscreen.scss), wherever that row is
+  private placePanelToggle(wrapper: Element): void {
+    const row = wrapper.querySelector('app-order-form app-one-click-order')?.getBoundingClientRect();
+    if (!row?.width) return;
+    const host = window.parent.document.documentElement;
+    host.style.setProperty('--tvp-xm-toggle-left', row.left + 'px');
+    host.style.setProperty('--tvp-xm-toggle-top', (row.top + row.height / 2) + 'px');
+  }
+
+  private syncChartFullscreen(wrapper: Element): void {
+    const xmFullscreen = wrapper.classList.contains('chart-fullscreen-mode');
+    const wanted = xmFullscreen && document.documentElement.classList.contains('tvp-minimal-fullscreen');
+
+    // The minimal top bar starts where XM's bar (exit button and instrument picker) ends
+    const xmBar = wrapper.querySelector('app-advanced-chart-header-mobile');
+    const barLeft = xmBar ? xmBar.getBoundingClientRect().right - window.frameElement!.getBoundingClientRect().left : 0;
+    document.documentElement.style.setProperty('--tvp-top-bar-left', Math.max(0, Math.round(barLeft)) + 'px');
+
+    // The active timeframe takes the instrument picker's text colour (and so its tint) and the
+    // exit button's rounded corners
+    const picker = xmBar?.querySelector('.xm-ion-input');
+    if (picker) document.documentElement.style.setProperty('--tvp-ticker-color', getComputedStyle(picker).color);
+    const exit = xmBar?.querySelector(':scope > button');
+    if (exit) document.documentElement.style.setProperty('--tvp-ticker-radius', getComputedStyle(exit).borderRadius);
+    this.placePanelToggle(wrapper);
+
+    const chartFullscreen = !!document.querySelector('.layout__area--top.js-hidden');
+    if (wanted !== chartFullscreen) document.dispatchEvent(new CustomEvent('tvp-toggle-chart-fullscreen'));
+  }
+
   // ─── Watchlist ─────────────────────────────────────────────────────────────
 
   // XM's watchlist is its own list in the host page (the same one in its maximized

@@ -1,6 +1,11 @@
-// Minimal Fullscreen (TradingView). TradingView's own fullscreen (Shift + F) hides every
+// Minimal Fullscreen (TradingView and XM). TradingView's own fullscreen layout hides every
 // panel and gives the chart the whole window; while it is on (its top area gets js-hidden)
-// and the feature is enabled, a compact top bar is shown over the chart.
+// and the feature is enabled, a compact top bar is shown over the chart. The bar is
+// transparent, so the chart shows through it.
+
+// A few pixels between the top of the screen and the bar
+$bar-top: 3px;
+
 html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
 
   // Date-range bar under the chart: TradingView re-measures it, so the chart grows into its space
@@ -11,7 +16,9 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
   // Top bar: shrunk to the buttons it keeps; the rest of the row lets clicks through to the chart
   .layout__area--top {
     display: block !important;
-    left: 0 !important;
+    // On XM it starts after XM's own bar, which floats over the chart's top-left
+    left: var(--tvp-top-bar-left, 0px) !important;
+    top: $bar-top !important;
     width: auto !important;
     z-index: 10;
     pointer-events: none;
@@ -20,14 +27,17 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
       display: inline-flex !important;
       width: auto !important;
       pointer-events: auto;
-      background: var(--tv-color-pane-background, var(--color-pane-bg));
-      border-radius: 0 0 6px 0;
 
       // The kept groups sit in nested wrappers and Trade doesn't; flattening the wrappers
       // puts them all in this one row, so Undo can come after Trade
       [class*="wrapOverflow-"], :has(> [class*="scrollWrap-"]), [class*="scrollWrap-"],
       :has(> [class*="innerWrap-"]), [class*="innerWrap-"] {
         display: contents !important;
+      }
+
+      // TradingView's button groups paint the theme's background; the chart shows through instead
+      [class*="innerWrap-"] > [class*="group-"] {
+        background: transparent !important;
       }
 
       [class*="innerWrap-"] > :has(#header-toolbar-symbol-search) { order: 1; }
@@ -53,6 +63,29 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
     display: none !important;
   }
 
+  // Controls on the bar get a see-through tint of their own text colour instead of the theme's
+  // background, so over any chart they read as buttons: lighter on a dark chart, darker on a light one
+  #header-toolbar-symbol-search,
+  #header-toolbar-trade-desktop [class*="pill-"] {
+    background: color-mix(in srgb, currentColor 12%, transparent) !important;
+  }
+
+  // On XM the active timeframe looks like XM's controls beside it: the instrument picker's tint and
+  // text colour, and the exit button's rounded corners (read from XM's page by XmPlatform)
+  &[data-tvp-xm-fullscreen-key] #header-toolbar-intervals button {
+    background: color-mix(in srgb, var(--tvp-ticker-color) 12%, transparent) !important;
+    border-radius: var(--tvp-ticker-radius) !important;
+
+    &, * {
+      color: var(--tvp-ticker-color) !important;
+    }
+  }
+
+  // Trade's container paints the theme's background around its pill
+  #header-toolbar-trade-desktop {
+    background: transparent !important;
+  }
+
   // Ticker pill: closed right after the name, now that the data-type button is gone
   .layout__area--top :has(> #header-toolbar-symbol-search),
   #header-toolbar-symbol-search {
@@ -75,8 +108,9 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
 
   // Favourites toolbar: pinned at the end of the top bar, without its drag handle
   .tv-floating-toolbar:has(.tv-favorited-drawings-toolbar__widget) {
-    left: var(--tvp-top-bar-width, 0px) !important;
-    top: 0 !important;
+    left: calc(var(--tvp-top-bar-left, 0px) + var(--tvp-top-bar-width, 0px)) !important;
+    top: $bar-top !important;
+    background: transparent !important;
 
     .tv-floating-toolbar__drag {
       display: none !important;
@@ -85,7 +119,7 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
 
   // The top pane's legend starts below the bar
   .chart-container:is(.top-full-width-chart, .top-left-chart) .chart-widget > .chart-markup-table > :first-child .chart-gui-wrapper__legend {
-    margin-top: 38px;
+    margin-top: 38px + $bar-top;
   }
 
   // Order panel (opened by Trade): TradingView leaves it out of its fullscreen layout,
@@ -97,5 +131,77 @@ html.tvp-minimal-fullscreen:has(.layout__area--top.js-hidden) {
     height: 100% !important;
     min-width: 320px;
     z-index: 10;
+  }
+}
+
+// Minimal Fullscreen on XM, in XM's own page while its fullscreen (⛶) is on: XM's bar floats
+// over the chart's top-left with only the exit button and the instrument picker, and the chart
+// takes the bar's row too. XM's trade panel (the grid's sidebar column) is left as it is.
+html.tvp-minimal-fullscreen .chart-wrapper.chart-fullscreen-mode {
+  // No grey frame around the chart: XM's padding, rounded corners and grid gap
+  padding: 0 !important;
+
+  .mobile-chart-container {
+    border-radius: 0 !important;
+  }
+
+  .mobile-chart-container-inner {
+    gap: 0 !important;
+  }
+
+  .tv-chart-container {
+    grid-row: 1 / -1 !important;
+  }
+
+  app-advanced-chart-header-mobile {
+    position: absolute !important;
+    top: $bar-top;
+    left: 0;
+    z-index: 10;
+    width: auto !important;
+    height: 38px !important;
+    padding: 0 6px !important;
+    gap: 6px;
+    background: transparent !important;
+
+    // XM logo, divider, and the search and trade-panel buttons
+    > :not(button, xm-ion-dropdown) {
+      display: none !important;
+    }
+
+    // Exit button and instrument picker as tall as the TradingView bar and favourites (38px)
+    > button {
+      width: 38px !important;
+      height: 38px !important;
+    }
+
+    .xm-ion-input {
+      height: 38px !important;
+    }
+
+    // The same see-through tint as the TradingView controls
+    > button, .xm-ion-input {
+      background: color-mix(in srgb, currentColor 12%, transparent) !important;
+    }
+  }
+
+  // While XM's trade panel is open, its toggle sits beside "One Click Order" at the top-left of
+  // the panel, to close it (placing a trade opens the panel again by itself). XmPlatform measures
+  // where that row starts, so it follows the panel's size.
+  .mobile-chart-container-inner.expanded app-advanced-chart-header-mobile > .toolbar-actions-group {
+    display: flex !important;
+    position: fixed;
+    left: var(--tvp-xm-toggle-left);
+    top: var(--tvp-xm-toggle-top);
+    transform: translateY(-50%);
+    margin: 0 !important;
+
+    > button:not(:last-of-type) {
+      display: none !important;
+    }
+  }
+
+  app-one-click-order > span {
+    margin-left: 40px;
   }
 }
