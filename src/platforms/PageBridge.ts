@@ -23,6 +23,8 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
   if (typeof page.applyOverrides === 'function') page.applyOverrides(overrides);
   else chart.applyOverrides(overrides);
 
+  if (defaults.magnet) api.magnetEnabled().setValue(true);
+
   // Volume is added once the chart's data has loaded, which on a fresh load comes after
   // this runs; dataReady calls back right away if it has already loaded
   if (defaults.removeVolume) {
