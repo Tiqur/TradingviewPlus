@@ -105,3 +105,30 @@ document.addEventListener('tvp-auto-save', (e: Event) => {
     api.subscribe('onAutoSaveNeeded', autoSave.onChange);
   }, 500);
 });
+
+// Minimal Fullscreen on XM: Shift + F on the chart opens XM's own fullscreen (as its ⛶ button
+// does) rather than TradingView's. This file runs before TradingView's scripts, so this listener
+// comes first. Only real key presses are taken; the extension's own Shift + F (below) gets through.
+window.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (!e.isTrusted || e.code !== 'KeyF' || !e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+  if (!document.documentElement.hasAttribute('data-tvp-xm-fullscreen-key')) return;
+  if ((e.target as Element).closest?.('input, textarea, [contenteditable="true"]')) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  document.dispatchEvent(new CustomEvent('tvp-xm-fullscreen-key'));
+}, true);
+
+// Minimal Fullscreen on XM: switches the chart to TradingView's own fullscreen layout (as
+// Shift + F does) without the browser going fullscreen, so XM's page and trade panel stay.
+// TradingView asks for browser fullscreen while handling the key, so that request is
+// answered with a no-op for the moment the key is handled.
+document.addEventListener('tvp-toggle-chart-fullscreen', () => {
+  const page = (window as any).wrappedJSObject || window;
+  const root = page.document.documentElement;
+  const noFullscreen = () => Promise.resolve();
+  root.requestFullscreen = typeof exportFunction === 'function' ? exportFunction(noFullscreen, page) : noFullscreen;
+  const key = { key: 'F', code: 'KeyF', keyCode: 70, shiftKey: true, bubbles: true, cancelable: true };
+  document.dispatchEvent(new KeyboardEvent('keydown', key));
+  document.dispatchEvent(new KeyboardEvent('keyup', key));
+  delete root.requestFullscreen;
+});
