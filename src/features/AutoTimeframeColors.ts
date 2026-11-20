@@ -49,7 +49,9 @@ class AutoTimeframeColors extends Feature {
         // Get position of dots
         const dots = document.getElementById(`${this.getName()}-svg-dots`);
         if (!dots) return;
-        const [x, y] = [dots.getBoundingClientRect().x, dots.getBoundingClientRect().y]
+        // Level with the top of the row's hotkey box, as the 3-dot menu
+        const hotkeyBox = document.getElementById(`${this.getName()}-hotkey-label`)?.querySelector('.hotkeyLabel');
+        const [x, y] = [dots.getBoundingClientRect().x, hotkeyBox?.getBoundingClientRect().top ?? dots.getBoundingClientRect().y]
 
 
         // Launch timeframe colors config

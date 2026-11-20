@@ -95,7 +95,9 @@ class TVPMenu {
       const menu = document.getElementById('tvp-menu');
       const dots = container.querySelector('svg');
       if (!menu || !dots || feature.getContextMenuOptions().length === 0) return;
-      const cm = new ContextMenu([dots.getBoundingClientRect().x, dots.getBoundingClientRect().y]);
+      // Level with the top of the row's hotkey box
+      const top = container.querySelector('.hotkeyLabel')?.getBoundingClientRect().top ?? dots.getBoundingClientRect().y;
+      const cm = new ContextMenu([dots.getBoundingClientRect().x, top]);
       cm.renderList(feature.getContextMenuOptions());
     }
 
@@ -205,6 +207,9 @@ class TVPMenu {
 
     // Set the innerHTML of the button to the SVG string
     button.innerHTML = DOMPurify.sanitize(svgString);
+
+    // No 3-dot menu without options; the button keeps its space so the hotkeys stay in line
+    if (feature.getContextMenuOptions().length === 0) button.style.visibility = 'hidden';
 
     // Append the hotkeyLabel and button to the second <span>
     span2.appendChild(hotkeyLabel);
