@@ -1,4 +1,5 @@
-// Applies the chart appearance defaults sent by ChartDefaults (XM and TradingView).
+// Applies the chart appearance defaults sent by ChartDefaults (XM and TradingView),
+// and runs Auto Save Layout (XM).
 //
 // The chart's settings API lives in the page's own JavaScript, which content
 // scripts can't call. In Chrome/Opera this file is injected into the page itself
@@ -49,4 +50,58 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
     trading.orderExecutedSoundParams = JSON.stringify(sound);
     settings.setValue('trading.chart.proterty', JSON.stringify(trading));
   }
+});
+
+// Auto Save Layout (XM). XM's chart doesn't save its layout by itself, and opens a fresh,
+// unnamed chart on every visit. When the page loads, the most recently saved layout is
+// reopened; if there is none (or the feature is switched on later on an unnamed chart),
+// the chart is saved as "Save". From then on the chart signals onAutoSaveNeeded a few
+// seconds after each change to a named layout, as TradingView's own autosave does, and
+// the layout is saved under its name.
+declare const exportFunction: ((fn: Function, target: object) => any) | undefined;
+let autoSaveWanted = false;
+let autoSaveStarted = false;
+let autoSave: { api: any, onChange: any } | null = null;
+
+document.addEventListener('tvp-auto-save', (e: Event) => {
+  const page = (window as any).wrappedJSObject || window;
+  // Firefox: functions the page calls back have to be exported to it
+  const toPage = (fn: Function) => typeof exportFunction === 'function' ? exportFunction(fn, page) : fn;
+  const atPageLoad = !autoSaveStarted;
+  autoSaveStarted = true;
+  autoSaveWanted = JSON.parse((e as CustomEvent).detail);
+
+  if (!autoSaveWanted && autoSave) {
+    autoSave.api.unsubscribe('onAutoSaveNeeded', autoSave.onChange);
+    autoSave = null;
+  }
+  if (!autoSaveWanted || autoSave) return;
+
+  // Wait until the chart has loaded its data. The chart is replaced while the page
+  // starts, so the current one is checked each time rather than waiting on the first.
+  const noop = toPage(() => {});
+  const timer = setInterval(() => {
+    const api = page.tradingViewApi;
+    try { if (!api?.activeChart().dataReady(noop)) return; } catch { return; }
+    clearInterval(timer);
+    if (!autoSaveWanted || autoSave) return;
+
+    const save = () => api.saveChartToServer(noop, noop,
+      page.JSON.parse(JSON.stringify({ chartName: api.layoutName() || 'Save' })));
+
+    if (!api.layoutName()) {
+      if (atPageLoad) {
+        api.getSavedCharts(toPage((charts: any[]) => {
+          const latest = Array.from(charts).sort((a: any, b: any) => b.modified_iso - a.modified_iso)[0];
+          if (latest) api.loadChartFromServer(latest);
+          else save();
+        }));
+      } else {
+        save();
+      }
+    }
+
+    autoSave = { api, onChange: toPage(save) };
+    api.subscribe('onAutoSaveNeeded', autoSave.onChange);
+  }, 500);
 });

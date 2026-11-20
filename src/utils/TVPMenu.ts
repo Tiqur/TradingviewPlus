@@ -4,6 +4,8 @@ class TVPMenu {
 
   init() {
     this.initResizeLogic();
+    // The XM Features section only applies on XM
+    document.getElementById('xm-features-tab')?.toggleAttribute('hidden', window.TVP_Platform?.platformName !== 'XM');
     this.injectFeatures(Array.from(features.values()));
     this.initFuzzySearch();
     this.initTvpBackgroundEvents();
@@ -289,10 +291,15 @@ class TVPMenu {
   injectFeatures(featuresArr: Feature[]) {
     const TVContentContainer = document.getElementById('tradingview-dropdown-content-container');
     const TVPContentContainer = document.getElementById('custom-dropdown-content-container');
+    const XMContentContainer = document.getElementById('xm-dropdown-content-container');
 
     // Clear prev items
     if (TVPContentContainer)
       TVPContentContainer.innerHTML = "";
+
+    // Clear prev items
+    if (XMContentContainer)
+      XMContentContainer.innerHTML = "";
 
     // Clear prev items
     if (TVContentContainer)
@@ -311,6 +318,9 @@ class TVPMenu {
           break;
         case Category.TVP:
           categoryContainer = TVPContentContainer;
+          break;
+        case Category.XM:
+          categoryContainer = XMContentContainer;
           break;
       }
 

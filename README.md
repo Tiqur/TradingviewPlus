@@ -47,6 +47,12 @@ Press "m" to open the menu
 - **Minimal Fullscreen**
 > When active, browser fullscreen (F11) also turns on TradingView's fullscreen (Shift + F), which keeps a compact top bar (symbol, current timeframe, Trade) with the favourites toolbar pinned next to it. TradingView only for now.
 
+### XM Features
+Shown in the menu on XM only.
+
+- **Auto Save & Restore Layout**
+> When active, reopens your last chart layout (instrument, timeframe, drawings) after a browser restart and saves every change. XM's chart doesn't do either by itself. A chart with no saved layout is saved as "Save".
+
 
 ### Additional Editable Keybinds
 - **Toggle Auto Scale**

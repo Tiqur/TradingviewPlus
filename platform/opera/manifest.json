@@ -57,6 +57,7 @@
         "dist/features/LimitOrderOnly.js",
         "dist/features/SetupDefaults.js",
         "dist/features/MinimalFullscreen.js",
+        "dist/features/AutoSave.js",
         "dist/platforms/PlatformAdapter.js",
         "dist/platforms/ChartDefaults.js",
         "dist/platforms/TradingViewPlatform.js",
