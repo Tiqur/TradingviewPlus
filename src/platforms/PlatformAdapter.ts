@@ -96,6 +96,12 @@ interface PlatformAdapter {
    * layout is saved after every change.
    */
   setAutoSave?(enabled: boolean): void;
+
+  /**
+   * Turns the Space / Shift + Space keys for the next / previous watchlist
+   * instrument on or off, for platforms whose watchlist is their own UI.
+   */
+  setWatchlistSpaceKey?(enabled: boolean): void;
 }
 
 // Expose on window so features can access the active platform globally

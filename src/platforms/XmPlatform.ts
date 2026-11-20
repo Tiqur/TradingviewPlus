@@ -28,6 +28,55 @@ class XmPlatform implements PlatformAdapter {
     document.dispatchEvent(new CustomEvent('tvp-auto-save', { detail: JSON.stringify(enabled) }));
   }
 
+  // ─── Watchlist ─────────────────────────────────────────────────────────────
+
+  // XM's watchlist is its own list in the host page (the same one in its maximized
+  // chart view). Space / Shift + Space pick the next / previous instrument, as on
+  // TradingView, whether the chart or XM's page has the keyboard focus.
+  private watchlistKeyListener: ((e: KeyboardEvent) => void) | null = null;
+
+  setWatchlistSpaceKey(enabled: boolean): void {
+    const docs = [document, window.parent.document];
+    if (this.watchlistKeyListener) docs.forEach(doc => doc.removeEventListener('keydown', this.watchlistKeyListener!, true));
+    this.watchlistKeyListener = null;
+    if (!enabled) return;
+
+    this.watchlistKeyListener = (e: KeyboardEvent) => {
+      if (e.key !== ' ' || e.ctrlKey || e.altKey || e.metaKey) return;
+      // Leave Space to text fields and to buttons and switches (e.g. XM's order controls)
+      const target = e.target as Element;
+      if (target.closest?.('input, textarea, select, button, [contenteditable="true"], [role="button"], [role="switch"], [role="checkbox"], ion-input, ion-textarea, ion-button, ion-toggle, ion-select')) return;
+      if ((window as any).tvp_suppressHotkeysNow?.()) return;
+      if (this.selectWatchlistRow(e.shiftKey ? -1 : 1)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    docs.forEach(doc => doc.addEventListener('keydown', this.watchlistKeyListener!, true));
+  }
+
+  // Clicks the watchlist row after (step 1) or before (step -1) the chart's instrument,
+  // wrapping around. False if the watchlist isn't on the page.
+  private selectWatchlistRow(step: number): boolean {
+    const doc = window.parent.document;
+    const rows = Array.from(doc.querySelectorAll<HTMLElement>('ion-item[data-testid="qa-test-watchlist-symbol"]'));
+    if (!rows.length) return false;
+
+    // XM wraps symbol names in invisible direction marks (U+2066..U+2069)
+    const nameOf = (el: Element | null) => (el?.textContent || '').replace(/[⁦-⁩]/g, '').trim().toLowerCase();
+    // XM doesn't mark the selected row; its chart header shows the current instrument
+    const current = nameOf(doc.querySelector('.symbol-name'));
+    const i = rows.findIndex(row => nameOf(row.querySelector('span.font-semibold')) === current);
+    const next = i === -1
+      ? rows[step > 0 ? 0 : rows.length - 1]
+      : rows[(i + step + rows.length) % rows.length];
+
+    next.click();
+    // The list only renders rows near its scroll position, so keep it following the chart
+    next.scrollIntoView({ block: 'nearest' });
+    return true;
+  }
+
   // ─── Timeframe ─────────────────────────────────────────────────────────────
 
   getCurrentTimeframe(): string | null {
