@@ -18,6 +18,8 @@ class ChartDefaults {
     // Switch to dark mode first (a theme change resets chart colours)
     darkTheme: true,
     removeVolume: true,
+    // Magnet on (its weak/strong mode is left as it is)
+    magnet: true,
     // Added to the colour picker's custom colours, in this order
     customColors: [ChartDefaults.CANDLE_UP, ChartDefaults.CANDLE_DOWN, '#06090f', '#131a27'],
     // Trading tab: Play sound for executions
