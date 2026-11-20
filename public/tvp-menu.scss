@@ -19,7 +19,11 @@
 
   section {
     height: 100vh;
-    width: clamp(250px, 70%, 800px);
+    // Full width, so the menu scrolls wherever the mouse is; the padding keeps the
+    // content in a centred column of clamp(250px, 70%, 800px)
+    box-sizing: border-box;
+    width: 100%;
+    padding-inline: calc((100% - clamp(250px, 70%, 800px)) / 2);
     margin-inline: auto;
     display: flex;
     flex-direction: column;

@@ -4,6 +4,16 @@ class ContextMenu {
   destroyMenuStack: [Function] = [() => {}];
   private clickCallback: (event: MouseEvent) => void;
 
+  // Opened from a row of the TVP menu's list: moves with that row when the list scrolls
+  private list: Element | null = null;
+  private lastScrollTop = 0;
+  private followList = () => {
+    if (!this.list) return;
+    this.position[1] -= this.list.scrollTop - this.lastScrollTop;
+    this.lastScrollTop = this.list.scrollTop;
+    this.element.style.top = this.position[1] + 'px';
+  };
+
 
   constructor(position: [number, number]) {
     this.position = position;
@@ -72,6 +82,10 @@ class ContextMenu {
     container.style.left = this.position[0] + 'px';
     container.style.top = this.position[1] + 'px';
 
+    this.list = document.querySelector('#tvp-menu section');
+    this.lastScrollTop = this.list?.scrollTop ?? 0;
+    this.list?.addEventListener('scroll', this.followList);
+
     this.listenForOutsideClicks();
 
     return container;
@@ -115,5 +129,6 @@ class ContextMenu {
       this.element.parentNode.removeChild(this.element);
     }
     this.removeOutsideClickListener();
+    this.list?.removeEventListener('scroll', this.followList);
   }
 }
