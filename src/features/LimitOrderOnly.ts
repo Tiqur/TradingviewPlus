@@ -4,7 +4,7 @@ class LimitOrderOnly extends Feature {
   constructor() {
     super(
       'Limit Order Only',
-      'Enforces Limit orders only (disables Market, Stop, Stop Limit)',
+      'Only limit orders can be placed: Market, Stop and Stop Limit are disabled',
       false,
       {
         key: 'l',

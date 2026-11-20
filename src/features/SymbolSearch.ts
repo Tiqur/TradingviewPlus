@@ -3,7 +3,7 @@ class SymbolSearch extends Feature {
   constructor() {
     super(
       'Open Symbol Search',
-      'Opens the symbol search menu',
+      '',
       true,
       {
         key: 't',

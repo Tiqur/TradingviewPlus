@@ -7,7 +7,7 @@ class MoveTimeRight extends Feature {
   constructor() {
     super(
       'Move Time Right',
-      'Moves Time Right',
+      '',
       true,
       {
         key: 'x',

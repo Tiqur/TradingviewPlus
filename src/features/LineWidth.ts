@@ -3,7 +3,7 @@ class LineWidth extends Feature {
   constructor() {
     super(
       'Change Line Width',
-      'Scrolls line width ( 1px, 2px, 3px, 4px )',
+      'Cycles the selected drawing\'s line width (1–4 px)',
       true,
       {
         key: 'w',

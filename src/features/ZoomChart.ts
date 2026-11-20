@@ -15,7 +15,7 @@ class ZoomChart extends Feature {
   constructor() {
     super(
       'Zoom Chart',
-      'Allows you to zoom both chart axes at once',
+      'Zooms both chart axes at once with the hotkey + mouse wheel',
       true,
       { key: null, ctrl: false, shift: false, alt: false, meta: false }, // global accel unused
       Category.TVP,

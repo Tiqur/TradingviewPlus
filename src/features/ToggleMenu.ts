@@ -3,7 +3,7 @@ class ToggleMenu extends Feature {
   constructor() {
     super(
       'Toggle TVP Menu',
-      'Toggles TVP\'s custom menu',
+      '',
       true,
       {
         key: 'm',

@@ -3,7 +3,7 @@ class ScrollToMostRecentBar extends Feature {
   constructor() {
     super(
       'Scroll To Most Recent Bar',
-      'Scrolls to to most recent candle',
+      '',
       true,
       {
         key: 'f',

@@ -3,7 +3,7 @@ class QuickToolbar extends Feature {
   constructor() {
     super(
       'Quick Toolbar',
-      'Select tools from toolbar using keys 1-9',
+      'Keys 1–9 pick the tools in the favourites toolbar',
       true,
       {
         key: null,

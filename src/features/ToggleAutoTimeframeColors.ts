@@ -3,7 +3,7 @@ class ToggleAutoTimeframeColors extends Feature {
   constructor() {
     super(
       'Toggle AutoTimeframeColors',
-      'Toggles AutoTimeframeColors',
+      '',
       true,
       {
         key: 'g',

@@ -3,7 +3,7 @@ class ToggleReplay extends Feature {
   constructor() {
     super(
       'Toggle Replay Mode',
-      'Toggles replay mode ( must have pro plan or higher )',
+      'Turns Bar Replay on or off (needs a Pro plan or higher)',
       true,
       {
         key: 'r',

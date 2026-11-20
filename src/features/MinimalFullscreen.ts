@@ -5,7 +5,7 @@ class MinimalFullscreen extends Feature {
   constructor() {
     super(
       'Minimal Fullscreen',
-      'Fullscreen (F11 or Shift + F; XM\'s own fullscreen button on XM) keeps a compact top bar and pins the favourites toolbar',
+      'Fullscreen keeps a compact top bar and pins the favourites toolbar (F11 or Shift + F; on XM, its fullscreen button)',
       true,
       MinimalFullscreen.HOTKEY,
       Category.TVP,

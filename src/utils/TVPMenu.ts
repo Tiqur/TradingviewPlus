@@ -215,6 +215,19 @@ class TVPMenu {
     span2.appendChild(hotkeyLabel);
     span2.appendChild(button);
 
+    // Description on hover. Features whose name says it all have none.
+    const tooltip = feature.getTooltip();
+    if (tooltip) {
+      let timer: ReturnType<typeof setTimeout>;
+      span1.addEventListener('mouseenter', () => {
+        timer = setTimeout(() => this.showTooltip(paragraph, tooltip), 400);
+      });
+      span1.addEventListener('mouseleave', () => {
+        clearTimeout(timer);
+        this.hideTooltip();
+      });
+    }
+
     // Append the two <span> elements to the container
     container.appendChild(span1);
     container.appendChild(span2);
@@ -231,6 +244,27 @@ class TVPMenu {
     });
 
     return container;
+  }
+
+  // A feature's description, below its name (above it near the bottom of the window).
+  // Same look as the 3-dot menu.
+  showTooltip(anchor: HTMLElement, text: string) {
+    this.hideTooltip();
+    const tip = document.createElement('div');
+    tip.id = 'tvp-tooltip';
+    tip.className = 'contextMenu';
+    if (isLightMode()) tip.classList.add('tvp-light');
+    tip.textContent = text;
+    document.body.appendChild(tip);
+
+    const rect = anchor.getBoundingClientRect();
+    const below = rect.bottom + 6;
+    tip.style.left = rect.left + 'px';
+    tip.style.top = (below + tip.offsetHeight > window.innerHeight ? rect.top - 6 - tip.offsetHeight : below) + 'px';
+  }
+
+  hideTooltip() {
+    document.getElementById('tvp-tooltip')?.remove();
   }
 
   generateHotkeyString(feature: Feature): string {
@@ -297,6 +331,9 @@ class TVPMenu {
     const TVContentContainer = document.getElementById('tradingview-dropdown-content-container');
     const TVPContentContainer = document.getElementById('custom-dropdown-content-container');
     const XMContentContainer = document.getElementById('xm-dropdown-content-container');
+
+    // The rows are rebuilt (e.g. after a checkbox click), so a shown tooltip loses its row
+    this.hideTooltip();
 
     // Clear prev items
     if (TVPContentContainer)
@@ -401,6 +438,7 @@ class TVPMenu {
     // which would let the menu show when the window grows (bigger screen, F11)
     container.style.left = container.style.width ? '-' + container.style.width : '';
     textBox.blur();
+    this.hideTooltip();
 
     // Ensure all submenus (context menu, color pickers, etc) close when the menu gets closed via Keyboard / Escape
     document.dispatchEvent(new MouseEvent('mousedown'));

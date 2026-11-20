@@ -7,7 +7,7 @@ class MoveTimeLeft extends Feature {
   constructor() {
     super(
       'Move Time Left',
-      'Moves Time Left',
+      '',
       true,
       {
         key: 'z',

@@ -3,7 +3,7 @@ class AutoSave extends Feature {
   constructor() {
     super(
       'Auto Save & Restore Layout',
-      'Reopens your last layout (instrument, timeframe, drawings) after a browser restart and saves every change',
+      'Saves every chart change and reopens your last layout after a browser restart',
       true,
       {
         key: null,

@@ -3,7 +3,7 @@ class LineStyle extends Feature {
   constructor() {
     super(
       'Change Line Style',
-      'Scrolls line styles ( solid, dashed, dotted )',
+      'Cycles the selected drawing\'s line style (solid, dashed, dotted)',
       true,
       {
         key: 'q',

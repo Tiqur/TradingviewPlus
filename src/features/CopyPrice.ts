@@ -4,7 +4,7 @@ class CopyPrice extends Feature {
   constructor() {
     super(
       'Copy Price At Ticker',
-      'Copies price at cursor position',
+      'Copies the chart price at the cursor',
       true,
       {
         key: 'c',

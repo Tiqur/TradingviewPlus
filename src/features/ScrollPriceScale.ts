@@ -14,7 +14,7 @@ class ScrollPriceScale extends Feature {
   constructor() {
     super(
       'Scroll Price Scale',
-      'Allows you to scroll the price scale using a hotkey + the scroll wheel',
+      'Scrolls the price scale with the hotkey + mouse wheel',
       true,
       { key: null, ctrl: false, shift: false, alt: false, meta: false },
       Category.TVP,

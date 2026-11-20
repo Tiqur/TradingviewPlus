@@ -162,7 +162,7 @@ abstract class Feature {
       const configObj = JSON.parse(configJSON);
 
       this.name = 'name' in configObj ? configObj.name : this.name;
-      this.tooltip = 'tooltip' in configObj ? configObj.tooltip : this.tooltip;
+      // The tooltip isn't a setting: the code's text is used, not a saved copy
       this.enabled = 'enabled' in configObj ? configObj.enabled : this.enabled;
       this.hotkey = 'hotkey' in configObj ? configObj.hotkey : this.hotkey;
       this.category = 'category' in configObj ? configObj.category : this.category;
@@ -215,6 +215,10 @@ abstract class Feature {
 
   public getName(): string {
     return this.name;
+  }
+
+  public getTooltip(): string {
+    return this.tooltip;
   }
 
   public setHotkey(newHotkey: Hotkey): boolean {

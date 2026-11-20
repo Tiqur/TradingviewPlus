@@ -3,7 +3,7 @@ class ToggleAdBlocker extends Feature {
   constructor() {
     super(
       'Ad Blocker',
-      'TVP\'s built-in Ad blocker',
+      'Closes TradingView\'s ad pop-ups and its "Go ad-free" offer',
       true,
       {
         key: null,
