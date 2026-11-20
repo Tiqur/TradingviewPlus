@@ -20,6 +20,14 @@ class XmPlatform implements PlatformAdapter {
     return ChartDefaults.apply();
   }
 
+  // ─── Layout ────────────────────────────────────────────────────────────────
+
+  // XM's chart doesn't save its layout by itself. The chart's save API is only
+  // reachable from the page's own JS, where PageBridge does the work.
+  setAutoSave(enabled: boolean): void {
+    document.dispatchEvent(new CustomEvent('tvp-auto-save', { detail: JSON.stringify(enabled) }));
+  }
+
   // ─── Timeframe ─────────────────────────────────────────────────────────────
 
   getCurrentTimeframe(): string | null {

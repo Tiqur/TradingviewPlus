@@ -57,7 +57,7 @@ function tvpResolveWheelInfo(e: WheelEvent): TVPWheelInfo {
   return { axis, delta, absDelta: Math.max(1, Math.abs(delta)), key };
 }
 
-enum Category { 'TV', 'TVP' };
+enum Category { 'TV', 'TVP', 'XM' };
 
 abstract class Feature {
   private name: string;

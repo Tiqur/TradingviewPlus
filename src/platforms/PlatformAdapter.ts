@@ -87,6 +87,15 @@ interface PlatformAdapter {
    * browser fullscreen (F11) turns the platform's fullscreen on with it.
    */
   setMinimalFullscreen?(enabled: boolean): void;
+
+  // ─── Layout (optional) ────────────────────────────────────────────────────
+
+  /**
+   * Turns Auto Save Layout on or off, for platforms whose chart doesn't save
+   * its layout by itself: the last saved layout is reopened on load and the
+   * layout is saved after every change.
+   */
+  setAutoSave?(enabled: boolean): void;
 }
 
 // Expose on window so features can access the active platform globally
