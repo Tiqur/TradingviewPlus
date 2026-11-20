@@ -471,6 +471,10 @@ class TVPMenu {
     handleContainer?.addEventListener('mousedown', () => {
       mouseDown = true;
     });
+    // The resize strip lies over the list's right edge; scrolling on it scrolls the list
+    handleContainer?.addEventListener('wheel', e => {
+      container?.querySelector('section')?.scrollBy(0, e.deltaY);
+    }, { passive: true });
 
     document.addEventListener('mouseup', () => {
       mouseDown = false;
