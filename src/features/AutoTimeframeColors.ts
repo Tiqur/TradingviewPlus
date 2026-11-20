@@ -29,15 +29,18 @@ class AutoTimeframeColors extends Feature {
         let selectedColorPickerSquare: HTMLElement | null = null;
 
         // Callback for color choose
-        const colorPickerMenu = this.createColorPickerMenu((colorIndex: number) => {
+        const colorPicker = new ColorPicker(defaultColors, (color: string) => {
           if (!selectedTimeframe || !selectedColorPickerSquare) return;
-          this.setColor(selectedTimeframe, colorIndex);
-          selectedColorPickerSquare.style.background = defaultColors[colorIndex];
+          this.setColor(selectedTimeframe, color);
+          // Right away, so it's in the chart's colour menu the first time it's applied
+          this.addCustomColorToChart(color);
+          selectedColorPickerSquare.style.background = color;
           colorPickerCm.hide();
         });
 
         // Render color picker container
-        colorPickerCm.renderElement(colorPickerMenu);
+        colorPickerCm.renderElement(colorPicker.element);
+        colorPickerCm.element.classList.add('tvp-color-picker');
 
         // Hide initially on open
         colorPickerCm.hide();
@@ -66,7 +69,7 @@ class AutoTimeframeColors extends Feature {
           // Create each element containing timeframe and color square
           favoritedTimeframeElements.forEach(element => {
             const timeframe = element.textContent as string;
-            const colorValue = local_colors[timeframe] || local_colors[0];
+            const colorValue = local_colors[timeframe] ?? local_colors[0];
 
 
             // Container to hold each color square for their respective timeframe
@@ -81,12 +84,13 @@ class AutoTimeframeColors extends Feature {
             // The color square itself
             const colorPickerSquare = document.createElement('div');
             colorPickerSquare.className = 'color-square';
-            colorPickerSquare.style.background = defaultColors[colorValue];
+            colorPickerSquare.style.background = AutoTimeframeColors.colorOf(colorValue);
 
             // On click, open / create color picker menu
             colorPickerSquare.addEventListener('click', () => {
               selectedColorPickerSquare = colorPickerSquare;
               selectedTimeframe = timeframe;
+              colorPicker.open(colorPickerSquare.style.backgroundColor);
               colorPickerCm.show();
             });
 
@@ -166,9 +170,9 @@ class AutoTimeframeColors extends Feature {
     this.setConfigValue('colors', colorsCopy);
   }
 
-  setColor(timeframe: string, num: number) {
+  setColor(timeframe: string, color: string) {
     const colorsCopy = this.getConfigValue('colors');
-    colorsCopy[timeframe] = num;
+    colorsCopy[timeframe] = color;
     this.setConfigValue('colors', colorsCopy);
     this.saveToLocalStorage();
   }
@@ -198,22 +202,19 @@ class AutoTimeframeColors extends Feature {
     }
   }
 
-  createColorPickerMenu(colorChooseCb: Function): HTMLElement {
-    // Inject color picker into menu, replace current element
-    const colorPickerContainer = document.createElement('div');
-    colorPickerContainer.className = 'color-picker-context-menu';
+  // Colours are kept as 'rgb(r, g, b)', the form TradingView's swatches use. Settings saved
+  // by older versions hold an index into defaultColors instead.
+  private static colorOf(value: number | string): string {
+    return typeof value === 'number' ? defaultColors[value] : value;
+  }
 
-    // Create and initialize click even for each color square
-    defaultColors.forEach((dc, colorIndex) => {
-      const colorElement = document.createElement('span');
-      colorElement.style.background = dc;
-      colorElement.className = 'color-square';
-      colorPickerContainer.appendChild(colorElement);
-
-      colorElement.addEventListener('click', () => { colorChooseCb(colorIndex) });
-    });
-
-    return colorPickerContainer;
+  // A custom colour is only in TradingView's colour menu while it is one of TradingView's own
+  // custom colours. PageBridge adds it there.
+  // (Colours with transparency only come from TradingView's own list, so they are there already.)
+  private addCustomColorToChart(color: string) {
+    if (defaultColors.includes(color) || color.startsWith('rgba')) return;
+    const hex = '#' + color.match(/\d+/g)!.map(n => Number(n).toString(16).padStart(2, '0')).join('');
+    document.dispatchEvent(new CustomEvent('tvp-add-custom-colors', { detail: JSON.stringify([hex]) }));
   }
 
   private isApplying = false;
@@ -306,9 +307,9 @@ class AutoTimeframeColors extends Feature {
   private processColorMenu(menu: HTMLElement, currentTimeframe: string) {
     try {
       const local_colors = this.getConfigValue('colors');
-      const colorIdx = local_colors[currentTimeframe];
+      const colorValue = local_colors[currentTimeframe];
 
-      if (colorIdx === undefined) {
+      if (colorValue === undefined) {
         document.body.click();
         return;
       }
@@ -321,7 +322,7 @@ class AutoTimeframeColors extends Feature {
         return;
       }
 
-      const targetRgb = defaultColors[colorIdx];
+      const targetRgb = AutoTimeframeColors.colorOf(colorValue);
       if (!targetRgb) {
         document.body.click();
         return;
@@ -343,10 +344,12 @@ class AutoTimeframeColors extends Feature {
         return false;
       });
 
+      // Palette colours can also be found by position, for menus whose swatches carry no colour
+      const paletteIndex = defaultColors.indexOf(targetRgb);
       if (exactSwatch) {
         exactSwatch.click();
-      } else if (allColors[colorIdx]) {
-        allColors[colorIdx].click();
+      } else if (allColors[paletteIndex]) {
+        allColors[paletteIndex].click();
       } else {
         document.body.click();
       }
@@ -363,6 +366,9 @@ class AutoTimeframeColors extends Feature {
 
   private applyColorToButton(colorButton: HTMLElement, currentTimeframe: string) {
     if (this.isApplying) return;
+    // Again before the menu opens, in case TradingView's list has dropped it since
+    const value = this.getConfigValue('colors')[currentTimeframe];
+    if (value !== undefined) this.addCustomColorToChart(AutoTimeframeColors.colorOf(value));
 
     try {
       if (window.TVP_Platform?.isColorMenuOpen()) {
@@ -585,6 +591,10 @@ class AutoTimeframeColors extends Feature {
 
   init() {
     this.initDefaultColors();
+    // Custom colours in use go into TradingView's list on load (e.g. on another computer),
+    // not only when first applied
+    Object.values(this.getConfigValue('colors')).forEach(value =>
+      this.addCustomColorToChart(AutoTimeframeColors.colorOf(value as number | string)));
     this.setupObservers();
   }
 }
