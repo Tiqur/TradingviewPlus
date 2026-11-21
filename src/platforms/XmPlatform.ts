@@ -16,8 +16,10 @@ class XmPlatform implements PlatformAdapter {
 
   // ─── Setup ─────────────────────────────────────────────────────────────────
 
+  // XM's chart doesn't save its layout by itself, so the defaults are saved too: otherwise
+  // a reload would lose them
   setupDefaults(): boolean {
-    return ChartDefaults.apply();
+    return ChartDefaults.apply(true);
   }
 
   // ─── Layout ────────────────────────────────────────────────────────────────
@@ -28,9 +30,14 @@ class XmPlatform implements PlatformAdapter {
     document.dispatchEvent(new CustomEvent('tvp-auto-save', { detail: JSON.stringify(enabled) }));
   }
 
+  // XM's chart starts with the magnet off on every visit; PageBridge turns it on
+  setAutoMagnet(enabled: boolean): void {
+    document.dispatchEvent(new CustomEvent('tvp-auto-magnet', { detail: JSON.stringify(enabled) }));
+  }
+
   // ─── Fullscreen ────────────────────────────────────────────────────────────
 
-  // Minimal Fullscreen on XM follows XM's own fullscreen button (⛶) rather than F11, so XM's
+  // Minimal Fullscreen on XM uses XM's own fullscreen (its ⛶ button, Shift + F or F11), so XM's
   // trade panel stays: XM's bar floats over the chart's top-left (styles in
   // tvp-minimal-fullscreen.scss) and the chart switches to TradingView's fullscreen layout
   // without the browser going fullscreen.
@@ -48,18 +55,31 @@ class XmPlatform implements PlatformAdapter {
       this.fullscreenObserver = new MutationObserver(() => this.syncChartFullscreen(wrapper));
       this.fullscreenObserver.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
 
-      // Shift + F (caught by PageBridge) works XM's own fullscreen: ⛶ to open, its ✕ to leave
-      document.addEventListener('tvp-xm-fullscreen-key', () => {
-        const xmButton = wrapper.classList.contains('chart-fullscreen-mode')
-          ? wrapper.querySelector<HTMLElement>('app-advanced-chart-header-mobile > button')
-          : window.parent.document.querySelector<HTMLElement>('ion-button.maximize-btn');
-        xmButton?.click();
+      // Shift + F (caught by PageBridge) works XM's own fullscreen
+      document.addEventListener('tvp-xm-fullscreen-key', () => this.toggleXmFullscreen(wrapper));
+
+      // Browser fullscreen (F11) opens XM's fullscreen with it and leaving it closes XM's, as
+      // F11 does with TradingView's fullscreen on tradingview.com
+      const browserFullscreen = window.parent.matchMedia('(display-mode: fullscreen)');
+      browserFullscreen.addEventListener('change', () => {
+        const xmFullscreen = wrapper.classList.contains('chart-fullscreen-mode');
+        if (document.documentElement.classList.contains('tvp-minimal-fullscreen') && browserFullscreen.matches !== xmFullscreen) {
+          this.toggleXmFullscreen(wrapper);
+        }
       });
 
       // The chart resizes when XM's trade panel opens or closes, and with the window
       window.addEventListener('resize', () => this.placePanelToggle(wrapper));
     }
     this.syncChartFullscreen(wrapper);
+  }
+
+  // XM's own fullscreen buttons: ⛶ to open it, its ✕ to leave
+  private toggleXmFullscreen(wrapper: Element): void {
+    const xmButton = wrapper.classList.contains('chart-fullscreen-mode')
+      ? wrapper.querySelector<HTMLElement>('app-advanced-chart-header-mobile > button')
+      : window.parent.document.querySelector<HTMLElement>('ion-button.maximize-btn');
+    xmButton?.click();
   }
 
   // XM's trade-panel toggle is shown at the start of the panel's "One Click Order" row
@@ -136,10 +156,30 @@ class XmPlatform implements PlatformAdapter {
       ? rows[step > 0 ? 0 : rows.length - 1]
       : rows[(i + step + rows.length) % rows.length];
 
+    // The watchlist is in XM's side panel, which is open while ion-tabs.chart-split-view has
+    // "expanded". Clicking a row opens that panel, so if it was closed it's closed again
+    const splitView = doc.querySelector('ion-tabs.chart-split-view');
+    const panelOpen = !splitView || splitView.classList.contains('expanded');
+    if (!panelOpen) this.keepPanelClosed(splitView!);
+
     next.click();
     // The list only renders rows near its scroll position, so keep it following the chart
-    next.scrollIntoView({ block: 'nearest' });
+    if (panelOpen) next.scrollIntoView({ block: 'nearest' });
     return true;
+  }
+
+  // Closes XM's side panel with its own close button as soon as it opens (within a few
+  // seconds), before it's drawn. By its label, or its place if the label is translated.
+  private keepPanelClosed(splitView: Element): void {
+    const observer = new MutationObserver(() => {
+      if (!splitView.classList.contains('expanded')) return;
+      observer.disconnect();
+      clearTimeout(timer);
+      splitView.querySelector<HTMLElement>('app-watchlists-header-desktop button[aria-label="Close"], ' +
+        'app-watchlists-header-desktop ion-buttons.buttons-last-slot > button:last-of-type')?.click();
+    });
+    observer.observe(splitView, { attributes: true, attributeFilter: ['class'] });
+    const timer = setTimeout(() => observer.disconnect(), 3000);
   }
 
   // ─── Timeframe ─────────────────────────────────────────────────────────────

@@ -45,7 +45,7 @@ Press "m" to open the menu
 > When active, allows you to scroll BOTH of the chart's scales at the same time using Ctrl + Shift + Scroll
 
 - **Minimal Fullscreen**
-> When active, browser fullscreen (F11) also turns on TradingView's fullscreen (Shift + F), which keeps a compact top bar (symbol, current timeframe, Trade, Undo) with the favourites toolbar pinned next to it. On XM it applies to XM's own fullscreen button instead: one top row (exit, instrument, current timeframe, Undo, favourites), the chart fills the rest, and XM's trade panel stays.
+> When active, browser fullscreen (F11) also turns on TradingView's fullscreen (Shift + F), which keeps a compact top bar (symbol, current timeframe, Trade, Undo) with the favourites toolbar pinned next to it. On XM it uses XM's own fullscreen (its fullscreen button, Shift + F or F11): one top row (exit, instrument, current timeframe, Undo, favourites), the chart fills the rest, and XM's trade panel stays.
 
 ### XM Features
 Shown in the menu on XM only.
@@ -55,6 +55,9 @@ Shown in the menu on XM only.
 
 - **Next Watchlist Ticker**
 > When active, Space / Shift + Space switch to the next / previous instrument in XM's watchlist, as on TradingView. Works in XM's maximized chart view too.
+
+- **Auto Magnet**
+> When active, turns the magnet on each time the chart loads, since XM's chart starts with it off. If you turn the magnet off, it stays off until you reload.
 
 
 ### Additional Editable Keybinds

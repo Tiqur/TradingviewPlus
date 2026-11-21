@@ -2,7 +2,7 @@
 declare const chrome: any;
 declare const DOMPurify: any;
 
-const VERSION = "v6.0";
+const VERSION = "v6.1";
 
 // For chrome extension
 if (typeof browser === "undefined") {
@@ -245,6 +245,7 @@ features.set('Setup Defaults', new SetupDefaults());
 features.set('Minimal Fullscreen', new MinimalFullscreen());
 features.set('Auto Save & Restore Layout', new AutoSave());
 features.set('Next Watchlist Ticker', new NextWatchlistTicker());
+features.set('Auto Magnet', new AutoMagnet());
 
 // Create TVP background
 const tvp_background = document.createElement('div');

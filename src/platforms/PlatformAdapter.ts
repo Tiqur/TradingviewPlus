@@ -98,6 +98,12 @@ interface PlatformAdapter {
   setAutoSave?(enabled: boolean): void;
 
   /**
+   * Turns Auto Magnet on or off, for platforms whose chart doesn't keep the
+   * magnet on between visits: it is turned on whenever the chart loads.
+   */
+  setAutoMagnet?(enabled: boolean): void;
+
+  /**
    * Turns the Space / Shift + Space keys for the next / previous watchlist
    * instrument on or off, for platforms whose watchlist is their own UI.
    */

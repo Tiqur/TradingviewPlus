@@ -1,6 +1,6 @@
 // Applies the chart appearance defaults sent by ChartDefaults (XM and TradingView),
 // adds Auto Timeframe Colors' custom colours to the colour picker, and runs Auto Save
-// Layout (XM).
+// Layout and Auto Magnet (XM).
 //
 // The chart's settings API lives in the page's own JavaScript, which content
 // scripts can't call. In Chrome/Opera this file is injected into the page itself
@@ -47,7 +47,19 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
     trading.orderExecutedSoundParams = JSON.stringify(sound);
     settings.setValue('trading.chart.proterty', JSON.stringify(trading));
   }
+
+  // XM: save the layout too (creating one if the chart has none), or a reload loses the
+  // defaults. dataReady calls back in order, so this comes after the Volume removal.
+  if (defaults.saveLayout) chart.dataReady(() => tvpSaveLayout(page, api));
 });
+
+// Saves the chart's layout under its name, or as "Save" if it has none (which creates the
+// layout), as Ctrl + S does but without asking for a name
+function tvpSaveLayout(page: any, api: any) {
+  // Firefox: functions the page calls back have to be exported to it
+  const noop = typeof exportFunction === 'function' ? exportFunction(() => {}, page) : () => {};
+  api.saveChartToServer(noop, noop, page.JSON.parse(JSON.stringify({ chartName: api.layoutName() || 'Save' })));
+}
 
 // Colour picker "custom colours": add missing ones in order, keep the user's.
 // The picker re-reads this each time it opens and keeps at most 29.
@@ -115,8 +127,7 @@ document.addEventListener('tvp-auto-save', (e: Event) => {
     clearInterval(timer);
     if (!autoSaveWanted || autoSave) return;
 
-    const save = () => api.saveChartToServer(noop, noop,
-      page.JSON.parse(JSON.stringify({ chartName: api.layoutName() || 'Save' })));
+    const save = () => tvpSaveLayout(page, api);
 
     if (!api.layoutName()) {
       if (atPageLoad) {
@@ -132,6 +143,23 @@ document.addEventListener('tvp-auto-save', (e: Event) => {
 
     autoSave = { api, onChange: toPage(save) };
     api.subscribe('onAutoSaveNeeded', autoSave.onChange);
+  }, 500);
+});
+
+// Auto Magnet (XM). XM's chart starts with the magnet off on every visit. Each time the
+// feature is switched on (including at page load), the magnet is turned on once the chart
+// has loaded; its weak / strong mode is left as it is. Turning the magnet off by hand
+// lasts until the next load.
+document.addEventListener('tvp-auto-magnet', (e: Event) => {
+  if (!JSON.parse((e as CustomEvent).detail)) return;
+  const page = (window as any).wrappedJSObject || window;
+  const noop = typeof exportFunction === 'function' ? exportFunction(() => {}, page) : () => {};
+  // As for Auto Save: the chart is replaced while the page starts, so check the current one
+  const timer = setInterval(() => {
+    const api = page.tradingViewApi;
+    try { if (!api?.activeChart().dataReady(noop)) return; } catch { return; }
+    clearInterval(timer);
+    api.magnetEnabled().setValue(true);
   }, 500);
 });
 
