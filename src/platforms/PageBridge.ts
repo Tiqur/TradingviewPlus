@@ -47,7 +47,19 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
     trading.orderExecutedSoundParams = JSON.stringify(sound);
     settings.setValue('trading.chart.proterty', JSON.stringify(trading));
   }
+
+  // XM: save the layout too (creating one if the chart has none), or a reload loses the
+  // defaults. dataReady calls back in order, so this comes after the Volume removal.
+  if (defaults.saveLayout) chart.dataReady(() => tvpSaveLayout(page, api));
 });
+
+// Saves the chart's layout under its name, or as "Save" if it has none (which creates the
+// layout), as Ctrl + S does but without asking for a name
+function tvpSaveLayout(page: any, api: any) {
+  // Firefox: functions the page calls back have to be exported to it
+  const noop = typeof exportFunction === 'function' ? exportFunction(() => {}, page) : () => {};
+  api.saveChartToServer(noop, noop, page.JSON.parse(JSON.stringify({ chartName: api.layoutName() || 'Save' })));
+}
 
 // Colour picker "custom colours": add missing ones in order, keep the user's.
 // The picker re-reads this each time it opens and keeps at most 29.
@@ -115,8 +127,7 @@ document.addEventListener('tvp-auto-save', (e: Event) => {
     clearInterval(timer);
     if (!autoSaveWanted || autoSave) return;
 
-    const save = () => api.saveChartToServer(noop, noop,
-      page.JSON.parse(JSON.stringify({ chartName: api.layoutName() || 'Save' })));
+    const save = () => tvpSaveLayout(page, api);
 
     if (!api.layoutName()) {
       if (atPageLoad) {
