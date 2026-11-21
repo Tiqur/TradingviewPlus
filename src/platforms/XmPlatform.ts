@@ -55,18 +55,31 @@ class XmPlatform implements PlatformAdapter {
       this.fullscreenObserver = new MutationObserver(() => this.syncChartFullscreen(wrapper));
       this.fullscreenObserver.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
 
-      // Shift + F (caught by PageBridge) works XM's own fullscreen: ⛶ to open, its ✕ to leave
-      document.addEventListener('tvp-xm-fullscreen-key', () => {
-        const xmButton = wrapper.classList.contains('chart-fullscreen-mode')
-          ? wrapper.querySelector<HTMLElement>('app-advanced-chart-header-mobile > button')
-          : window.parent.document.querySelector<HTMLElement>('ion-button.maximize-btn');
-        xmButton?.click();
+      // Shift + F (caught by PageBridge) works XM's own fullscreen
+      document.addEventListener('tvp-xm-fullscreen-key', () => this.toggleXmFullscreen(wrapper));
+
+      // Browser fullscreen (F11) opens XM's fullscreen with it and leaving it closes XM's, as
+      // F11 does with TradingView's fullscreen on tradingview.com
+      const browserFullscreen = window.parent.matchMedia('(display-mode: fullscreen)');
+      browserFullscreen.addEventListener('change', () => {
+        const xmFullscreen = wrapper.classList.contains('chart-fullscreen-mode');
+        if (document.documentElement.classList.contains('tvp-minimal-fullscreen') && browserFullscreen.matches !== xmFullscreen) {
+          this.toggleXmFullscreen(wrapper);
+        }
       });
 
       // The chart resizes when XM's trade panel opens or closes, and with the window
       window.addEventListener('resize', () => this.placePanelToggle(wrapper));
     }
     this.syncChartFullscreen(wrapper);
+  }
+
+  // XM's own fullscreen buttons: ⛶ to open it, its ✕ to leave
+  private toggleXmFullscreen(wrapper: Element): void {
+    const xmButton = wrapper.classList.contains('chart-fullscreen-mode')
+      ? wrapper.querySelector<HTMLElement>('app-advanced-chart-header-mobile > button')
+      : window.parent.document.querySelector<HTMLElement>('ion-button.maximize-btn');
+    xmButton?.click();
   }
 
   // XM's trade-panel toggle is shown at the start of the panel's "One Click Order" row
