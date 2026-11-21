@@ -136,10 +136,30 @@ class XmPlatform implements PlatformAdapter {
       ? rows[step > 0 ? 0 : rows.length - 1]
       : rows[(i + step + rows.length) % rows.length];
 
+    // The watchlist is in XM's side panel, which is open while ion-tabs.chart-split-view has
+    // "expanded". Clicking a row opens that panel, so if it was closed it's closed again
+    const splitView = doc.querySelector('ion-tabs.chart-split-view');
+    const panelOpen = !splitView || splitView.classList.contains('expanded');
+    if (!panelOpen) this.keepPanelClosed(splitView!);
+
     next.click();
     // The list only renders rows near its scroll position, so keep it following the chart
-    next.scrollIntoView({ block: 'nearest' });
+    if (panelOpen) next.scrollIntoView({ block: 'nearest' });
     return true;
+  }
+
+  // Closes XM's side panel with its own close button as soon as it opens (within a few
+  // seconds), before it's drawn. By its label, or its place if the label is translated.
+  private keepPanelClosed(splitView: Element): void {
+    const observer = new MutationObserver(() => {
+      if (!splitView.classList.contains('expanded')) return;
+      observer.disconnect();
+      clearTimeout(timer);
+      splitView.querySelector<HTMLElement>('app-watchlists-header-desktop button[aria-label="Close"], ' +
+        'app-watchlists-header-desktop ion-buttons.buttons-last-slot > button:last-of-type')?.click();
+    });
+    observer.observe(splitView, { attributes: true, attributeFilter: ['class'] });
+    const timer = setTimeout(() => observer.disconnect(), 3000);
   }
 
   // ─── Timeframe ─────────────────────────────────────────────────────────────
