@@ -60,6 +60,7 @@
         "dist/features/MinimalFullscreen.js",
         "dist/features/AutoSave.js",
         "dist/features/NextWatchlistTicker.js",
+        "dist/features/AutoMagnet.js",
         "dist/platforms/PlatformAdapter.js",
         "dist/platforms/ChartDefaults.js",
         "dist/platforms/TradingViewPlatform.js",

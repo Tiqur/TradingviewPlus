@@ -30,9 +30,14 @@ class XmPlatform implements PlatformAdapter {
     document.dispatchEvent(new CustomEvent('tvp-auto-save', { detail: JSON.stringify(enabled) }));
   }
 
+  // XM's chart starts with the magnet off on every visit; PageBridge turns it on
+  setAutoMagnet(enabled: boolean): void {
+    document.dispatchEvent(new CustomEvent('tvp-auto-magnet', { detail: JSON.stringify(enabled) }));
+  }
+
   // ─── Fullscreen ────────────────────────────────────────────────────────────
 
-  // Minimal Fullscreen on XM follows XM's own fullscreen button (⛶) rather than F11, so XM's
+  // Minimal Fullscreen on XM uses XM's own fullscreen (its ⛶ button, Shift + F or F11), so XM's
   // trade panel stays: XM's bar floats over the chart's top-left (styles in
   // tvp-minimal-fullscreen.scss) and the chart switches to TradingView's fullscreen layout
   // without the browser going fullscreen.

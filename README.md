@@ -56,6 +56,9 @@ Shown in the menu on XM only.
 - **Next Watchlist Ticker**
 > When active, Space / Shift + Space switch to the next / previous instrument in XM's watchlist, as on TradingView. Works in XM's maximized chart view too.
 
+- **Auto Magnet**
+> When active, turns the magnet on each time the chart loads, since XM's chart starts with it off. If you turn the magnet off, it stays off until you reload.
+
 
 ### Additional Editable Keybinds
 - **Toggle Auto Scale**
