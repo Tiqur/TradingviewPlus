@@ -99,10 +99,13 @@ document.addEventListener('tvp-remove-custom-color', (e: Event) => {
 // the chart is saved as "Save". From then on the chart signals onAutoSaveNeeded a few
 // seconds after each change to a named layout, as TradingView's own autosave does, and
 // the layout is saved under its name.
+// Switching accounts loads that account's last chart in place: under its layout's name, but
+// as a new chart, so saving it would add a layout (or hit XM's layout limit). The account's
+// saved layout is opened instead.
 declare const exportFunction: ((fn: Function, target: object) => any) | undefined;
 let autoSaveWanted = false;
 let autoSaveStarted = false;
-let autoSave: { api: any, onChange: any } | null = null;
+let autoSave: { api: any, onChange: any, onLoad: any } | null = null;
 
 document.addEventListener('tvp-auto-save', (e: Event) => {
   const page = (window as any).wrappedJSObject || window;
@@ -114,6 +117,7 @@ document.addEventListener('tvp-auto-save', (e: Event) => {
 
   if (!autoSaveWanted && autoSave) {
     autoSave.api.unsubscribe('onAutoSaveNeeded', autoSave.onChange);
+    autoSave.api.unsubscribe('chart_loaded', autoSave.onLoad);
     autoSave = null;
   }
   if (!autoSaveWanted || autoSave) return;
@@ -129,20 +133,23 @@ document.addEventListener('tvp-auto-save', (e: Event) => {
 
     const save = () => tvpSaveLayout(page, api);
 
-    if (!api.layoutName()) {
-      if (atPageLoad) {
-        api.getSavedCharts(toPage((charts: any[]) => {
-          const latest = Array.from(charts).sort((a: any, b: any) => b.modified_iso - a.modified_iso)[0];
-          if (latest) api.loadChartFromServer(latest);
-          else save();
-        }));
-      } else {
-        save();
-      }
-    }
+    // Unless the chart is one of the account's saved layouts, opens the one with its name (the
+    // latest if several have it, or the latest layout if none has), or saves the chart if the
+    // account has no layouts yet
+    const openSaved = () => api.getSavedCharts(toPage((charts: any[]) => {
+      const latestFirst = Array.from(charts).sort((a: any, b: any) => b.modified_iso - a.modified_iso);
+      if (latestFirst.some((c: any) => String(c.id) === String(api.layoutId()))) return;
+      const layout = latestFirst.find((c: any) => c.name === api.layoutName()) || latestFirst[0];
+      if (layout) api.loadChartFromServer(layout);
+      else save();
+    }));
 
-    autoSave = { api, onChange: toPage(save) };
+    if (atPageLoad) openSaved();
+    else if (!api.layoutName()) save();
+
+    autoSave = { api, onChange: toPage(save), onLoad: toPage(openSaved) };
     api.subscribe('onAutoSaveNeeded', autoSave.onChange);
+    api.subscribe('chart_loaded', autoSave.onLoad);
   }, 500);
 });
 
@@ -160,6 +167,24 @@ document.addEventListener('tvp-auto-magnet', (e: Event) => {
     try { if (!api?.activeChart().dataReady(noop)) return; } catch { return; }
     clearInterval(timer);
     api.magnetEnabled().setValue(true);
+  }, 500);
+});
+
+// Drawing Defaults (XM). A drawing tool's defaults are its last-used settings, saved each time
+// they're changed, but XM's chart keeps only favourites between visits, so they're lost. Each
+// time the feature is switched on (including at page load), TVP's styles are saved as the
+// favourite tools' defaults once the chart has loaded; drawings already made keep theirs.
+// Switching the feature off leaves them until the next load.
+document.addEventListener('tvp-drawing-defaults', (e: Event) => {
+  const page = (window as any).wrappedJSObject || window;
+  const styles = page.JSON.parse((e as CustomEvent).detail);
+  const noop = typeof exportFunction === 'function' ? exportFunction(() => {}, page) : () => {};
+  // As for Auto Save: the chart is replaced while the page starts, so check the current one
+  const timer = setInterval(() => {
+    const api = page.tradingViewApi;
+    try { if (!api?.activeChart().dataReady(noop)) return; } catch { return; }
+    clearInterval(timer);
+    for (const tool of Object.keys(styles)) page.TradingView.saveDefaults(tool, styles[tool]);
   }, 500);
 });
 

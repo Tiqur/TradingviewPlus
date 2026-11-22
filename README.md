@@ -51,13 +51,16 @@ Press "m" to open the menu
 Shown in the menu on XM only.
 
 - **Auto Save & Restore Layout**
-> When active, reopens your last chart layout (instrument, timeframe, drawings) after a browser restart and saves every change. XM's chart doesn't do either by itself. A chart with no saved layout is saved as "Save".
+> When active, reopens your last chart layout (instrument, timeframe, drawings) after a browser restart and saves every change. XM's chart doesn't do either by itself. A chart with no saved layout is saved as "Save". Switching accounts opens that account's saved layout instead of adding a new one.
 
 - **Next Watchlist Ticker**
 > When active, Space / Shift + Space switch to the next / previous instrument in XM's watchlist, as on TradingView. Works in XM's maximized chart view too.
 
 - **Auto Magnet**
 > When active, turns the magnet on each time the chart loads, since XM's chart starts with it off. If you turn the magnet off, it stays off until you reload.
+
+- **Drawing Defaults**
+> When active, new drawings from the favourite tools get TVP's styles each time the chart loads, since XM's chart doesn't remember drawing settings. Rays and horizontal rays: width 1 and orange text on, aligned middle / right. Date & price range: width 1, no lines, 5% background, no volume, orange text on. Long / short position: no lines, compact, stop and target in the candle blue and beige at 10%. Your existing drawings keep their style.
 
 
 ### Additional Editable Keybinds

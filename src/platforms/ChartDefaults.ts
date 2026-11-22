@@ -60,6 +60,46 @@ class ChartDefaults {
     },
   };
 
+  // Colour picker palette: orange (row 2, column 2) and white (row 1, column 1) at 0% opacity
+  private static readonly ORANGE = '#ff9800';
+  private static readonly NO_LINE = 'rgba(255, 255, 255, 0)';
+  // Horizontal ray and ray: width 1, text on, orange, middle / right
+  private static readonly RAY = {
+    linewidth: 1,
+    showLabel: true,
+    textcolor: ChartDefaults.ORANGE,
+    vertLabelsAlign: 'middle',
+    horzLabelsAlign: 'right',
+  };
+  // Long and short position: no lines, compact, stop in the down-candle blue and target in the
+  // up-candle beige, both at 10%
+  private static readonly POSITION = {
+    linecolor: ChartDefaults.NO_LINE,
+    compact: true,
+    stopBackground: 'rgba(111, 168, 220, 0.1)',
+    stopBackgroundTransparency: 90,
+    profitBackground: 'rgba(255, 242, 204, 0.1)',
+    profitBackgroundTransparency: 90,
+  };
+
+  // Settings for new drawings of the favourite tools (XM's Drawing Defaults), by the chart's name
+  // for each tool's defaults. PageBridge saves them as those defaults.
+  static readonly DRAWINGS = {
+    linetoolhorzray: ChartDefaults.RAY,
+    linetoolray: ChartDefaults.RAY,
+    // Date and price range: width 1, no lines, background at 5%, no volume, text on, orange
+    linetooldateandpricerange: {
+      linewidth: 1,
+      linecolor: ChartDefaults.NO_LINE,
+      backgroundColor: 'rgba(41, 98, 255, 0.05)',
+      backgroundTransparency: 95,
+      showVolume: false,
+      customText: { visible: true, color: ChartDefaults.ORANGE },
+    },
+    linetoolriskrewardlong: ChartDefaults.POSITION,
+    linetoolriskrewardshort: ChartDefaults.POSITION,
+  };
+
   // Stars the default intervals and tools, applies the appearance and hides the
   // drawing toolbar, then saves the layout if `saveLayout` (for charts that don't
   // save by themselves). Never removes the user's own favourites.

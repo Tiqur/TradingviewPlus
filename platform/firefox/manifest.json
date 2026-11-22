@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "TradingviewPlus",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "author": "Tiqur",
 
   "description": "Changes line color according to current timeframe, price scale scrolling, line style changing, and various other hotkeys.",
@@ -61,6 +61,7 @@
         "dist/features/AutoSave.js",
         "dist/features/NextWatchlistTicker.js",
         "dist/features/AutoMagnet.js",
+        "dist/features/DrawingDefaults.js",
         "dist/platforms/PlatformAdapter.js",
         "dist/platforms/ChartDefaults.js",
         "dist/platforms/TradingViewPlatform.js",
