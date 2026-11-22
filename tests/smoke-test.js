@@ -4,7 +4,8 @@
 //
 // Loads the extension in headless Chromium and checks:
 // - TradingView's Trading Terminal demo, where drawing works without an account: once with the
-//   TradingView adapter and once with the XM adapter (the demo runs the chart library XM uses)
+//   TradingView adapter and once with the XM adapter (the demo runs the chart library XM uses),
+//   which also checks the XM features the demo can show (Drawing Defaults, Auto Save after a switch)
 // - tradingview.com, logged out: what TVP needs there that works without drawing
 // Writes results.md and screenshots to the results folder. Exits 1 if a check failed.
 // Needs Playwright (npm install --no-save playwright), which isn't one of the extension's dependencies.
@@ -146,6 +147,60 @@ async function pressOnLine(page, frame, key) {
   await sleep(1500);
 }
 
+// XM's Drawing Defaults, as the demo's newer chart shows them (its horizontal ray has no text switch)
+const RAY = { linewidth: 1, textcolor: '#ff9800', vertLabelsAlign: 'middle', horzLabelsAlign: 'right' };
+const POSITION = { linecolor: 'rgba(255, 255, 255, 0)', compact: true, stopBackground: 'rgba(111, 168, 220, 0.1)', profitBackground: 'rgba(255, 242, 204, 0.1)' };
+const DRAWING_STYLES = {
+  horizontal_ray: RAY,
+  ray: RAY,
+  date_and_price_range: { linewidth: 1, linecolor: 'rgba(255, 255, 255, 0)', backgroundColor: 'rgba(41, 98, 255, 0.05)', showVolume: false,
+    'customText.visible': true, 'customText.color': '#ff9800' },
+  long_position: POSITION,
+  short_position: POSITION,
+};
+
+// XM features the demo can show; the rest of XM (accounts, its watchlist and fullscreen) needs a login
+async function xmChecks(frame) {
+  // Drawing Defaults: new drawings from the favourite tools get TVP's styles
+  const wrong = await frame.evaluate(async styles => {
+    const c = window.tradingViewApi.activeChart();
+    const r = c.getVisibleRange();
+    const pr = c.getPanes()[0].getMainSourcePriceScale().getVisiblePriceRange();
+    const points = [0.4, 0.6].map(f => ({ time: r.from + (r.to - r.from) * f, price: pr.from + (pr.to - pr.from) * f }));
+    const out = [];
+    for (const [shape, style] of Object.entries(styles)) {
+      let id;
+      try { id = await c.createMultipointShape(points, { shape }); } catch { id = await c.createMultipointShape([points[0]], { shape }); }
+      const props = c.getShapeById(id).getProperties();
+      c.removeEntity(id);
+      for (const [key, value] of Object.entries(style)) {
+        const got = key.split('.').reduce((v, k) => v?.[k], props);
+        if (got !== value) out.push(`${shape} ${key}: ${got}`);
+      }
+    }
+    return out;
+  }, DRAWING_STYLES);
+  check('Drawing Defaults: new rays, ranges and positions get TVP\'s styles', !wrong.length, wrong.join(', '));
+
+  // Auto Save after an account switch: XM loads the account's last chart in place, under its layout's name but as a
+  // new chart. Auto Save should open the saved layout again (a second load) rather than save it as another one.
+  await frame.evaluate(() => new Promise(res => {
+    const api = window.tradingViewApi;
+    window.__tvpLoads = [];
+    api.subscribe('chart_loaded', () => window.__tvpLoads.push(String(api.layoutId())));
+    // As XM does: the layout's name, and a new id (without one, loading keeps the current id)
+    const name = api.layoutName();
+    api.saveChart(state => { api.loadChart({ json: { ...state, name }, extendedData: { uid: Date.now(), name } }); res(); });
+  }));
+  const reopened = await waitFor(() => frame.evaluate(() => new Promise(res => window.tradingViewApi.getSavedCharts(list => {
+    const id = String(window.tradingViewApi.layoutId());
+    res(window.__tvpLoads.length >= 2 && list.some(c => String(c.id) === id) ? id : null);
+  }))));
+  check('Auto Save: a chart reloaded as after an account switch reopens its saved layout', reopened,
+    reopened ? '' : await frame.evaluate(() => `loads: ${window.__tvpLoads.join(', ')}; layout id now ${window.tradingViewApi.layoutId()}`));
+  await sleep(1500);
+}
+
 async function demoChecks(platform, dir) {
   section = `Demo (${platform} adapter)`;
   const context = await launch(dir);
@@ -161,6 +216,8 @@ async function demoChecks(platform, dir) {
       magnet: window.tradingViewApi.magnetEnabled().value(),
     }));
     check('Setup Defaults stars timeframes and turns on the magnet', defaults.timeframes >= 10 && defaults.magnet, defaults);
+
+    if (platform === 'XM') await xmChecks(frame);
 
     // Auto Timeframe Colors: the selected line takes each timeframe's colour
     await setResolution(frame, '5');
