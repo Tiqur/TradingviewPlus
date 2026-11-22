@@ -104,6 +104,13 @@ interface PlatformAdapter {
   setAutoMagnet?(enabled: boolean): void;
 
   /**
+   * Turns Drawing Defaults on or off, for platforms whose chart doesn't keep
+   * drawing settings between visits: TVP's styles for new drawings are set
+   * whenever the chart loads.
+   */
+  setDrawingDefaults?(enabled: boolean): void;
+
+  /**
    * Turns the Space / Shift + Space keys for the next / previous watchlist
    * instrument on or off, for platforms whose watchlist is their own UI.
    */

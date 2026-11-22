@@ -170,6 +170,24 @@ document.addEventListener('tvp-auto-magnet', (e: Event) => {
   }, 500);
 });
 
+// Drawing Defaults (XM). A drawing tool's defaults are its last-used settings, saved each time
+// they're changed, but XM's chart keeps only favourites between visits, so they're lost. Each
+// time the feature is switched on (including at page load), TVP's styles are saved as the
+// favourite tools' defaults once the chart has loaded; drawings already made keep theirs.
+// Switching the feature off leaves them until the next load.
+document.addEventListener('tvp-drawing-defaults', (e: Event) => {
+  const page = (window as any).wrappedJSObject || window;
+  const styles = page.JSON.parse((e as CustomEvent).detail);
+  const noop = typeof exportFunction === 'function' ? exportFunction(() => {}, page) : () => {};
+  // As for Auto Save: the chart is replaced while the page starts, so check the current one
+  const timer = setInterval(() => {
+    const api = page.tradingViewApi;
+    try { if (!api?.activeChart().dataReady(noop)) return; } catch { return; }
+    clearInterval(timer);
+    for (const tool of Object.keys(styles)) page.TradingView.saveDefaults(tool, styles[tool]);
+  }, 500);
+});
+
 // Minimal Fullscreen on XM: Shift + F on the chart opens XM's own fullscreen (as its ⛶ button
 // does) rather than TradingView's. This file runs before TradingView's scripts, so this listener
 // comes first. Only real key presses are taken; the extension's own Shift + F (below) gets through.

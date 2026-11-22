@@ -35,6 +35,12 @@ class XmPlatform implements PlatformAdapter {
     document.dispatchEvent(new CustomEvent('tvp-auto-magnet', { detail: JSON.stringify(enabled) }));
   }
 
+  // XM's chart keeps only favourites between visits, so drawing tools forget their settings;
+  // PageBridge saves TVP's styles as the favourite tools' defaults
+  setDrawingDefaults(enabled: boolean): void {
+    if (enabled) document.dispatchEvent(new CustomEvent('tvp-drawing-defaults', { detail: JSON.stringify(ChartDefaults.DRAWINGS) }));
+  }
+
   // ─── Fullscreen ────────────────────────────────────────────────────────────
 
   // Minimal Fullscreen on XM uses XM's own fullscreen (its ⛶ button, Shift + F or F11), so XM's
