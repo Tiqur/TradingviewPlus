@@ -1,0 +1,88 @@
+name: TradingView smoke test
+
+# Once a week, checks that TVP still works with TradingView's current charts (see
+# tests/smoke-test.js) and reports failures in an issue labelled smoke-test.
+# It tests the latest release's Chrome package, or a build of this branch if the
+# extension's files changed since that release.
+on:
+  schedule:
+    - cron: '0 6 * * 1' # 06:00 UTC every Monday, before the trading week
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: write # to keep the weekly schedule switched on
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      # Where the official releases are published (also when this runs on a fork)
+      RELEASES: Tiqur/TradingviewPlus
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Get the extension
+        run: |
+          mkdir -p smoke
+          tag=$(gh release view --repo "$RELEASES" --json tagName -q .tagName 2>/dev/null || true)
+          if [ -n "$tag" ]; then
+            git fetch --quiet --depth=1 "https://github.com/$RELEASES.git" "refs/tags/$tag:refs/tags/$tag"
+          fi
+          if [ -n "$tag" ] && git diff --quiet "$tag" HEAD -- src public lib platform scripts package.json package-lock.json; then
+            echo "Testing the $tag release"
+            gh release download "$tag" --repo "$RELEASES" --pattern tvp-chrome.zip --dir smoke
+          else
+            echo "Testing a build of $(git rev-parse --short HEAD): the extension changed since ${tag:-the last release}"
+            npm ci
+            node scripts/build.js chrome
+            mv tvp-chrome.zip smoke/
+          fi
+          unzip -q smoke/tvp-chrome.zip -d smoke/ext
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.61.0
+          npx playwright install --with-deps chromium
+
+      - name: Run the smoke test
+        run: node tests/smoke-test.js smoke/ext smoke/results
+
+      - name: Upload results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: smoke-test-results
+          path: |
+            smoke/results/*.md
+            smoke/results/*.png
+          retention-days: 90
+
+      - name: Report in an issue
+        if: failure()
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          {
+            cat smoke/results/results.md 2>/dev/null || echo "The smoke test didn't finish; see the run log."
+            echo
+            echo "Run log and screenshots: $run_url"
+          } > report.md
+          issue=$(gh issue list --state open --label smoke-test --json number -q '.[0].number')
+          if [ -n "$issue" ]; then
+            gh issue comment "$issue" --body-file report.md
+          else
+            gh label create smoke-test --color D93F0B --description "Found by the weekly TradingView smoke test" 2>/dev/null || true
+            gh issue create --title "Smoke test: TVP may not work with TradingView's current charts" --label smoke-test --body-file report.md
+          fi
+
+      # GitHub switches off scheduled workflows after 60 days without commits; re-enabling resets that
+      - name: Keep the weekly schedule on
+        if: always()
+        run: gh workflow enable smoke-test.yml
