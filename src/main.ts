@@ -247,6 +247,7 @@ features.set('Auto Save & Restore Layout', new AutoSave());
 features.set('Next Watchlist Ticker', new NextWatchlistTicker());
 features.set('Auto Magnet', new AutoMagnet());
 features.set('Drawing Defaults', new DrawingDefaults());
+features.set('Faster Auto Save', new FasterAutoSave());
 
 // Create TVP background
 const tvp_background = document.createElement('div');

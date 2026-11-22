@@ -62,6 +62,7 @@
         "dist/features/NextWatchlistTicker.js",
         "dist/features/AutoMagnet.js",
         "dist/features/DrawingDefaults.js",
+        "dist/features/FasterAutoSave.js",
         "dist/platforms/PlatformAdapter.js",
         "dist/platforms/ChartDefaults.js",
         "dist/platforms/TradingViewPlatform.js",

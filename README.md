@@ -62,6 +62,12 @@ Shown in the menu on XM only.
 - **Drawing Defaults**
 > When active, new drawings from the favourite tools get TVP's styles each time the chart loads, since XM's chart doesn't remember drawing settings. Rays and horizontal rays: width 1 and orange text on, aligned middle / right. Date & price range: width 1, no lines, 5% background, no volume, orange text on. Long / short position: no lines, compact, stop and target in the candle blue and beige at 10%. Your existing drawings keep their style.
 
+### TradingView Features
+Shown in the menu on tradingview.com only.
+
+- **Faster Auto Save**
+> When active, saves your layout (timeframe, symbol, indicators, chart settings) 15 seconds after a change instead of TradingView's 5 minutes, so reloading the page doesn't lose them. Switching timeframe with Scroll Timeframes also saves any unsaved changes (at most every 5 seconds). TradingView saves drawings by itself within a second. Only a saved layout is saved, with TradingView's autosave on. If TradingView pauses saving drawings after too many saves, the layout is saved once the pause is over.
+
 
 ### Additional Editable Keybinds
 - **Toggle Auto Scale**
