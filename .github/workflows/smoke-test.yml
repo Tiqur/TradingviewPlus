@@ -1,18 +1,18 @@
 name: TradingView smoke test
 
-# Once a month, checks that TVP still works with TradingView's current charts (see
+# Once a week, checks that TVP still works with TradingView's current charts (see
 # tests/smoke-test.js) and reports failures in an issue labelled smoke-test.
 # It tests the latest release's Chrome package, or a build of this branch if the
 # extension's files changed since that release.
 on:
   schedule:
-    - cron: '0 6 1 * *' # 06:00 UTC on the 1st of every month
+    - cron: '0 6 * * 1' # 06:00 UTC every Monday, before the trading week
   workflow_dispatch:
 
 permissions:
   contents: read
   issues: write
-  actions: write # to keep the monthly schedule switched on
+  actions: write # to keep the weekly schedule switched on
 
 jobs:
   smoke-test:
@@ -78,11 +78,11 @@ jobs:
           if [ -n "$issue" ]; then
             gh issue comment "$issue" --body-file report.md
           else
-            gh label create smoke-test --color D93F0B --description "Found by the monthly TradingView smoke test" 2>/dev/null || true
+            gh label create smoke-test --color D93F0B --description "Found by the weekly TradingView smoke test" 2>/dev/null || true
             gh issue create --title "Smoke test: TVP may not work with TradingView's current charts" --label smoke-test --body-file report.md
           fi
 
       # GitHub switches off scheduled workflows after 60 days without commits; re-enabling resets that
-      - name: Keep the monthly schedule on
+      - name: Keep the weekly schedule on
         if: always()
         run: gh workflow enable smoke-test.yml
