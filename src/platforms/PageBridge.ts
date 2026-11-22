@@ -48,9 +48,14 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
     settings.setValue('trading.chart.proterty', JSON.stringify(trading));
   }
 
-  // XM: save the layout too (creating one if the chart has none), or a reload loses the
-  // defaults. dataReady calls back in order, so this comes after the Volume removal.
-  if (defaults.saveLayout) chart.dataReady(() => tvpSaveLayout(page, api));
+  // Then Ctrl + S (Cmd + S on a Mac), so the layout is saved as when you press it. dataReady
+  // calls back in order, so this comes after the Volume removal.
+  chart.dataReady(() => {
+    const mac = /Mac/.test(navigator.platform);
+    const key = { key: 's', code: 'KeyS', keyCode: 83, ctrlKey: !mac, metaKey: mac, bubbles: true, cancelable: true };
+    document.dispatchEvent(new KeyboardEvent('keydown', key));
+    document.dispatchEvent(new KeyboardEvent('keyup', key));
+  });
 });
 
 // Saves the chart's layout under its name, or as "Save" if it has none (which creates the
