@@ -136,6 +136,10 @@ class TimeframeScroll extends Feature {
     if (activeIndex === -1) return;
 
     const next = activeIndex + direction;
-    if (next >= 0 && next < buttons.length) (buttons[next] as HTMLElement).click();
+    if (next >= 0 && next < buttons.length) {
+      // TradingView: unsaved changes are saved along with the switch (PageBridge)
+      document.dispatchEvent(new CustomEvent('tvp-timeframe-switch'));
+      (buttons[next] as HTMLElement).click();
+    }
   }
 }

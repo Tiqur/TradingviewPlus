@@ -111,6 +111,13 @@ interface PlatformAdapter {
   setDrawingDefaults?(enabled: boolean): void;
 
   /**
+   * Turns Faster Auto Save on or off, for platforms whose chart saves its
+   * layout by itself but only minutes after a change: the layout is saved
+   * sooner instead.
+   */
+  setFasterAutoSave?(enabled: boolean): void;
+
+  /**
    * Turns the Space / Shift + Space keys for the next / previous watchlist
    * instrument on or off, for platforms whose watchlist is their own UI.
    */

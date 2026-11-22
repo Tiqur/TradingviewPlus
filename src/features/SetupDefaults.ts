@@ -42,7 +42,7 @@ class SetupDefaults extends Feature {
 
     confirmDialog('Setup Defaults',
       'This applies custom defaults to this chart: favourite timeframes and drawing tools, chart colours and appearance, ' +
-      'turns on the magnet and removes the Volume indicator. Click Cancel to leave your chart as it is.'
+      'turns on the magnet and removes the Volume indicator, then saves your layout. Click Cancel to leave your chart as it is.'
     ).then(ok => {
       untick();
       if (!ok) return;

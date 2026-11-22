@@ -213,6 +213,11 @@ abstract class Feature {
     return this.category;
   }
 
+  // Features for some platforms only override this; the menu lists only available ones
+  public isAvailable(): boolean {
+    return true;
+  }
+
   public getName(): string {
     return this.name;
   }

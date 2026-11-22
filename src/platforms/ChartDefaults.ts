@@ -101,10 +101,9 @@ class ChartDefaults {
   };
 
   // Stars the default intervals and tools, applies the appearance and hides the
-  // drawing toolbar, then saves the layout if `saveLayout` (for charts that don't
-  // save by themselves). Never removes the user's own favourites.
-  // False if the chart's menus weren't found.
-  static apply(saveLayout = false): boolean {
+  // drawing toolbar, then presses Ctrl + S to save the layout. Never removes the
+  // user's own favourites. False if the chart's menus weren't found.
+  static apply(): boolean {
     const intervalButton = document.querySelector<HTMLElement>('#header-toolbar-intervals button[aria-haspopup="menu"]');
     if (!intervalButton) return false;
     // Left toolbar groups: button [0] picks the group's tool, [1] opens its list
@@ -130,7 +129,7 @@ class ChartDefaults {
     }
 
     // The chart's settings API is only reachable from the page's own JS, where PageBridge listens
-    document.dispatchEvent(new CustomEvent('tvp-apply-chart-defaults', { detail: JSON.stringify({ ...ChartDefaults.APPEARANCE, saveLayout }) }));
+    document.dispatchEvent(new CustomEvent('tvp-apply-chart-defaults', { detail: JSON.stringify(ChartDefaults.APPEARANCE) }));
 
     // Hide the left drawing toolbar where the chart has a toggle for it (XM). It only collapses,
     // so its menus stay in the page and the setup can run again; the favourites toolbar stays visible.

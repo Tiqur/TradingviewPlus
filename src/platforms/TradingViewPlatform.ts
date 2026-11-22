@@ -12,6 +12,14 @@ class TradingViewPlatform implements PlatformAdapter {
     return ChartDefaults.apply();
   }
 
+  // ─── Layout ────────────────────────────────────────────────────────────────
+
+  // TradingView saves the layout only 5 minutes after a change; PageBridge saves it sooner
+  // while this attribute is set (an attribute is there whichever of the two scripts runs first)
+  setFasterAutoSave(enabled: boolean): void {
+    document.documentElement.toggleAttribute('data-tvp-faster-auto-save', enabled);
+  }
+
   // ─── Timeframe ─────────────────────────────────────────────────────────────
 
   getCurrentTimeframe(): string | null {

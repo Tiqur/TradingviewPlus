@@ -350,6 +350,7 @@ class TVPMenu {
 
     // Dynamically insert features into menu
     featuresArr.forEach(feature => {
+      if (!feature.isAvailable()) return;
       const category = feature.getCategory();
       const featureHTML = this.createFeatureHTML(feature);
 

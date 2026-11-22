@@ -16,10 +16,8 @@ class XmPlatform implements PlatformAdapter {
 
   // ─── Setup ─────────────────────────────────────────────────────────────────
 
-  // XM's chart doesn't save its layout by itself, so the defaults are saved too: otherwise
-  // a reload would lose them
   setupDefaults(): boolean {
-    return ChartDefaults.apply(true);
+    return ChartDefaults.apply();
   }
 
   // ─── Layout ────────────────────────────────────────────────────────────────

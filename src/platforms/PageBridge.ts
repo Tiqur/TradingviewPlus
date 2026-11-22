@@ -48,9 +48,14 @@ document.addEventListener('tvp-apply-chart-defaults', async (e: Event) => {
     settings.setValue('trading.chart.proterty', JSON.stringify(trading));
   }
 
-  // XM: save the layout too (creating one if the chart has none), or a reload loses the
-  // defaults. dataReady calls back in order, so this comes after the Volume removal.
-  if (defaults.saveLayout) chart.dataReady(() => tvpSaveLayout(page, api));
+  // Then Ctrl + S (Cmd + S on a Mac), so the layout is saved as when you press it. dataReady
+  // calls back in order, so this comes after the Volume removal.
+  chart.dataReady(() => {
+    const mac = /Mac/.test(navigator.platform);
+    const key = { key: 's', code: 'KeyS', keyCode: 83, ctrlKey: !mac, metaKey: mac, bubbles: true, cancelable: true };
+    document.dispatchEvent(new KeyboardEvent('keydown', key));
+    document.dispatchEvent(new KeyboardEvent('keyup', key));
+  });
 });
 
 // Saves the chart's layout under its name, or as "Save" if it has none (which creates the
@@ -187,6 +192,77 @@ document.addEventListener('tvp-drawing-defaults', (e: Event) => {
     for (const tool of Object.keys(styles)) page.TradingView.saveDefaults(tool, styles[tool]);
   }, 500);
 });
+
+// Faster Auto Save (TradingView). TradingView saves drawings apart from the layout, 500 ms after
+// each change, but saves the layout itself (timeframe, symbol, indicators, chart settings) only
+// 5 minutes after the first change, so reloading before then loses those. TVP saves the layout
+// 15 seconds after the first unsaved change instead, and when Scroll Timeframes switches timeframe
+// while there are unsaved changes. As with TradingView's own autosave, only a named layout with
+// autosave on is saved.
+//
+// When TradingView's server answers a drawing save with 429 (too many saves), TradingView skips
+// saving drawings for 5 minutes and doesn't try again when the pause ends, so drawings made
+// meanwhile stay unsaved until the next change. Saving during the pause doesn't help (TradingView
+// skips the drawings then too), so TVP saves the layout once the pause is over.
+if (location.hostname.endsWith('tradingview.com')) {
+  const page = (window as any).wrappedJSObject || window;
+  const toPage = (fn: Function) => typeof exportFunction === 'function' ? exportFunction(fn, page) : fn;
+  const pageFetch = page.fetch;
+  const noop = toPage(() => {});
+  let afterPause: ReturnType<typeof setTimeout> | undefined;
+  let afterChange: ReturnType<typeof setTimeout> | undefined;
+  let lastSave = 0;
+
+  // Saves the layout as TradingView's autosave does (autoSave marks the save as one), while
+  // Faster Auto Save is on (TradingViewPlatform sets the attribute)
+  const save = () => {
+    if (!document.documentElement.hasAttribute('data-tvp-faster-auto-save')) return;
+    const api = page.TradingViewApi;
+    const service = api?._saveChartService;
+    if (!service?.autoSaveEnabled().value() || !service.layoutId()) return;
+    lastSave = Date.now();
+    api.saveChartToServer(noop, noop, page.JSON.parse('{"autoSave":true}'));
+  };
+  const hasChanges = () => !!page.TradingViewApi?._saveChartService?.hasChangesWV().value();
+
+  // The layout has unsaved changes as long as TradingView shows "Save" under its name. Once
+  // nothing is unsaved (it was saved), the next change starts the 15 seconds again.
+  const startTimer = () => {
+    if (!hasChanges()) { clearTimeout(afterChange); afterChange = undefined; return; }
+    if (afterChange) return;
+    afterChange = setTimeout(() => { afterChange = undefined; if (hasChanges()) save(); }, 15000);
+  };
+  if (location.pathname.startsWith('/chart')) {
+    const waitForChart = setInterval(() => {
+      const service = page.TradingViewApi?._saveChartService;
+      if (!service) return;
+      clearInterval(waitForChart);
+      service.hasChangesWV().subscribe(toPage(startTimer));
+      startTimer();
+    }, 1000);
+  }
+
+  // Scroll Timeframes clicks the next timeframe right after this event, so the save comes after
+  // the switch and includes it. At most once every 5 seconds while scrolling through
+  // timeframes; the 15-second save covers the rest.
+  document.addEventListener('tvp-timeframe-switch', () => {
+    if (hasChanges() && Date.now() - lastSave >= 5000) setTimeout(save, 0);
+  });
+
+  const onDrawingsSaved = (response: any) => {
+    if (response.status !== 429) return;
+    clearTimeout(afterPause);
+    // TradingView's pause is 5 minutes from its 429; a few seconds more to be past it
+    afterPause = setTimeout(save, 305000);
+  };
+
+  page.fetch = toPage((input: any, init?: any) => {
+    const result = pageFetch.call(page, input, init);
+    // TradingView's drawings storage: a PUT with the layout in its address
+    if (init?.method === 'PUT' && String(input).includes('layout_id=')) result.then(toPage(onDrawingsSaved), toPage(() => {}));
+    return result;
+  });
+}
 
 // Minimal Fullscreen on XM: Shift + F on the chart opens XM's own fullscreen (as its ⛶ button
 // does) rather than TradingView's. This file runs before TradingView's scripts, so this listener
