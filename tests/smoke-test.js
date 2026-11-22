@@ -161,6 +161,9 @@ const DRAWING_STYLES = {
 
 // XM features the demo can show; the rest of XM (accounts, its watchlist and fullscreen) needs a login
 async function xmChecks(frame) {
+  // Faster Auto Save is for tradingview.com; XM's chart has Auto Save & Restore Layout
+  check('Faster Auto Save isn\'t in the menu on XM', await frame.evaluate(`!(${ROW})('Faster Auto Save')`));
+
   // Drawing Defaults: new drawings from the favourite tools get TVP's styles
   const wrong = await frame.evaluate(async styles => {
     const c = window.tradingViewApi.activeChart();
@@ -330,6 +333,10 @@ async function tradingViewChecks(dir) {
     check('page elements TVP uses exist', Object.values(elements).every(Boolean), Object.entries(elements).filter(([, ok]) => !ok).map(([sel]) => sel).join(', ') || '');
 
     await runSetupDefaults(page.mainFrame());
+    // Setup Defaults ends with Ctrl + S, which asks a guest to sign up to save
+    const savePrompt = await waitFor(() => page.evaluate(() =>
+      document.querySelector('[data-dialog-name="gopro"]')?.innerText.includes('Save this chart')), 5000);
+    check('Setup Defaults ends with Ctrl + S (TradingView\'s save prompt for a guest)', savePrompt);
     await closePopups();
     const defaults = await waitFor(() => page.evaluate(() => {
       const d = { timeframes: document.querySelectorAll('#header-toolbar-intervals div button').length,
@@ -339,6 +346,55 @@ async function tradingViewChecks(dir) {
     check('Setup Defaults stars timeframes and tools, turns on the magnet', defaults, defaults || await page.evaluate(() => ({
       timeframes: document.querySelectorAll('#header-toolbar-intervals div button').length,
       favouriteTools: document.querySelectorAll('[data-name^="FavoriteToolbar"]').length, magnet: window.TradingViewApi.magnetEnabled().value() })));
+
+    // Faster Auto Save. A guest can't save, so TradingView's save call and its "autosave on, saved layout" checks are
+    // replaced; the unsaved-changes flag and the timeframe switch are TradingView's own.
+    check('Faster Auto Save is in the Tradingview Features section, on', await page.evaluate(`(() => {
+      const row = (${ROW})('Faster Auto Save');
+      return !!row?.closest('#tradingview-dropdown-content-container') && row.querySelector('input').checked;
+    })()`));
+    const saving = await page.evaluate(() => {
+      const api = window.TradingViewApi, service = api._saveChartService;
+      if (!service?.hasChangesWV || !service.autoSaveEnabled || !service.layoutId || !service.chartSaved || !api.saveChartToServer) return false;
+      window.__tvpSaves = [];
+      service.autoSaveEnabled = () => ({ value: () => true });
+      service.layoutId = () => 'smoke-test';
+      // a save answers "saved", as TradingView does once it has saved
+      api.saveChartToServer = (a, b, options) => {
+        window.__tvpSaves.push({ autoSave: !!options?.autoSave, interval: api.activeChart().resolution() });
+        service.chartSaved().fire(true);
+      };
+      return true;
+    });
+    check('TradingView\'s save functions Faster Auto Save uses exist', saving);
+    if (saving) {
+      // Scroll Timeframes (Alt + Shift + wheel up) with an unsaved change: saved along with the switch
+      const switched = await page.evaluate(async () => {
+        // from "saved" (which also stops the 15-second save Setup Defaults' changes started)
+        const service = window.TradingViewApi._saveChartService;
+        service.chartSaved().fire(true);
+        service.markContentAsChanged();
+        const before = window.TradingViewApi.activeChart().resolution();
+        document.querySelector('.chart-gui-wrapper canvas').dispatchEvent(new WheelEvent('wheel',
+          { deltaY: -100, altKey: true, shiftKey: true, bubbles: true, cancelable: true }));
+        await new Promise(res => setTimeout(res, 1500));
+        return { before, after: window.TradingViewApi.activeChart().resolution(), saves: window.__tvpSaves };
+      });
+      check('Faster Auto Save: a timeframe switch with Scroll Timeframes saves unsaved changes',
+        switched.after !== switched.before && switched.saves.length === 1 && switched.saves[0].interval === switched.after, switched);
+
+      // An unsaved change is saved after 15 seconds
+      await page.evaluate(() => {
+        const service = window.TradingViewApi._saveChartService;
+        window.__tvpSaves = [];
+        service.chartSaved().fire(true);
+        service.markContentAsChanged();
+      });
+      const start = Date.now();
+      const saved = await waitFor(() => page.evaluate(() => window.__tvpSaves[0]), 20000);
+      const seconds = Math.round((Date.now() - start) / 1000);
+      check('Faster Auto Save: an unsaved change is saved after 15 s', saved?.autoSave && seconds >= 14, saved ? { ...saved, seconds } : 'no save after 20 s');
+    }
 
     // Minimal Fullscreen: Shift + F keeps a compact bar (symbol, timeframe, Undo) and pins the favourites
     await page.mouse.click(700, 450);
